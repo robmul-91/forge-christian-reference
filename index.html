@@ -2275,6 +2275,45 @@ html[data-theme="dark"] .types-unv.comp-unv{color:#e8b866;border-color:#8a6a3a}
 html[data-theme="dark"] #legend-tg:focus-visible{outline-color:#f0b27a}
 html[data-theme="dark"] #legend small{color:var(--text-secondary,#b8ad9c)}
 html[data-theme="dark"] #legend.min{background:rgba(25,28,34,.95)}
+/* === SECTION: Send Feedback (Nov 2, 2026) ===
+   Header button (#fb-open) opens a modal dialog (#fb-modal) with a form that posts privately to Robert's Google Form.
+   .fb-hp = honeypot field moved off-screen. Phone: the dialog fills the width and scrolls. */
+.fb-open{display:inline-flex;align-items:center;gap:4px;background:#524435;color:#f4ecdc;border:1px solid #8a7a5f;border-radius:14px;padding:4px 10px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
+.fb-open:hover{background:#665542;border-color:#bba98f}
+.fb-open:focus-visible,#fb-modal button:focus-visible,#fb-modal input:focus-visible,#fb-modal select:focus-visible,#fb-modal textarea:focus-visible{outline:2px solid #a33a1f;outline-offset:2px}
+#fb-modal{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;background:rgba(30,24,16,.55);padding:12px;box-sizing:border-box}
+#fb-modal[hidden]{display:none}
+.fb-dlg{background:#fffdf8;color:#2b2418;border:1px solid #d8ccb4;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.35);width:min(520px,100%);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);overflow:auto;padding:18px 20px;box-sizing:border-box;font-size:15px;line-height:1.45;position:relative}
+.fb-dlg h2{margin:0 36px 6px 0;font-size:19px;color:#5a2a12}
+#fb-title{position:relative;z-index:1;margin:0 0 6px;padding-right:44px;float:none;width:auto}
+.fb-note{margin:0 0 12px;font-size:13.5px;color:#6b5d47}
+.fb-x{position:absolute;z-index:3;top:10px;right:10px;width:36px;height:36px;border-radius:18px;border:1px solid #d8ccb4;background:#f6efe2;color:#5a2a12;font-size:20px;line-height:1;cursor:pointer}
+.fb-row{display:flex;flex-direction:column;gap:4px;margin:0 0 10px}
+.fb-row label{font-weight:600;font-size:13.5px}.fb-row .fb-opt{font-weight:400;color:#7a6c55}
+.fb-row input,.fb-row select,.fb-row textarea{font:inherit;font-size:16px;padding:7px 9px;border:1px solid #cbbd9f;border-radius:8px;background:#fff;color:#2b2418;box-sizing:border-box;width:100%}
+.fb-row textarea{min-height:120px;resize:vertical}
+.fb-hp{position:absolute!important;left:-10000px!important;top:auto;width:1px;height:1px;overflow:hidden}
+.fb-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px}
+.fb-actions button{font:inherit;font-weight:600;padding:8px 16px;border-radius:18px;cursor:pointer;min-height:40px}
+.fb-send{background:#a33a1f;color:#fff;border:1px solid #8a2f18}.fb-send[disabled]{opacity:.6;cursor:wait}
+.fb-cancel{background:#f6efe2;color:#5a2a12;border:1px solid #d8ccb4}
+.fb-status{margin:8px 0 0;font-size:14px;min-height:1em}.fb-status.err{color:#a33a1f}
+.fb-thanks{font-size:16px;margin:14px 0}
+@media (max-width:520px){#fb-modal{align-items:flex-start;padding:8px}.fb-dlg{padding:14px;max-height:calc(100vh - 16px);max-height:calc(100dvh - 16px)}.fb-open .fb-lbl{display:none}.fb-open{padding:4px 8px}}
+#fb-thanks:focus{outline:none}
+/* Forge phones: let the header tools (version, Share, Feedback, theme) wrap instead of widening the page */
+/* Forge phones: the ✉️ button sits in the title row (top-right) so the tools row keeps its old height */
+@media (max-width:520px){header{position:relative}header #fb-open{position:absolute;top:10px;right:16px;z-index:5}}
+
+html[data-theme="dark"] .fb-dlg{background:#1c2028;color:var(--text-main,#f2ede4);border-color:var(--border-strong,#3a4150)}
+html[data-theme="dark"] .fb-dlg h2{color:#f0b27a}
+html[data-theme="dark"] .fb-note,html[data-theme="dark"] .fb-row .fb-opt{color:#b8ad9c}
+html[data-theme="dark"] .fb-row input,html[data-theme="dark"] .fb-row select,html[data-theme="dark"] .fb-row textarea{background:#12151b;color:#f2ede4;border-color:#4a5263}
+html[data-theme="dark"] .fb-x,html[data-theme="dark"] .fb-cancel{background:#2a303b;color:#f2ede4;border-color:#4a5263}
+html[data-theme="dark"] .fb-status.err{color:#f0a08a}
+html[data-theme="dark"] .fb-open:focus-visible,html[data-theme="dark"] #fb-modal button:focus-visible,html[data-theme="dark"] #fb-modal input:focus-visible,html[data-theme="dark"] #fb-modal select:focus-visible,html[data-theme="dark"] #fb-modal textarea:focus-visible{outline-color:#f0b27a}
+html[data-theme="dark"] #fb-modal{background:rgba(0,0,0,.65)}
+body.fb-lock{overflow:hidden}
 </style></head><body>
 <!-- === SECTION: HTML header and controls ===
      Top bar: app title ("Forge Christian Reference", a link to #home),
@@ -2298,7 +2337,7 @@ html[data-theme="dark"] #legend.min{background:rgba(25,28,34,.95)}
 <!-- [2026-10-25 JLC] Added keyboard skip-link to jump straight to #main-content. -->
 <a href="#main-content" class="skip-link">Skip to main content</a>
 <!-- [2026-10-25 JLC] Added aria-label to <nav>, Copy Link button (#copy-link-btn), and top-right Dark Mode Slider toggle (#theme-slider, role="switch"). -->
-<header><h1><a href="#home" id="hometitle" title="Home: About, Why I Built This Tool, all tabs, My Journey to Faith">Forge Christian Reference</a></h1><nav aria-label="Primary study sections"><a href="#home" id="navhome">Home</a><a href="#reading" id="navread">Bible Reading</a><a href="#map" id="navmap">Map</a><a href="#journeys" id="navjou">Journeys</a><a href="#places" id="navpla">Places</a><a href="#prophets" id="navpro">Prophets</a><a href="#kings" id="navkin">Kings</a><a href="#kharmony" id="navkha">Kings Harmony</a><a href="#intertestamental" id="navitp">Intertestamental Period</a><a href="#harmony" id="navhar">Gospel Harmony</a><a href="#disciples" id="navdis">Disciples</a><a href="#parables" id="navpar">Parables</a><a href="#hermeneutics" id="navherm">Hermeneutics</a><a href="#doctrine" id="navdoc">Doctrine</a><a href="#essentials" id="navess">Essentials &amp; Convictions</a><a href="#reliability" id="navrel">Reliability</a><a href="#church" id="navchu">Christian Thinkers</a><a href="#martyrs" id="navmar">Martyrs</a><a href="#evangelism" id="navevan">Evangelism</a><a href="#apologetics" id="navapo">Apologetics</a><a href="#inspiration" id="navins">Inspiration</a><a href="#genealogies" id="navgen">Genealogies</a><a href="#glossary" id="navglo">Glossary</a></nav><span class="hbreak" aria-hidden="true"></span><span id="srch"><button id="sbtn" type="button" title="Search (/)" aria-label="Search">🔍</button><input id="sq" type="search" role="combobox" aria-expanded="false" aria-controls="sdrop" aria-autocomplete="list" placeholder="Search places, people, verses…  ( / )" autocomplete="off" aria-label="Search places, people, chapters, and verses"><div id="sdrop" role="listbox" hidden></div></span><span id="hdr-tools"><!-- [2026-10-25 JLC] Added top-bar Bible translation selector (#bible-version-select) supporting KJV, BSB, and LSB (=== SECTION: [2026-11-01] ESV, NLT, NIV removed ===) --><select id="bible-version-select" class="bible-version-select" aria-label="Select Bible translation" title="Select Bible translation"><option value="KJV">📖 KJV (King James)</option><option value="BSB">📖 BSB (Berean Standard)</option><option value="LSB">📖 LSB (Legacy Standard)</option></select><!-- === SECTION: [2026-11-01] ESV / NLT / NIV options removed === --><button id="copy-link-btn" class="copy-link-btn" type="button" title="Copy direct link to this view" aria-label="Copy link to current view">🔗 Share</button><button id="theme-slider" class="theme-slider" type="button" role="switch" aria-checked="false" aria-label="Toggle dark mode" title="Switch to Dark mode"><span class="theme-slider__icon" aria-hidden="true">☀️</span><span class="theme-slider__icon" aria-hidden="true">🌙</span><span class="theme-slider__thumb" aria-hidden="true"></span></button></span><span id="mapctl">
+<header><h1><a href="#home" id="hometitle" title="Home: About, Why I Built This Tool, all tabs, My Journey to Faith">Forge Christian Reference</a></h1><nav aria-label="Primary study sections"><a href="#home" id="navhome">Home</a><a href="#reading" id="navread">Bible Reading</a><a href="#map" id="navmap">Map</a><a href="#journeys" id="navjou">Journeys</a><a href="#places" id="navpla">Places</a><a href="#prophets" id="navpro">Prophets</a><a href="#kings" id="navkin">Kings</a><a href="#kharmony" id="navkha">Kings Harmony</a><a href="#intertestamental" id="navitp">Intertestamental Period</a><a href="#harmony" id="navhar">Gospel Harmony</a><a href="#disciples" id="navdis">Disciples</a><a href="#parables" id="navpar">Parables</a><a href="#hermeneutics" id="navherm">Hermeneutics</a><a href="#doctrine" id="navdoc">Doctrine</a><a href="#essentials" id="navess">Essentials &amp; Convictions</a><a href="#reliability" id="navrel">Reliability</a><a href="#church" id="navchu">Christian Thinkers</a><a href="#martyrs" id="navmar">Martyrs</a><a href="#evangelism" id="navevan">Evangelism</a><a href="#apologetics" id="navapo">Apologetics</a><a href="#inspiration" id="navins">Inspiration</a><a href="#genealogies" id="navgen">Genealogies</a><a href="#glossary" id="navglo">Glossary</a></nav><span class="hbreak" aria-hidden="true"></span><span id="srch"><button id="sbtn" type="button" title="Search (/)" aria-label="Search">🔍</button><input id="sq" type="search" role="combobox" aria-expanded="false" aria-controls="sdrop" aria-autocomplete="list" placeholder="Search places, people, verses…  ( / )" autocomplete="off" aria-label="Search places, people, chapters, and verses"><div id="sdrop" role="listbox" hidden></div></span><span id="hdr-tools"><!-- [2026-10-25 JLC] Added top-bar Bible translation selector (#bible-version-select) supporting KJV, BSB, and LSB (=== SECTION: [2026-11-01] ESV, NLT, NIV removed ===) --><select id="bible-version-select" class="bible-version-select" aria-label="Select Bible translation" title="Select Bible translation"><option value="KJV">📖 KJV (King James)</option><option value="BSB">📖 BSB (Berean Standard)</option><option value="LSB">📖 LSB (Legacy Standard)</option></select><!-- === SECTION: [2026-11-01] ESV / NLT / NIV options removed === --><button id="copy-link-btn" class="copy-link-btn" type="button" title="Copy direct link to this view" aria-label="Copy link to current view">🔗 Share</button><!-- === SECTION: Send Feedback header button (Nov 2, 2026) === --><button id="fb-open" class="fb-open" type="button" aria-label="Send Feedback" aria-haspopup="dialog" aria-controls="fb-modal" title="Send private feedback to Robert">✉️<span class="fb-lbl"> Send Feedback</span></button><button id="theme-slider" class="theme-slider" type="button" role="switch" aria-checked="false" aria-label="Toggle dark mode" title="Switch to Dark mode"><span class="theme-slider__icon" aria-hidden="true">☀️</span><span class="theme-slider__icon" aria-hidden="true">🌙</span><span class="theme-slider__thumb" aria-hidden="true"></span></button></span><span id="mapctl">
 <label>Book <select id="book" aria-label="Bible Book"></select></label>
 <label>Chapter <select id="chap" aria-label="Bible Chapter"></select></label>
 <label>or type <input id="chapnum" type="number" min="1" aria-label="Type chapter number"></label></span>
@@ -2397,6 +2436,23 @@ html[data-theme="dark"] #legend.min{background:rgba(25,28,34,.95)}
 <footer id="translation-copyright" class="ver-copyright-bar" role="contentinfo" aria-label="Bible translation copyright and gratis permissions"><details><summary><span id="ver-cp-active">📖 <b>KJV:</b> King James Version (KJV) — Public Domain · 4,082 verses embedded offline (100% of Gospels + all study passages).</span><span class="ver-cp-more">Publisher Copyright &amp; Gratis Notices ▾</span></summary><div class="ver-cp-all"><div><b>KJV:</b> King James Version (KJV, 1769 Oxford standard text) — Public Domain worldwide. Includes all 3,777 Gospel verses in T2.verses plus 305 Old &amp; New Testament study verses (4,082 verses total).</div><div><b>BSB:</b> The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.com, and the Berean Bible Translation Committee. This text of God’s Word has been dedicated to the public domain (CC0 1.0 Universal). Includes all 3,777 Gospel verses in BSB_GOSPELS plus 305 study verses (4,082 verses total).</div><div><b>LSB:</b> Scripture quotations marked (LSB) are taken from the Legacy Standard Bible® (LSB®), Copyright © 2021 by The Lockman Foundation. Used by permission. All rights reserved. Managed in partnership with Three Sixteen Publishing Inc., <a href="https://www.lsbible.org/" target="_blank" rel="noopener">www.LSBible.org</a> and 316publishing.com. (490 verses embedded offline, strictly within Lockman’s ≤ 1,000-verse gratis use policy.)</div></div></details></footer>
 <!-- [2026-10-25 JLC] End of persistent <main id="main-content"> landmark wrapping all 16 application views. -->
 </main>
+<!-- === SECTION: Send Feedback modal (Nov 2, 2026): private feedback to Robert via Google Forms; Location is filled in by script; Website is a hidden honeypot === -->
+<div id="fb-modal" hidden><div class="fb-dlg" role="dialog" aria-modal="true" aria-labelledby="fb-title" aria-describedby="fb-desc">
+<button type="button" class="fb-x" id="fb-close" aria-label="Close feedback form">×</button>
+<h2 id="fb-title">Send Feedback</h2>
+<p class="fb-note" id="fb-desc">Your message goes privately to Robert. It is not posted or shown publicly. Name and email are optional; add an email if you would like a reply.</p>
+<form id="fb-form" novalidate>
+<div class="fb-row"><label for="fb-name">Name <span class="fb-opt">(optional)</span></label><input id="fb-name" name="entry.1949418265" type="text" autocomplete="name" maxlength="200"></div>
+<div class="fb-row"><label for="fb-email">Email <span class="fb-opt">(optional)</span></label><input id="fb-email" name="entry.1735496689" type="email" autocomplete="email" maxlength="200"></div>
+<div class="fb-row"><label for="fb-type">Type</label><select id="fb-type" name="entry.2089911576"><option value="Idea" selected>Idea</option><option value="Fix or error">Fix or error</option><option value="Scripture or source question">Scripture or source question</option><option value="Other">Other</option></select></div>
+<div class="fb-row"><label for="fb-msg">Message</label><textarea id="fb-msg" name="entry.88570653" required maxlength="5000" aria-required="true"></textarea></div>
+<input type="hidden" id="fb-loc" name="entry.609840923" value="">
+<div class="fb-hp" aria-hidden="true"><label for="fb-web">Website</label><input id="fb-web" name="entry.927367090" type="text" tabindex="-1" autocomplete="off"></div>
+<p class="fb-status" id="fb-status" role="status" aria-live="polite"></p>
+<div class="fb-actions"><button type="button" class="fb-cancel" id="fb-cancel">Cancel</button><button type="submit" class="fb-send" id="fb-send">Send</button></div>
+</form>
+<div id="fb-done" hidden><p class="fb-thanks" role="status" tabindex="-1" id="fb-thanks">Thank you — your feedback was sent.</p><div class="fb-actions"><button type="button" class="fb-cancel" id="fb-done-close">Close</button></div></div>
+</div></div>
 <script>
 // === SECTION: Embedded data: base map shapes ===
 // GEO (inserted by build.py) = {w,h: map size in pixels; box: [west,east,south,north] in degrees;
@@ -18923,5 +18979,37 @@ setTimeout(all,0);window.MSCALE={update:all,NICE};
   }
 })();
 
+
+// === SECTION: Send Feedback (Nov 2, 2026) ===
+// fbOpen(): shows the modal, fills Location (page address incl. #route + edition) and focuses Name; fbClose(): hides it and returns
+// focus to the button. Tab/Shift+Tab stay inside the dialog; Esc closes. fbSubmit(): Message required; if the hidden Website
+// honeypot is filled it pretends success and sends nothing; otherwise POSTs (no-cors, URLSearchParams) to the Google Form.
+(function(){
+ const FB_URL="https://docs.google.com/forms/d/e/1FAIpQLSfgsMkL_CnLH8gJKU_i76Y_kFsde7ycadl59KnAem9ii0F7Dg/formResponse";
+ const FB_EDITION="Forge Christian Reference (forge_christian_reference.html)";
+ const $f=id=>document.getElementById(id),M=$f("fb-modal"),F=$f("fb-form"),ST=$f("fb-status"),OPEN=$f("fb-open");if(!M||!OPEN)return;
+ let lastFocus=null;
+ const focusables=()=>[...M.querySelectorAll('button,input:not([type=hidden]):not([tabindex="-1"]),select,textarea,[tabindex="0"]')].filter(e=>!e.closest("[hidden]")&&e.offsetParent!==null);
+ function reset(){F.reset();$f("fb-type").value="Idea";F.hidden=false;$f("fb-done").hidden=true;ST.textContent="";ST.className="fb-status";$f("fb-send").disabled=false;$f("fb-send").textContent="Send"}
+ function fbOpen(){lastFocus=document.activeElement;if(!$f("fb-done").hidden)reset();$f("fb-loc").value=location.href+" | edition: "+FB_EDITION;M.hidden=false;M.querySelector(".fb-dlg").scrollTop=0;document.body.classList.add("fb-lock");setTimeout(()=>$f("fb-name").focus({preventScroll:true}),0)}
+ function fbClose(){M.hidden=true;document.body.classList.remove("fb-lock");if(!$f("fb-done").hidden)reset();(lastFocus&&lastFocus.focus?lastFocus:OPEN).focus()}
+ function done(){F.hidden=true;$f("fb-done").hidden=false;$f("fb-thanks").focus()}
+ async function fbSubmit(ev){ev.preventDefault();ST.className="fb-status";ST.textContent="";
+  const msg=$f("fb-msg");if(!msg.value.trim()){ST.className="fb-status err";ST.textContent="Please write a message before sending.";msg.focus();return}
+  const em=$f("fb-email");if(em.value&&!em.checkValidity()){ST.className="fb-status err";ST.textContent="That email address doesn’t look right. Please fix it or leave it blank.";em.focus();return}
+  $f("fb-loc").value=location.href+" | edition: "+FB_EDITION;
+  if($f("fb-web").value){done();return}   // honeypot filled: pretend success, send nothing
+  const body=new URLSearchParams();
+  [["entry.1949418265","fb-name"],["entry.1735496689","fb-email"],["entry.2089911576","fb-type"],["entry.88570653","fb-msg"],["entry.609840923","fb-loc"],["entry.927367090","fb-web"]].forEach(([k,id])=>body.append(k,$f(id).value));
+  const b=$f("fb-send");b.disabled=true;b.textContent="Sending…";
+  try{await fetch(FB_URL,{method:"POST",mode:"no-cors",body});done()}
+  catch(e){ST.className="fb-status err";ST.textContent="Sorry — your feedback couldn’t be sent (are you offline?). Please check your connection and press Send again.";b.disabled=false;b.textContent="Send";b.focus()}}
+ OPEN.addEventListener("click",fbOpen);$f("fb-close").onclick=fbClose;$f("fb-cancel").onclick=fbClose;$f("fb-done-close").onclick=fbClose;
+ M.addEventListener("mousedown",e=>{if(e.target===M)fbClose()});F.addEventListener("submit",fbSubmit);
+ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!M.hidden&&!M.contains(document.activeElement)){e.preventDefault();fbClose()}});
+M.addEventListener("keydown",e=>{if(e.key==="Escape"){e.preventDefault();e.stopPropagation();fbClose();return}
+  if(e.key==="Tab"){const f=focusables();if(!f.length)return;const a=f[0],z=f[f.length-1];if(e.shiftKey&&(document.activeElement===a||!M.contains(document.activeElement))){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});
+ window.FEEDBACK_API={open:fbOpen,close:fbClose,URL:FB_URL,EDITION:FB_EDITION};
+})();
 </script>
 </body></html>

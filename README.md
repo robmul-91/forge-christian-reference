@@ -815,3 +815,7 @@ Approved by Robert: a new last paragraph in the "Graduate School & the Limits of
 ## README restored (Nov 2, 2026)
 <!-- === SECTION: README restore === -->
 From the Days 61–75 update (Nov 1, 2026) on, README.md had been overwritten instead of appended, so only the newest companion notes were kept and the main documentation (Purpose / About This Tool, Rebuild, Files, …) was lost. This made `verify_home.js` fail. The README was rebuilt from `README.md.bak_pre_companion4660_20261101` (the last full copy), the Days 46–60 note, a rewritten Days 61–90 note and all later sections (below, in date order). The truncated copy is kept as `README.md.bak_pre_readmerestore_20261102`.
+
+## Send Feedback (Nov 2, 2026)
+<!-- === SECTION: Send Feedback === -->
+A **✉️ Send Feedback** button in the header opens a small private form (Name and Email optional; Type: Idea / Fix or error / Scripture or source question / Other; Message required). Messages go privately to Robert through a Google Form and are never posted or shown publicly. The current page address (including the #route) and edition are attached so Robert can see where the note came from; a hidden honeypot field filters out spam bots. After sending you see "Thank you — your feedback was sent." and stay on the page; if you are offline, a friendly message asks you to try again.
