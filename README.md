@@ -819,3 +819,53 @@ From the Days 61–75 update (Nov 1, 2026) on, README.md had been overwritten in
 ## Send Feedback (Nov 2, 2026)
 <!-- === SECTION: Send Feedback === -->
 A **✉️ Send Feedback** button in the header opens a small private form (Name and Email optional; Type: Idea / Fix or error / Scripture or source question / Other; Message required). Messages go privately to Robert through a Google Form and are never posted or shown publicly. The current page address (including the #route) and edition are attached so Robert can see where the note came from; a hidden honeypot field filters out spam bots. After sending you see "Thank you — your feedback was sent." and stay on the page; if you are offline, a friendly message asks you to try again.
+
+## Gods & Gospel tab (Batch 1, added Nov 2, 2026)
+
+A new top-level tab, **Gods & Gospel** (`#gods`), sits right after Hermeneutics. It reads passages alongside the beliefs of Israel's neighbours, using the grammatical-historical method.
+- **Landing page:** what "polemic" means, plus two cautions: similar does not mean borrowed, and every background claim is sourced.
+- **Gods of the Nations:** profile cards for Egypt, Canaan & Phoenicia, Philistia and Babylon. Each card covers the chief deities, worldview, practices, key passages, links and sources.
+- **Scripture Speaks to Its World:** cards S1–S8. Each one gives the backdrop, how the text answers it, both sides where scholars disagree, and sources. Every card carries a **Widely held** and/or **Debated** tag.
+- **Filters:** culture chips filter both parts; tag chips filter the S cards.
+- **Addresses:** `#gods`, `#gods/nations`, `#gods/scripture`, `#gods/<card>` (for example `#gods/s4`, `#gods/p-canaan`).
+- **Links:** Map references open Places entries (`#places/<id>`). Timeline references open the matching Map chapter, whose timeline strip shows the period. Reading Companion days open `#reading/day/<n>`. Glossary terms open `#glossary/<id>`.
+- **Wording:** Robert's approved draft (`drafts/gods_gospel_batch1.md`), used verbatim, in `gods_content.js` (generated) and `gods_ui.js`. The two Wikipedia "Baal Cycle" links were replaced by the scholarly works Wikipedia cites: Mark S. Smith, *The Ugaritic Baal Cycle* I (Brill, 1994) and J. C. L. Gibson, *Canaanite Myths and Legends* (2nd ed., 1978). The Reading Companion day numbers were checked and are all correct.
+- **Scripture:** quotations are KJV, byte-exact against `data/kjv.json` (51 fragments). In the Forge edition, the offline BSB/LSB library does not include these passages, so they stay KJV and a note says so when another translation is selected.
+- **Glossary:** 16 new terms plus an updated Cuneiform entry, for 471 entries.
+- **Search:** results of type "Gods & Gospel".
+- **Tests:** `verify_gods.js`. Tab-count and nav-order checks in the other tests were updated: 23 tabs. Gods & Gospel has no tab intro yet.
+
+## Prophets tab: Moses-era date fixes (Nov 2, 2026)
+
+Robert's approved date corrections for the Patriarchs & Exodus group in `tabs.json` (group `patr`). Each one replaces the old generic "c. 1446–1406 BC" span:
+- **Moses:** c. 1526–1406 BC.
+- **Aaron:** c. 1529–1407 BC.
+- **Miriam:** born before c. 1526 BC (birth year not recorded); died c. 1407 BC.
+- **Eldad and Medad:** c. 1445 BC (single year).
+- **Balaam:** c. 1407–1406 BC.
+
+The scholarly late-Exodus wording for all five is now "c. 1260 BC (Ramesses II: Kitchen)", with spans ending at 1260 BC. Balaam's scholarly span used to run to 800 BC; it now ends at 1260 BC. The Deir Alla inscription (c. 800 BC) stays as a tradition claim, with a note that Balaam was remembered there centuries later. The backups use the suffix `.bak_pre_prophetdates_20261102`.
+
+- Nov 2, 2026, small fix: in phone landscape the header is clipped sideways, so the theme slider no longer pushes the page 1px wider when the 🔍 search is open (verify_search 844 check).
+
+## Gods & Gospel — Batch 2 (Nov 2, 2026)
+
+- Profile cards 5–7 (Persia, Greece, Rome) and cards S9–S13, built verbatim from `drafts/gods_gospel_batch2.md` by `gods_src/gen.py` (KJV fragments in `gods_src/quotes2.py`, all byte-exact against `kjv.json`). There are now 20 cards and 112 checked quotes.
+- 26 new glossary terms (497 entries in total). The existing terms the draft links to now list Gods & Gospel under "used in".
+- The tab now has its own "About this tab" intro in `tab_intros_content.js` (23 intros). The approved ending reads "... named scholarly source. Scripture is quoted from the King James Version."
+- Three new background map pins in `places.json` (554 places): Persepolis (29.9353, 52.8914), Behistun/Bisotun (34.3902, 47.4361) and Priene (37.6594, 27.2978). They have no chapter events, so their cards say "background site (not named in the Bible)" and link back to their Gods & Gospel card. Pergamum uses the existing Pergamos pin.
+- Greece has no Powers layer on the Map, so its "Powers" link opens the Intertestamental tab (Alexander) instead.
+- Tests updated: `verify_gods.js` (extended, screenshots go to `/workspace/shots_gods2/`), `verify_tabintros.js` (`#gods` re-enabled), `verify_glossary.js` and `verify_types.js` (497).
+- Backups use the suffix `.bak_pre_godsgospel2_20261102`.
+
+## First-person wording instead of my name (Nov 2, 2026)
+
+- Text readers can see outside the Home tab now uses first person instead of my name: the Types of Christ intro ("Each card gives my short description"), the Apologetics authors note, the Evangelism worked-example lead, link, heading, subtitle and reading note, and the feedback modal note and button title ("Send me private feedback"). "Robert Mullen" was also taken out of the Evangelism search keywords.
+- The testimony title is now "My Journey to Faith" everywhere, Home included.
+- Code comments and other people named Robert are unchanged. `verify_apologetics.js` and `verify_feedback.js` were updated to expect the new wording.
+- Backups use the suffix `.bak_pre_removename_20261102`.
+- Places intro count (approved addition, same pass): the Places tab intro now gives the real number of mapped places (554). `build.py` fills it in from `places.json` at build time, and `verify_tabintros.js` checks it against that same count. The older Places section above still says 550; this README is only ever added to, so that line was left as it was.
+
+## Muggeridge quote note (Nov 2, 2026)
+
+- The note on the Muggeridge quote in the Inspiration tab now begins "Wording as I gave it." (it used to say "Wording as Robert gave it."). The rest of the note is unchanged. Backup: `inspiration_data.py.bak_pre_muggnote_20261102`.
