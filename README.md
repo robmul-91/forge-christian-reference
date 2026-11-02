@@ -12,6 +12,10 @@
 - Memory verses (KJV, from `data/kjv.json`): week 13 Joshua 24:15 (review on Day 91), week 14 Ruth 1:16 (Days 92–98, review on Day 98), week 15 1 Samuel 16:7 (Days 99–105, review on Day 105).
 - Source: `notes/companion_src/days91_105.py` (WEEK13_REVIEW, WEEK14–15, DAYS, SOURCES8), merged by `companion_gen.py`. Test: `node verify_companion.js` (Days 1–105). Backups: `*.bak_pre_companion91105_20261101`.
 
+## My Journey to Faith: Graduate School paragraph (Nov 2, 2026)
+<!-- === SECTION: Journey graduate-school paragraph === -->
+Approved by Robert: a new last paragraph in the "Graduate School & the Limits of Science" section of My Journey to Faith (Home → #home/journey-science), added verbatim in `apologetics_content.js` (APO_DATA.journey, section `science`) and in `notes/my_journey_to_faith.md`. `verify_apologetics.js` checks that it is present verbatim, is the section's last paragraph and appears once. Backups: `*.bak_pre_journeygrad_20261102`.
+
 ## Map: Powers legend collapse and scroll (Nov 2, 2026)
 <!-- === SECTION: Powers legend collapse/scroll === -->
 Approved by Robert. On phones and tablets the Map tab's inset "Powers" legend covered up to half the map, its toggles were cut off, and its header could not be reached with the keyboard. Changes in `template.html`:
