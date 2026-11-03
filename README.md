@@ -894,3 +894,20 @@ Backups use the suffix `.bak_pre_godsgospel3_20261102`. Screenshots are in `/wor
 
 <!-- === SECTION: Gods & Gospel Batch 3 trim (Nov 2, 2026, 8:10 PM) === -->
 Batch 3 trim (approved): I removed two thin bullets, the uncited first "Lystra" bullet on S16 and the one-sided "What the weeping was: Debated" bullet on S15. Both removals are the last two entries in `gods_src/batch3_cuts.json`. S15 keeps its Debated tag through the "the branch to their nose" bullet. Backups use the suffix `.bak_pre_trim3_20261102`.
+
+<!-- === SECTION: Idols of the Heart (Gods & Gospel, Nov 3, 2026) === -->
+## Gods & Gospel: Idols of the Heart (Nov 3, 2026)
+
+Third part of the Gods & Gospel tab (`#gods/heart`), approved from the mockup with edits: 12 cards (H0 "Aren't idols a thing of the past?", H0b the heart problem, H1-H10 Self, Money, Power, Pleasure, Appetite, Sexuality, Approval, State and nation, Religion and ritual, Knowledge). 36 cards in the tab now.
+
+- Source: `gods_src/heart_cards.py` (content), `gods_src/heart_build.py` (checks every KJV quote byte-exact against `data/kjv.json`, 95 quotes), included by `gods_src/gen.py` as `GODS_DATA.heart`. UI: `hcard` and the third section in `gods_ui.js` (left nav, deep links `#gods/h0` ... `#gods/h10`, count, search). Style: `.gg-hintro` in `template.html`.
+- Edits on approval: the "Both sides" notes on H0, H6, H8 and H10 deleted. Debated tags kept on H6, H8 and H10 (each tagline still names the debated point); H0's Debated tag dropped because its only support was the deleted, unsourced note. The mockup box is removed.
+- The mockup's Unverified items were all sourced: Keller, *Counterfeit Gods* p. xvii (as quoted in *Themelios*/TGC); Wallace, Kenyon College 2005 transcript; "Mammon", Easton's Bible Dictionary; Jer 17:9 modern renderings ("desperately sick" ESV, LSB; "beyond cure" NIV, BSB), Bible Hub parallel.
+- Glossary (`gods_src/patch5.py`): Idolatry, Idols of the heart, Mammon, Covetousness, Ordo amoris, Vainglory, Self-denial, each naming its source. 516 entries.
+- Tests: `verify_gods.js` extended (cards, tags, sources, KJV quotes, links opening Doctrine/Apologetics/Essentials/Prophets/Glossary, deep links, search, phone); `verify_glossary.js` and `verify_types.js` expect 516. Screenshots: `/workspace/shots_idols/`.
+- Backups: `*.bak_pre_idols_20261103`.
+
+<!-- === SECTION: Gods & Gospel About text updated (Nov 3, 2026) === -->
+## Gods & Gospel: new "About this tab" text (Nov 3, 2026)
+
+The Gods & Gospel intro in `tab_intros_content.js` was replaced in full by the newly approved wording (three kinds of cards, including Idols of the Heart). The exact text is kept in `/workspace/gods_src/about_gods2.txt`; `verify_tabintros.js` and `verify_gods.js` check the page against it. Backups: `*.bak_pre_aboutgods2_20261103`.
