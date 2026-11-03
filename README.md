@@ -869,3 +869,28 @@ The scholarly late-Exodus wording for all five is now "c. 1260 BC (Ramesses II: 
 ## Muggeridge quote note (Nov 2, 2026)
 
 - The note on the Muggeridge quote in the Inspiration tab now begins "Wording as I gave it." (it used to say "Wording as Robert gave it."). The rest of the note is unchanged. Backup: `inspiration_data.py.bak_pre_muggnote_20261102`.
+
+<!-- === SECTION: Gods & Gospel Batch 3 (Nov 2, 2026) — held, not pushed === -->
+## Gods & Gospel Batch 3 (Nov 2, 2026)
+
+Source: `/workspace/drafts/gods_gospel_batch3.md`. Added cards S14–S17 (#gods/s14 … #gods/s17), 12 glossary terms (509 in all), 54 KJV quotes checked byte-exact (166 in all), and a "Links." list on each new card that points to Intertestamental, Prophets, Map, Hermeneutics, Reliability, Apologetics, Essentials, Glossary and other cards.
+
+Five "source unverified" claims were cut, as approved. The cut list is in `gods_src/batch3_cuts.json`:
+- Block's lament reading of Ezekiel 8:14
+- the Persian barsom comparison for Ezekiel 8:17
+- the Hebrew Explorer details on the Lystra site
+- the Haukeland note on Corinth's dining rooms
+- the Mohr Siebeck idol-food book with no named author
+
+Notes:
+- The Doctrine tab has no Lord's Supper section, so that link was left out.
+- The Lord's Supper glossary link goes to "Eucharist".
+- "Ptolemies & Seleucids" is an era, so its link goes to the era's first event (diadochi).
+- The culture tags were my choice: S14 Greece, S15 Babylon, S16 and S17 Greece and Rome.
+- With the Lystra cut, the first S16 bullet no longer has a citation.
+- The S15 "Debated" bullet now gives one view plus the sixth-month note.
+
+Backups use the suffix `.bak_pre_godsgospel3_20261102`. Screenshots are in `/workspace/shots_gods3/`.
+
+<!-- === SECTION: Gods & Gospel Batch 3 trim (Nov 2, 2026, 8:10 PM) === -->
+Batch 3 trim (approved): I removed two thin bullets, the uncited first "Lystra" bullet on S16 and the one-sided "What the weeping was: Debated" bullet on S15. Both removals are the last two entries in `gods_src/batch3_cuts.json`. S15 keeps its Debated tag through the "the branch to their nose" bullet. Backups use the suffix `.bak_pre_trim3_20261102`.
