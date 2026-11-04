@@ -21591,4 +21591,54 @@ M.addEventListener("keydown",e=>{if(e.key==="Escape"){e.preventDefault();e.stopP
  window.FEEDBACK_API={open:fbOpen,close:fbClose,URL:FB_URL,EDITION:FB_EDITION};
 })();
 </script>
+<!-- === SECTION: GoatCounter loader (automatic hit disabled; goatcounter_ui.js sends one hit per tab view) ===
+     The count.js tag is only added on the live site (robmul-91.github.io), so local copies and the verify_*.js tests never load it. -->
+<script>if(location.hostname==="robmul-91.github.io"){var _gc=document.createElement("script");_gc.async=true;_gc.src="https://gc.zgo.at/count.js";_gc.setAttribute("data-goatcounter","https://mullenforge.goatcounter.com/count");_gc.setAttribute("data-goatcounter-settings",'{"no_onload":true}');document.body.appendChild(_gc)}</script>
+<script>// === SECTION: GoatCounter tab-view analytics (draft, Nov 2026) ===
+// One pageview per tab view: path "/forge-christian-reference/#<tab>", title "<Tab name> – Forge Christian Reference".
+// count.js is loaded with {"no_onload":true}, so it never sends its own automatic hit; every hit comes from here.
+(function(){
+  var BASE="/forge-christian-reference/", last=null, queue=[];
+  // nav button id -> path name (the hash word each tab uses; the Map tab's hashes are chapter refs like "#Genesis 12")
+  var NAV={navhome:"home",navread:"reading",navmap:"map",navjou:"journeys",navpla:"places",navpro:"prophets",navkin:"kings",
+    navkha:"kharmony",navitp:"intertestamental",navhar:"harmony",navdis:"disciples",navpar:"parables",navherm:"hermeneutics",
+    navgods:"gods",navdoc:"doctrine",navess:"essentials",navrel:"reliability",navchu:"church",navmar:"martyrs",navevan:"evangelism",
+    navapo:"apologetics",navins:"inspiration",navgen:"genealogies",navglo:"glossary"};
+  function activeNav(){return document.querySelector('[id^="nav"].on')}
+  function tabKey(){
+    var h=decodeURIComponent((location.hash||"").replace(/^#/,"")).split("/")[0].trim();
+    if(h==="search")return "search";            // search results view
+    var on=activeNav();
+    if(on&&NAV[on.id])return NAV[on.id];
+    return /^[a-z]+$/.test(h)?h:"home";
+  }
+  function tabTitle(){
+    var k=tabKey(),on=activeNav();
+    var t=k==="search"?"Search":(on&&NAV[on.id]===k?on.textContent.trim():k);
+    return t+" – Forge Christian Reference";
+  }
+  function send(v){
+    var gc=window.goatcounter;
+    if(gc&&typeof gc.count==="function")gc.count(v);else queue.push(v);
+  }
+  function track(){
+    if(location.hostname!=="robmul-91.github.io")return;   // only the live site counts (never file://, localhost or test copies)
+    var k=tabKey();
+    if(k===last)return;            // same tab as last hit (e.g. #church/lewis -> #church/stott): don't count again
+    last=k;
+    send({path:BASE+"#"+k,title:tabTitle()});
+  }
+  // count.js loads async: flush anything queued once it is ready
+  var tries=0,t=setInterval(function(){
+    var gc=window.goatcounter;
+    if(gc&&typeof gc.count==="function"){clearInterval(t);while(queue.length)gc.count(queue.shift())}
+    else if(++tries>100)clearInterval(t);   // give up after ~20 s (blocked by an ad blocker, offline, etc.)
+  },200);
+  // Wait briefly so the app has normalised the hash (aliases like #thinkers -> #church/...) and marked the active tab
+  window.addEventListener("hashchange",function(){setTimeout(track,400)});
+  if(document.readyState==="complete")setTimeout(track,400);
+  else window.addEventListener("load",function(){setTimeout(track,400)});
+})();
+// === END SECTION: GoatCounter tab-view analytics ===
+</script>
 </body></html>
