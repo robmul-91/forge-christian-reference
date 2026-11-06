@@ -2495,7 +2495,12 @@ html[data-theme="dark"] .gg-h2{border-color:#3a3f4a}
 <form id="fb-form" novalidate>
 <div class="fb-row"><label for="fb-name">Name <span class="fb-opt">(optional)</span></label><input id="fb-name" name="entry.1949418265" type="text" autocomplete="name" maxlength="200"></div>
 <div class="fb-row"><label for="fb-email">Email <span class="fb-opt">(optional)</span></label><input id="fb-email" name="entry.1735496689" type="email" autocomplete="email" maxlength="200"></div>
-<div class="fb-row"><label for="fb-type">Type</label><select id="fb-type" name="entry.2089911576"><option value="Idea" selected>Idea</option><option value="Fix or error">Fix or error</option><option value="Scripture or source question">Scripture or source question</option><option value="Other">Other</option></select></div>
+<div class="fb-row"><label for="fb-type">Type</label><select id="fb-type" name="entry.2089911576"><!-- === SECTION: Feedback Type values must match Google Form choices exactly (Nov 5, 2026) === -->
+<option value="Idea" selected>Idea</option>
+<option value="Fix or Error">Fix or error</option>
+<option value="Scripture or Source Question">Scripture or source question</option>
+<option value="__other_option__">Other</option>
+</select></div>
 <div class="fb-row"><label for="fb-msg">Message</label><textarea id="fb-msg" name="entry.88570653" required maxlength="5000" aria-required="true"></textarea></div>
 <input type="hidden" id="fb-loc" name="entry.609840923" value="">
 <div class="fb-hp" aria-hidden="true"><label for="fb-web">Website</label><input id="fb-web" name="entry.927367090" type="text" tabindex="-1" autocomplete="off"></div>
@@ -21579,7 +21584,12 @@ setTimeout(all,0);window.MSCALE={update:all,NICE};
   $f("fb-loc").value=location.href+" | edition: "+FB_EDITION;
   if($f("fb-web").value){done();return}   // honeypot filled: pretend success, send nothing
   const body=new URLSearchParams();
-  [["entry.1949418265","fb-name"],["entry.1735496689","fb-email"],["entry.2089911576","fb-type"],["entry.88570653","fb-msg"],["entry.609840923","fb-loc"],["entry.927367090","fb-web"]].forEach(([k,id])=>body.append(k,$f(id).value));
+  // === SECTION: Feedback Type payload aligned to Google Form (Nov 5, 2026) ===
+  // Choice strings must match Form answers exactly. Built-in Other uses __other_option__
+  // plus entry.2089911576.other_option_response (not the bare string "Other").
+  [["entry.1949418265","fb-name"],["entry.1735496689","fb-email"],["entry.88570653","fb-msg"],["entry.609840923","fb-loc"],["entry.927367090","fb-web"]].forEach(([k,id])=>body.append(k,$f(id).value));
+  const typeVal=$f("fb-type").value;body.append("entry.2089911576",typeVal);
+  if(typeVal==="__other_option__")body.append("entry.2089911576.other_option_response","Other");
   const b=$f("fb-send");b.disabled=true;b.textContent="Sending…";
   try{await fetch(FB_URL,{method:"POST",mode:"no-cors",body});done()}
   catch(e){ST.className="fb-status err";ST.textContent="Sorry — your feedback couldn’t be sent (are you offline?). Please check your connection and press Send again.";b.disabled=false;b.textContent="Send";b.focus()}}
