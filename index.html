@@ -2901,11 +2901,13 @@ window.FORGE_BIBLE=(function(){
   function lookupCoords(ver, coords){
     if(!coords||!coords.length) return null;
     const parts=[];
+    // === SECTION: [2026-11-08] Whole-passage rule: a range is returned only if EVERY verse exists in this translation (no silently dropped verses) ===
     for(const [b, ch, v] of coords){
       const t=getSingleVerse(ver, b, ch, v);
-      if(t) parts.push(t);
+      if(!t) return null;
+      parts.push(t);
     }
-    return parts.length?parts.join(" "):null;
+    return parts.join(" ");
   }
 
   function parseRefToCoords(refStr){
@@ -2941,7 +2943,35 @@ window.FORGE_BIBLE=(function(){
     return out;
   }
 
+  // === SECTION: [2026-11-08] Translation-truthful verse lookup (LSB/KJV label fix) ===
+  // getVerseByRef returns {txt, ver, note}: ver is the translation the text ACTUALLY comes from (the selected one,
+  // or BSB/KJV when the selected one is not stored offline for the whole passage), and note explains any fallback.
+  // Callers must label with r.ver, never with getVer(). getVerseTextByRef (below) still returns only the text.
+  function getVerseByRef(refStr, kjvFallback){
+    const want=activeVer;
+    for(const S of [window.DOC_VERSES, window.APO_VERSES, window.HERM_VERSES])
+      if(S&&S[refStr]&&typeof S[refStr][want]==="string") return {txt:S[refStr][want], ver:want, note:""};
+    const coords=parseRefToCoords(refStr);
+    if(want==="KJV"){
+      const k=kjvFallback||lookupCoords("KJV", coords);
+      return {txt:k||"", ver:"KJV", note:""};
+    }
+    const t=lookupCoords(want, coords);
+    if(t) return {txt:t, ver:want, note:""};
+    for(const S of [window.DOC_VERSES, window.APO_VERSES, window.HERM_VERSES])
+      if(S&&S[refStr]&&typeof S[refStr].BSB==="string") return {txt:S[refStr].BSB, ver:"BSB", note:want+" is not stored offline for this passage; showing BSB"};
+    const b=lookupCoords("BSB", coords);
+    if(b) return {txt:b, ver:"BSB", note:want+" is not stored offline for this passage; showing BSB"};
+    const k=kjvFallback||lookupCoords("KJV", coords);
+    if(k) return {txt:k, ver:"KJV", note:want+(want==="BSB"?"":" and BSB")+" not stored offline for this passage; showing KJV"};
+    return {txt:"", ver:want, note:""};
+  }
+  // Small label helper: "(LSB)" plus an optional fallback note, for callers that print a citation.
+  function verNoteHtml(r){ return r&&r.note?` <small class="ver-fb-note">${esc(r.note)}</small>`:""; }
   function getVerseTextByRef(refStr, kjvFallback){
+    return getVerseByRef(refStr, kjvFallback).txt;
+  }
+  function getVerseTextByRef_legacy(refStr, kjvFallback){
     if(window.DOC_VERSES&&DOC_VERSES[refStr]&&DOC_VERSES[refStr][activeVer]) return DOC_VERSES[refStr][activeVer];
     if(window.APO_VERSES&&APO_VERSES[refStr]&&APO_VERSES[refStr][activeVer]) return APO_VERSES[refStr][activeVer];
     // === SECTION: Hermeneutics verse register (HERM_VERSES, KJV from data/kjv.json) — registered like DOC_VERSES / APO_VERSES ===
@@ -3005,6 +3035,19 @@ window.FORGE_BIBLE=(function(){
 
   // Format a TABS or Kings Harmony Bible claim (x.k == "b") in the active translation
   const quoteRegex=/(?<![A-Za-z])'([^']+)'(?![A-Za-z])/g;
+  // === SECTION: [2026-11-08] Claim badges tell the truth: formatClaimInfo returns {html, ver}. ver = activeVer only when
+  // translated wording was actually inserted; "KJV" when the claim keeps its original single-quoted KJV excerpt; "" for paraphrase.
+  // claimBadge(info) gives the badge text: "Bible (LSB)", "Bible (KJV)" or plain "Bible".
+  function claimBadge(info){ return info&&info.ver?`Bible (${info.ver})`:"Bible"; }
+  function formatClaimInfo(claim, escFn){
+    const e=escFn||esc;
+    const raw=String(claim.t||"");
+    const hasQuote=[...raw.matchAll(quoteRegex)].length>0;
+    if(activeVer==="KJV") return {html:e(raw), ver:hasQuote?"KJV":""};
+    const html=formatClaimText(claim, escFn);
+    if(html!==e(raw)) return {html, ver:activeVer};
+    return {html, ver:hasQuote?"KJV":""};
+  }
   function formatClaimText(claim, escFn){
     const e=escFn||esc;
     const raw=String(claim.t||"");
@@ -3133,7 +3176,11 @@ window.FORGE_BIBLE=(function(){
     gospelVerses,
     getSingleVerse,
     getVerseTextByRef,
+    getVerseByRef,
+    verNoteHtml,
     formatClaimText,
+    formatClaimInfo,
+    claimBadge,
     translateReliabilityBody,
     refreshAll,
     extLink
@@ -3206,7 +3253,7 @@ function left(t){const c=CFG[t];let h="",era=null;
   for(const p of L)h+=`<a data-id="${p.id}" href="#${c.hash}/${p.id}">${t=="kin"?`<span class="vd ${p.verdict}"></span>`:""}${esc(p.name)}${t=="kin"?` <small>${p.reign[0]==p.reign[1]?-p.reign[0]:(-p.reign[0])+"–"+(-p.reign[1])} BC</small>`:""}${t=="pro"?` <small>${esc(p.trad[2].replace(/ \(.*/,"").replace(/^c\. /,"c."))}</small>`:""}${t=="chu"||t=="mar"?`${p.m&&t=="chu"?' <span class="mk1" title="martyr">✝</span>':""} <small>${period(p)}</small>`:""}</a>`}
  if(t=="chu"||t=="mar")h+=`<div class="key"><b>Death</b><br>✝ martyr · ● other death · faded = legendary or later tradition<br><b>Bars</b> lifespan or active period (paler = dates uncertain)<br><b>Bands</b> <span class="evk persec"></span> persecution <span class="evk council"></span> council <span class="evk peace"></span> toleration <span class="evk revival"></span> revival / mission</div>`;
  if(t=="kin")h+=`<div class="key"><b>Verdict</b><br><span class="vd good"></span>Good — 'did that which was right', reforms<br><span class="vd mixed"></span>Mixed — right, but high places not removed or a later fall<br><span class="vd bad"></span>Bad — 'did evil in the sight of the LORD'<br><span class="vd none"></span>No verdict given<br><br>Reign dates follow Thiele (approx.), as in the genealogy view.</div>`;
- /* [2026-10-25 JLC] Dynamic translation label in TABS sources key */ h+=`<div class="key"><b>Sources key</b><br><span class="bdg bible">Bible (${FORGE_BIBLE.getVer()})</span> ${FORGE_BIBLE.getVer()} text<br>`+Object.entries(TABS.rel).filter(([k])=>k!="bible").map(([k,v])=>`<span class="bdg ${k}">${esc(v.split(" (")[0])}</span> ${esc(v)}`).join("<br>")+
+ /* [2026-10-25 JLC] Dynamic translation label in TABS sources key */ h+=`<div class="key"><b>Sources key</b><br><span class="bdg bible">Bible</span> Bible (paraphrase or summary); quoted wording is tagged with its translation, e.g. Bible (${FORGE_BIBLE.getVer()}) when shown in the selected translation, or Bible (KJV) when not stored offline<br>`+Object.entries(TABS.rel).filter(([k])=>k!="bible").map(([k,v])=>`<span class="bdg ${k}">${esc(v.split(" (")[0])}</span> ${esc(v)}`).join("<br>")+
   `<br><br>Dates are approximate. Extra-biblical claims are footnoted; 'later tradition' means there's no early source.</div>`;q(c.left).innerHTML=h}
 // chart(t): the timeline chart (one row per person). Prophets' groups can be collapsed and filtered.
 // timeline chart (prophets: section headers collapse; filter buttons refit the axis)
@@ -3314,7 +3361,7 @@ function card(t){if(t=="kin")return kcard();const c=CFG[t],p=c.list.find(x=>x.id
   if(cat=="R"){h+=`<ul class="crel">`+p.rels.map(([u,l,r])=>`<li><a href="${u}">${esc(l)}</a> — ${esc(r)}</li>`).join("")+`</ul></details>`;continue}
   for(const x of C){const pl=x.pl&&TABS.places[x.pl];
    h+=`<div class="cl${pl?" haspl":""}" ${pl?`data-pl="${x.pl}"`:""}>`;
-   /* [2026-10-25 JLC] Render Bible claims in selected translation */ if(x.k=="b")h+=`<span class="bdg bible">Bible (${FORGE_BIBLE.getVer()})</span>${FORGE_BIBLE.formatClaimText(x,esc)} — <span class="ref">${esc(x.ref)}</span> ${chLink(x.ch)}`;
+   /* [2026-11-08] Bible claim badge = translation actually shown (formatClaimInfo): "Bible (LSB)" only when LSB wording was inserted, "Bible (KJV)" for original KJV excerpts, plain "Bible" for paraphrase */ if(x.k=="b"){const fi=FORGE_BIBLE.formatClaimInfo(x,esc);h+=`<span class="bdg bible">${esc(FORGE_BIBLE.claimBadge(fi))}</span>${fi.html} — <span class="ref">${esc(x.ref)}</span> ${chLink(x.ch)}`}
    else{const sups=x.src.length?x.src.map(s=>`<sup><a href="#" data-fn="${fn(s)}">[${fn(s)}]</a></sup>`).join(""):x.rel=="scholar"?"":` <i class="ref">(later tradition; no early source)</i>`;
     h+=`<span class="bdg ${x.rel}" title="${esc(TABS.rel[x.rel])}">${esc(TABS.rel[x.rel].split(" (")[0])}</span>${esc(x.t)}${sups}`;if(x.note)h+=`<span class="cnote">${esc(x.note)}</span>`}
    if(pl)h+=` <span class="pin">📍 ${esc(pl[2])}</span>`;h+=`</div>`}
@@ -3362,7 +3409,7 @@ function kchart(){const c=CFG.kin,st=ST.kin,L=c.list,PX=2.6,a=-1160,b=-575,LW=70
 function kcard(){const c=CFG.kin,p=c.list.find(x=>x.id==ST.kin.sel);if(!p){q(c.card).innerHTML="";return}
  const fns=[];const fn=s=>{let i=fns.indexOf(s);if(i<0){fns.push(s);i=fns.length-1}return i+1};const realm={united:"United monarchy",judah:"Judah",israel:"Israel",post:"Postscript",note:"Note"}[p.realm];
  const cl=x=>{const pl=x.pl&&TABS.places[x.pl];let h=`<div class="cl${pl?" haspl":""}" ${pl?`data-pl="${x.pl}"`:""}>`;
-  /* [2026-10-25 JLC] Render Bible claims in selected translation */ if(x.k=="b")h+=`<span class="bdg bible">Bible (${FORGE_BIBLE.getVer()})</span>${FORGE_BIBLE.formatClaimText(x,esc)} — <span class="ref">${esc(x.ref)}</span> ${chLink(x.ch)}`;
+  /* [2026-11-08] Bible claim badge = translation actually shown (formatClaimInfo): "Bible (LSB)" only when LSB wording was inserted, "Bible (KJV)" for original KJV excerpts, plain "Bible" for paraphrase */ if(x.k=="b"){const fi=FORGE_BIBLE.formatClaimInfo(x,esc);h+=`<span class="bdg bible">${esc(FORGE_BIBLE.claimBadge(fi))}</span>${fi.html} — <span class="ref">${esc(x.ref)}</span> ${chLink(x.ch)}`}
   else{h+=`<span class="bdg ${x.rel}" title="${esc(TABS.rel[x.rel])}">${esc(TABS.rel[x.rel].split(" (")[0])}</span>${esc(x.t)}`+x.src.map(s=>`<sup><a href="#" data-fn="${fn(s)}">[${fn(s)}]</a></sup>`).join("");if(x.note)h+=`<span class="cnote">${esc(x.note)}</span>`}
   if(pl)h+=` <span class="pin">📍 ${esc(pl[2])}</span>`;return h+"</div>"};
  const sec=(cat,lab)=>{const C=p.claims.filter(x=>x.cat==cat);return C.length?`<h4>${lab}</h4>`+C.map(cl).join(""):""};
@@ -3948,7 +3995,7 @@ function card(){const r=ROWS.find(x=>x.id==KS.sel),c=q("khcard");if(!r){c.innerH
   h+=`<div class="lnk"><a href="#kings/${k.id}">Open his Kings tab card ↗</a></div>`;
   h+=`<table class="kt"><tr><td>Reign</td><td>${span(k)} BC (approximate, Thiele-style; chronologies differ)</td></tr>${k.alt?`<tr><td>Co-regency / alt. dating</td><td>${esc(k.alt)}</td></tr>`:""}<tr><td>Length</td><td>${esc(k.len)}</td></tr><tr><td>Verdict</td><td>${VLONG[k.verdict]}</td></tr></table>`;
   // [2026-10-25 JLC] Dynamic translation heading and claim text in Kings Harmony
-  if(vq.length)h+=`<h4>The Bible's verdict (${esc(FORGE_BIBLE.getVer())})</h4>`+vq.map(x=>`<div class="cl"><span class="bdg bible">Bible (${esc(FORGE_BIBLE.getVer())})</span>${FORGE_BIBLE.formatClaimText(x,esc)} — <span class="ref">${esc(x.ref)}</span>${x.ch?" "+chl(x.ch):""}</div>`).join("");
+  /* [2026-11-08] badge per claim = translation actually shown (formatClaimInfo) */ if(vq.length)h+=`<h4>The Bible's verdict</h4>`+vq.map(x=>{const fi=FORGE_BIBLE.formatClaimInfo(x,esc);return `<div class="cl"><span class="bdg bible">${esc(FORGE_BIBLE.claimBadge(fi))}</span>${fi.html} — <span class="ref">${esc(x.ref)}</span>${x.ch?" "+chl(x.ch):""}</div>`}).join("");
   h+=`<h4>Prophets in his reign</h4>`+(k.prophets.filter(p=>PR[p]).length?pl(k.prophets):`<span class="ref">None named in the text</span>`);
   h+=`<h4>1–2 Kings</h4><div class="lnk">${r.refs[0].map(chl).join(" ")}</div><h4>2 Chronicles</h4><div class="lnk">${r.refs[1].length?r.refs[1].map(chl).join(" "):'<span class="ref">Not covered in Chronicles (it follows Judah)</span>'}</div>`;
   const ct=contemp(k);if(ct.length)h+=`<h4>Contemporaries in ${k.realm=="judah"?"Israel":"Judah"}</h4><div class="lnk">${ct.map(o=>`<a href="#kharmony/${o.id}">${esc(o.name)}</a> <span class="ref">(${span(o)})</span>`).join(" ")}</div>`}
@@ -4130,7 +4177,7 @@ function card(){const e=EV.find(x=>x.id==IS.sel),E=ERA[e.era],L=evs(e.era),n=L.i
  if(e.flag)h+=`<div class="dbox ${e.flag=="legendary"?"l":"t"}"><b>${FLAG[e.flag]}</b><br>${esc(e.fn)}</div>`;
  h+=`<h4>What happened</h4><p>${esc(e.what)}</p><h4>Why it mattered</h4><p>${esc(e.why)}</p>`;
  // [2026-10-25 JLC] Render Intertestamental scripture callouts in active translation
- if(e.q)h+=e.q.map(x=>`<div class="cl itq"><span class="bdg bible">${esc(FORGE_BIBLE.getVer())}</span>“${esc(FORGE_BIBLE.getVerseTextByRef(x.r,x.t))}” — <span class="ref">${esc(x.r)}</span></div>`).join("");
+ /* [2026-11-08] badge = translation actually shown */ if(e.q)h+=e.q.map(x=>{const r=FORGE_BIBLE.getVerseByRef(x.r,x.t);return `<div class="cl itq"><span class="bdg bible">${esc(r.ver)}</span>“${esc(r.txt)}” — <span class="ref">${esc(x.r)}</span>${FORGE_BIBLE.verNoteHtml(r)}</div>`}).join("");
  if(e.fn2)h+=`<div class="cert">${esc(e.fn2)}</div>`;
  h+=`<h4>Scripture</h4><div class="lnk">${e.refs.length?e.refs.map(chl).join(" "):'<span class="ref">No Bible passage describes this directly.</span>'}</div>`;
  if(e.ln)h+=`<h4>See also</h4><div class="lnk">${e.ln.map(([u,l])=>`<a href="${u}">${esc(l)} ↗</a>`).join(" ")}</div>`;
@@ -4411,8 +4458,10 @@ function scard(){const D=SS.sel,c=q("scard");let h=`<h2>${esc(D.name)}</h2>`;
  if(D.type=="ins")h+=`<div class="al">Inspiration · ${esc(D.x.tt)}</div><p class="hcol"><i>${hl(D.x.q)}</i></p><p>— ${esc(D.x.name)}, ${esc(D.x.w)}</p><div class="lnk"><a href="#inspiration/${D.x.topic}/${D.x.id}">Open in Inspiration ↗</a></div>`;
  // [2026-10-25 JLC] Display Gospel verse search results in active translation
  if(D.type=="verse"){const he=JH_API.T2.harmony.find(e=>{const g={Matthew:"mt",Mark:"mk",Luke:"lk",John:"jn"}[D.b];return e[g]&&inRef(e[g],D.c,D.v)});
-  const vTxt=FORGE_BIBLE.getSingleVerse(FORGE_BIBLE.getVer(),D.b,D.c,D.v)||FORGE_BIBLE.getSingleVerse("BSB",D.b,D.c,D.v)||D.text;
-  h+=`<p class="hcol">${hl(vTxt)} <span class="ver-tag">(${esc(FORGE_BIBLE.getVer())})</span></p><div class="lnk">${chl(D.b+" "+D.c,null,"Open "+D.b+" "+D.c+" on the Map")}${he?`<a href="#harmony/${he.id}">Harmony: ${esc(he.t)} ↗</a>`:""}</div>`}
+  // [2026-11-08] tag = translation actually shown (selected, else BSB, else the stored KJV text)
+  const _w=FORGE_BIBLE.getVer(),_a=FORGE_BIBLE.getSingleVerse(_w,D.b,D.c,D.v),_b=_a?null:FORGE_BIBLE.getSingleVerse("BSB",D.b,D.c,D.v);
+  const vTxt=_a||_b||D.text,vVer=_a?_w:_b?"BSB":"KJV";
+  h+=`<p class="hcol">${hl(vTxt)} <span class="ver-tag">(${esc(vVer)})</span>${vVer!==_w?` <small class="ver-fb-note">${esc(_w)} not stored offline for this verse; showing ${esc(vVer)}</small>`:""}</p><div class="lnk">${chl(D.b+" "+D.c,null,"Open "+D.b+" "+D.c+" on the Map")}${he?`<a href="#harmony/${he.id}">Harmony: ${esc(he.t)} ↗</a>`:""}</div>`}
  if(D.type=="all")h+=`<div class="al">Places whose names match, plus map events whose notes mention the search words.</div>`;
  const H=SS.hits.filter(x=>x.k&&CHAPTERS[x.k]);
  if(H.length){const books=[...new Set(H.map(x=>x.k.replace(/ \d+$/,"")))].sort((a,b)=>BI[a]-BI[b]);const nOT=books.filter(b=>BI[b]<=OTN).length;
@@ -16810,6 +16859,266 @@ const EVAN_DATA = {
      ]
     }
    ]
+  },
+  // === SECTION: Evangelism section 5 — Putting It Into Practice (8 cards, approved by Robert Nov 8, 2026 [t295u]; generated by notes/evangelism_conclusion_src/gen_practice.py from drafts/evangelism_putting_it_into_practice_proposal.md Part A; its 3 new KJV verses are appended at the end of EVAN_VERSES) ===
+  {
+   "id": "practice",
+   "short": "5. Putting It Into Practice",
+   "t": "Putting It Into Practice: Sharing Christ and Following the Spirit's Lead",
+   "icon": "🔥",
+   "lead": "Everything on this tab is meant to be used. This closing section starts with one new believer's story of a simple prayer and one clumsy question, then turns to listening to the Holy Spirit with discernment, making the gospel clear, and leaving the results with God.",
+   "items": [
+    {
+     "id": "why",
+     "t": "Why I Share My Faith",
+     "sub": "Acts 1:8; Romans 10:14",
+     "blocks": [
+      {
+       "p": "Everything else on this tab (the Romans Road, the four-point outline, the testimony builder, the prayer guides) exists for one purpose: so that ordinary followers of Jesus will actually open their mouths and tell someone about Him."
+      },
+      {
+       "p": "I share my faith because I believe it's true, and because I believe Jesus is the only Savior any of us has. If the gospel is true, keeping it to myself isn't politeness. It's withholding the best news a person can ever hear. Jesus didn't give this job only to pastors or professionals. He gave it to all His people, and He promised the power to do it:"
+      },
+      {
+       "q": "Acts 1:8"
+      },
+      {
+       "p": "Paul makes the chain plain: \"How then shall they call on him in whom they have not believed? and how shall they believe in him of whom they have not heard? and how shall they hear without a preacher?\" (Romans 10:14, KJV). Somebody told me. Somebody told you. Now it's our turn."
+      }
+     ],
+     "links": [
+      [
+       "#evangelism/gospel/romans-road",
+       "The Romans Road"
+      ],
+      [
+       "#evangelism/testimony/template",
+       "Personal Testimony Builder"
+      ]
+     ]
+    },
+    {
+     "id": "hitchhiker",
+     "t": "The Hitchhiker: A Story Worth Hearing",
+     "sub": "Dave Wilson's testimony, as he told it on FamilyLife Today",
+     "blocks": [
+      {
+       "p": "Pastor Dave Wilson has told this story from his early days as a Christian on the *FamilyLife Today* program. What follows is a close paraphrase of his own account, as he told it on the program."
+      },
+      {
+       "p": "As a college senior, Wilson had just visited his father in Florida and was driving north to a spring-break outreach where students planned to share Christ. He had never done anything like it. Along the way he prayed, in his words, \"God, if You want me to share You with somebody on the way, put them in my car; and I'll do it.\""
+      },
+      {
+       "p": "About a minute later he saw a hitchhiker: \"a big dude\" with a big bag, someone who \"didn't look real nice.\" Wilson drove right past. But he says he \"sensed in my spirit: 'Turn around. You prayed for a guy to talk to. That's the guy.'\" The impression wouldn't go away, so he turned back and picked the man up."
+      },
+      {
+       "p": "The man's name was Jim, and he said he was a Navy SEAL. Wilson admits he was too scared to bring up Jesus. They drove for about three hours without a word about God, while Wilson felt the Spirit pressing him, \"You prayed. You said you'd share.\" Finally, just before Jim's exit, he blurted out what he later called his \"big opening line\": \"Hey, Jim, you ever think about God? You ever think about Jesus and spiritual things?\""
+      },
+      {
+       "p": "Jim answered, \"I can't believe you just asked me that.\" His life, he said, was a wreck. Standing on that road, he had prayed \"the only prayer I've ever prayed in my life\": \"God, if You are real and You're up there, send me one of Your followers to tell me about You.\" Then he asked, \"Would that be you?\""
+      },
+      {
+       "p": "\"Yes, that'd be me,\" Wilson said. He shared the gospel as simply as he knew it: God loves us, we're sinners, Jesus died on the cross to pay for that, and we can be born again. Pulled over on the shoulder, Jim gave his life to Jesus right there in the car."
+      },
+      {
+       "p": "What strikes me most is not the drama. A brand-new believer with almost no training prayed a simple prayer, made himself available, pushed through his fear, and asked one clumsy question. God did the rest."
+      }
+     ],
+     "source": [
+      "https://www.familylife.com/podcast/familylife-today/authentic-manhood/",
+      "FamilyLife Today: “Authentic Manhood” (transcript; Dave Wilson tells the story in his own words)"
+     ]
+    },
+    {
+     "id": "teaches",
+     "t": "What the Story Teaches, and What It Doesn't",
+     "sub": "A testimony describes; it does not command",
+     "blocks": [
+      {
+       "p": "A story like this is a **testimony**: it *describes* what one person believes God did on one occasion. It isn't a *command* that every Christian should expect the same thing. So it's worth being careful about what to take from it."
+      },
+      {
+       "h": "What I take from it:"
+      },
+      {
+       "ul": [
+        "**Pray for opportunities and expect God to answer.** Paul asked the Colossians to pray \"that God would open unto us a door of utterance\" (Colossians 4:3, KJV).",
+        "**Availability matters more than expertise.** Wilson didn't know much yet. He knew enough: God loves us, we have sinned, Jesus died and rose, and we must turn and trust Him.",
+        "**Fear is normal, and it doesn't disqualify you.** He was afraid for three hours and spoke anyway.",
+        "**A simple, honest question can open the door.** \"Do you ever think about God?\" is enough.",
+        "**God is already at work before we arrive.** Jim had been praying before Wilson ever showed up."
+       ]
+      },
+      {
+       "h": "What I don't take from it:"
+      },
+      {
+       "ul": [
+        "It isn't a promise that every prayer for an opportunity will lead to a dramatic encounter, or that every conversation will end in a conversion.",
+        "It isn't a method or a script that guarantees results.",
+        "It isn't advice to pick up strangers or to break traffic laws. Love for our neighbor includes ordinary wisdom about safety, and God has many ways to put people in our path: a coworker, a neighbor, a teammate, a family member."
+       ]
+      }
+     ]
+    },
+    {
+     "id": "discernment",
+     "t": "Listening to the Holy Spirit, with Discernment",
+     "sub": "Acts 8:29-35; 1 John 4:1; John 16:8",
+     "blocks": [
+      {
+       "p": "I believe the Holy Spirit leads believers, and that sometimes that leading comes as an inner prompting, like the nudge Wilson describes. Scripture gives us an example. \"Then the Spirit said unto Philip, Go near, and join thyself to this chariot.\" Philip ran over, asked a question (\"Understandest thou what thou readest?\"), and then \"began at the same scripture, and preached unto him Jesus\" (Acts 8:29–30, 35, KJV)."
+      },
+      {
+       "p": "But we also need to be honest. Not every impression we feel comes from God. Our own fears, wishes, and impulses can feel like guidance too. Scripture tells us to test: \"Beloved, believe not every spirit, but try the spirits whether they are of God\" (1 John 4:1, KJV). Here are some healthy guardrails:"
+      },
+      {
+       "ul": [
+        "**Scripture is the standard.** The Spirit never leads us to do what God's Word forbids, or to treat people in unloving ways.",
+        "**Pray, and stay humble.** Describe an impression humbly: \"I think the Lord may be prompting me.\" Our confidence in a feeling does not make it equal to Scripture.",
+        "**Use wisdom and counsel.** Mature believers and ordinary common sense are among God's good gifts.",
+        "**Act on opportunities to show kindness.** If you sense you should ask a coworker how she's really doing, you can do that gently and respectfully without needing certainty about where the impression came from.",
+        "**No impression is needed for obedience.** We don't have to wait for a special feeling to share the gospel. Jesus has already told us to go."
+       ]
+      },
+      {
+       "p": "The Holy Spirit does the deepest work in any case: \"when he is come, he will reprove the world of sin, and of righteousness, and of judgment\" (John 16:8, KJV). Our job is to be available and faithful. His job is to convict and to give life."
+      }
+     ],
+     "links": [
+      [
+       "#doctrine/pneumatology/spirit-work",
+       "Doctrine: the work of the Holy Spirit"
+      ],
+      [
+       "#evangelism/where/wisdom",
+       "Wisdom & Decision-Making"
+      ]
+     ]
+    },
+    {
+     "id": "rhythm",
+     "t": "A Simple Rhythm: Pray, Notice, Ask, Listen, Share",
+     "sub": "Colossians 4:5-6; 1 Peter 3:15",
+     "blocks": [
+      {
+       "p": "You don't need to be an expert. Here's a rhythm anyone can practice:"
+      },
+      {
+       "ol": [
+        "**Pray.** Before your day starts: \"Lord, if You want me to share You with someone today, open the door, and give me courage.\"",
+        "**Notice.** Pay attention to the people God puts in front of you. Who is hurting, curious, or carrying something heavy?",
+        "**Ask.** Use a natural, gentle question. \"Do you ever think about spiritual things?\" \"How are you really doing?\" \"What do you think happens after we die?\"",
+        "**Listen.** Really listen. Ask follow-up questions. People can tell whether you care about them or only about your point.",
+        "**Share.** Tell them what Jesus has done, both in history and in your life. (See the Personal Testimony Builder and the Gospel Conversations section above.)"
+       ]
+      },
+      {
+       "q": "Colossians 4:5-6"
+      },
+      {
+       "q": "1 Peter 3:15"
+      }
+     ],
+     "links": [
+      [
+       "#evangelism/testimony/template",
+       "Personal Testimony Builder"
+      ],
+      [
+       "#evangelism/gospel",
+       "Gospel Conversations"
+      ]
+     ]
+    },
+    {
+     "id": "gospel-clear",
+     "t": "Make the Gospel Clear",
+     "sub": "God, Man, Christ, Response",
+     "blocks": [
+      {
+       "p": "Kindness, good questions, and a warm story are wonderful, but they aren't the gospel. At some point a person needs to hear the actual message: who Jesus is, why He died, that He rose, and what it means to respond."
+      },
+      {
+       "p": "Wilson's summary to Jim was short, and it covered the core: God loves us, we are sinners, Jesus died to pay for our sin, and we can be made new. The same four movements are in the tools on this tab:"
+      },
+      {
+       "ul": [
+        "**God:** our holy and loving Creator.",
+        "**Man:** we have sinned and are separated from Him.",
+        "**Christ:** Jesus died as our substitute and rose again.",
+        "**Response:** repent (turn from sin) and believe (trust Jesus as Savior and Lord)."
+       ]
+      },
+      {
+       "p": "Don't leave someone with a vague idea of \"God\" or \"spirituality.\" Point them to Jesus, and invite them to trust Him. If you aren't sure what to say, walk through the Romans Road or the 4-Point Outline together. It's fine to say, \"I'm still learning, but let me show you what the Bible says.\""
+      }
+     ],
+     "links": [
+      [
+       "#evangelism/gospel/romans-road",
+       "The Romans Road"
+      ],
+      [
+       "#evangelism/gospel/four-points",
+       "The 4-Point Outline"
+      ]
+     ]
+    },
+    {
+     "id": "results",
+     "t": "Results Belong to God",
+     "sub": "1 Corinthians 3:6-7; Matthew 5:16",
+     "blocks": [
+      {
+       "p": "Most gospel conversations won't end in a roadside conversion. Some people will listen politely and change the subject. Some will push back. Some will reject you. That isn't failure. Paul wrote, \"I have planted, Apollos watered; but God gave the increase. So then neither is he that planteth any thing, neither he that watereth; but God that giveth the increase\" (1 Corinthians 3:6–7, KJV)."
+      },
+      {
+       "p": "That frees us. I'm not responsible for saving anyone, and I can't. I'm responsible for being faithful: to pray, to love, to speak, and to leave the outcome with God. You may plant a seed, help someone understand what another believer has shared, or be present when that person turns to Christ. Every one of those matters."
+      },
+      {
+       "p": "And don't wait until you feel like an expert. Wilson didn't. Start now, and keep learning as you go: study the Scriptures, practice your testimony, and grow in your ability to answer questions (see the Apologetics tab). But don't let \"I'm not ready\" become the reason you never begin."
+      },
+      {
+       "q": "Matthew 5:16"
+      }
+     ],
+     "links": [
+      [
+       "#apologetics",
+       "Apologetics tab"
+      ],
+      [
+       "#evangelism/gospel/objections",
+       "Common Objections: Short Answers"
+      ]
+     ]
+    },
+    {
+     "id": "invitation",
+     "t": "An Invitation, and Questions for Reflection",
+     "sub": "A prayer for this week and 7 discussion questions",
+     "blocks": [
+      {
+       "p": "Here's my challenge to you, and to myself. Pray a prayer like Wilson's this week: *\"Lord, if You want me to share You with someone, put them in my path, and I'll do it.\"* Then watch, listen, and take one small, faithful step when the door opens. You may be the answer to someone else's prayer."
+      },
+      {
+       "h": "Questions for reflection or group discussion"
+      },
+      {
+       "ol": [
+        "Who first told you about Jesus? What made you willing to listen?",
+        "What fears keep you from sharing your faith? What would it look like to speak anyway?",
+        "How can you tell the difference between a prompting of the Holy Spirit and your own impulses or fears?",
+        "Which \"door-opening\" question feels most natural to you?",
+        "Can you explain the gospel in under two minutes? Try it with a friend.",
+        "How does 1 Corinthians 3:6–7 change how you feel about conversations that don't seem to \"work\"?",
+        "Name one person God has placed in your life who needs to hear about Jesus. What is one step you could take this week?"
+       ]
+      }
+     ]
+    }
+   ]
   }
  ]
 };
@@ -18490,14 +18799,17 @@ const EVAN_VERSES = {
    ]
   ],
   "chap": "James 1"
- }
+ },
+ "Acts 1:8": {"KJV": "But ye shall receive power, after that the Holy Ghost is come upon you: and ye shall be witnesses unto me both in Jerusalem, and in all Judæa, and in Samaria, and unto the uttermost part of the earth.", "coords": [["Acts", 1, 8]], "chap": "Acts 1"},
+ "Colossians 4:5-6": {"KJV": "Walk in wisdom toward them that are without, redeeming the time. Let your speech be alway with grace, seasoned with salt, that ye may know how ye ought to answer every man.", "coords": [["Colossians", 4, 5], ["Colossians", 4, 6]], "chap": "Colossians 4"},
+ "Matthew 5:16": {"KJV": "Let your light so shine before men, that they may see your good works, and glorify your Father which is in heaven.", "coords": [["Matthew", 5, 16]], "chap": "Matthew 5"}
 };
 window.EVAN_VERSES = EVAN_VERSES;
 
 // === SECTION: Evangelism UI (#evangelism) ===
 /* Plain English: draws the Evangelism tab, everyday tools for sharing the Gospel and walking with Christ. Addresses:
      #evangelism                          landing page (purpose + daily tools + the four sections)
-     #evangelism/<section>                one section with its expandable cards (gospel, testimony, prayer, where)
+     #evangelism/<section>                one section with its expandable cards (gospel, testimony, prayer, where, practice)
      #evangelism/<section>/<card>         opens and scrolls to one card
    Scripture: KJV text comes from EVAN_VERSES (copied from data/kjv.json). In the Forge edition the selected
    translation is looked up in the existing offline verse stores; the Romans Road has its own selector that defaults
@@ -18575,8 +18887,18 @@ function worksheet(it){
   <div class="evan-wsbtns"><button type="button" class="evan-print" id="evan-print">🖨 Print worksheet</button><button type="button" class="evan-clear" id="evan-clear">Clear</button> <small class="evan-hint" id="evan-saved">Saved on this device.</small></div>
   <div id="evan-ws-print" class="evan-wsprint" aria-hidden="true"></div></div>`;
 }
+// === SECTION: Evangelism rich blocks (section 5 "Putting It Into Practice", Nov 8, 2026) ===
+// it.blocks = [{p}|{h}|{ul:[]}|{ol:[]}|{q:verse key}]; **bold** and *italic* inside text; it.source = [url, label] opens in a new tab.
+const md = x => E(x).replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>").replace(/\*([^*]+)\*/g, "<i>$1</i>");
+function blocks(it){
+  let b = (it.blocks || []).map(k => k.p ? `<p>${md(k.p)}</p>` : k.h ? `<h5>${md(k.h)}</h5>` : k.ul ? `<ul class="evan-list">${k.ul.map(x => `<li>${md(x)}</li>`).join("")}</ul>` : k.ol ? `<ol class="evan-list">${k.ol.map(x => `<li>${md(x)}</li>`).join("")}</ol>` : k.q ? quote(k.q) : "").join("");
+  if (it.source) b += `<p class="evan-source" id="evan-source-${E(it.id)}"><b>Source:</b> <a href="${E(it.source[0])}" target="_blank" rel="noopener">${E(it.source[1])} ↗</a></p>`;
+  return b;
+}
+const blockText = it => (it.blocks || []).map(k => k.p || k.h || (k.ul || k.ol || []).join(" ") || k.q || "").join(" ").replace(/\*/g, "");
 function body(s, it){
   let b = (it.body || []).map(p => `<p>${E(p)}</p>`).join("");
+  b += blocks(it);
   if (it.rr) b += rrBar();
   if (it.verseNotes) b += it.verseNotes.map(([r, n], i) => `<div class="evan-vn"><h5><span class="evan-n">${i+1}</span> ${refLink(r)}</h5>${quote(r, it.rr && window.FORGE_BIBLE ? rrVer() : null)}<p>${E(n)}</p></div>`).join("");
   if (it.points) b += it.points.map(p => `<div class="evan-pt"><h5>${E(p.h)}</h5><p class="evan-say"><b>Say it:</b> ${E(p.say)}</p>${p.verses.map(r => quote(r)).join("")}</div>`).join("");
@@ -18665,7 +18987,7 @@ $("navevan").onclick = e => { e.preventDefault(); eopen(cur.sec, cur.item); };
 const itemText = it => [it.sub, ...(it.body || []), ...(it.verseNotes || []).flat(), ...(it.points || []).flatMap(p => [p.h, p.say, ...p.verses]),
   ...(it.qa || []).flatMap(x => x.slice(0, 2)), ...(it.steps || []).flatMap(s => [s.h, s.paul, s.acts22, s.acts26, ...s.ask]), ...(it.lines || []).flat(),
   ...(it.acts || []).flat(), ...(it.armor || []).flat(), ...(it.list || []), ...(it.starter || []), it.note || "", ...(it.fields || []).map(f => f[1]), ...(it.verses || []),
-  it.example && typeof APO_DATA !== "undefined" ? "testimony My Journey to Faith" : "", it.rr ? "Romans Road salvation gospel" : ""].join(" ");
+  blockText(it), it.example && typeof APO_DATA !== "undefined" ? "testimony My Journey to Faith" : "", it.rr ? "Romans Road salvation gospel" : ""].join(" ");
 window.EVAN_API = {
   D, open: eopen, refreshTranslation, verseText, storedText,
   docs: () => [
@@ -19711,9 +20033,9 @@ const strip = h => String(h || "").replace(/<[^>]+>/g, "");
 function verse(ref){
   const v = ESS_VERSES[ref]; if (!v) return "";
   const FB = window.FORGE_BIBLE;
-  const txt = FB && FB.getVerseTextByRef ? FB.getVerseTextByRef(ref, v.KJV) : v.KJV;
-  const ver = FB && FB.getVer ? FB.getVer() : "KJV";
-  return `<blockquote class="wvsc ess-verse">${E(txt)} <span class="lnk"><a href="#${encodeURIComponent(v.chap)}">${E(ref)} (${E(ver)}) ↗</a></span></blockquote>`;
+  // [2026-11-08] label = translation actually shown (getVerseByRef), plus a fallback note
+  const r = FB && FB.getVerseByRef ? FB.getVerseByRef(ref, v.KJV) : {txt: v.KJV, ver: "KJV", note: ""};
+  return `<blockquote class="wvsc ess-verse">${E(r.txt)} <span class="lnk"><a href="#${encodeURIComponent(v.chap)}">${E(ref)} (${E(r.ver)}) ↗</a></span>${r.note ? ` <small class="ver-fb-note">${E(r.note)}</small>` : ""}</blockquote>`;
 }
 const links = ls => ls && ls.length ? `<div class="lnk ess-links">${ls.map(([u,l]) => `<a href="${E(u)}">${E(l)} ↗</a>`).join("")}</div>` : "";
 
@@ -20145,7 +20467,9 @@ categories:[
  {cid:"objections",t:"III. Classic Philosophical & Scientific Objections",sub:"Answering the six perennial challenges on suffering and evil, biblical reliability, exclusivity, science, objective morality, and the deity of Christ"},
  {cid:"ethics",t:"IV. Hard Questions in the Old Testament & Christian Ethics",sub:"Examining Canaanite judgment, ancient Near Eastern servitude vs. abolitionism, the elevation of women, and biblical marriage and sexual ethics"},
  {cid:"religions",t:"V. World Religions, Cults & Counterfeit Gospels",sub:"Side-by-side comparative matrix and biblical evaluation of Islam, Rabbinic Judaism, LDS/Mormonism, Jehovah’s Witnesses, Naturalism, Pantheism, Prosperity, and Progressive theology"},
- {cid:"questions",t:"VI. Conversational Apologetics",sub:"Diagnostic questions modeled on Jesus’ rabbinic method to surface unexamined worldview assumptions with gentleness and respect"}
+ {cid:"questions",t:"VI. Conversational Apologetics",sub:"Diagnostic questions modeled on Jesus’ rabbinic method to surface unexamined worldview assumptions with gentleness and respect"},
+ // === SECTION: Category 7 heading — Putting It All Together (Nov 8, 2026) ===
+ {"cid": "together", "t": "VII. Putting It All Together: Why I Don’t Believe Matter Is the Whole Story", "sub": "A cumulative case: five things a purely material universe has to explain all at once, why I think the Christian account explains them better, and why it all comes down to Jesus"}
 ],
 cards:[
 // === SECTION: Category 1 — Positive Classical Arguments for God's Existence (5 Cards, [t68u]) ===
@@ -20514,7 +20838,20 @@ cards:[
  sum:"In the style of Greg Koukl's conversational approach, and others: questions that help both sides see what they are assuming.",
  pts:[],
  qs:["What would count as good evidence for you?","Have you looked into the historical data yourself, or is this mostly second-hand?","If Christianity turned out to be true, would you want to know?","Where do you get your standard for what is good or evil?","What do you think happens after death, and why?","Are you open to the possibility that your current view has some unexamined assumptions?","If two claims contradict, can both be true?"],
- refs:[]}
+ refs:[]},
+// === SECTION: Category 7 — Putting It All Together (12 Cards, approved by Robert Nov 8, 2026 [t292u]; generated by notes/together_src/gen_together.py from drafts/apologetics_putting_it_together_proposal.md Part A; KJV text from data/kjv.json) ===
+{"id": "tg-stand", "t": "Where I Stand: A Cumulative Case Against “Matter Is All There Is”", "cat": "together", "num": "T1", "sum": "I am a follower of Jesus Christ, and I won’t pretend otherwise. I don’t think a purely materialist worldview can adequately explain the world we actually live in. No single argument in this tab settles that alone, but together they form a cumulative case that points past a vague “designer” to the God who made Himself known in Jesus of Nazareth.", "sc": [["1 Thessalonians 5", "1 Thessalonians 5:21", "Prove all things; hold fast that which is good."]], "pts": [{"who": "Who I’m arguing with", "b": "This section isn’t aimed at “scientists,” and it isn’t aimed at every secular person. Plenty of scientists are Christians, and plenty of secular people make no claim that science explains everything. My target is a specific philosophical position: <b>materialism</b> (or, more broadly, <b>metaphysical naturalism</b>), the belief that physical reality, or nature, is all there is, with no God and nothing beyond it. That is a claim about what <i>exists</i>."}, {"who": "A different claim: scientism", "b": "Materialism is often paired with <b>scientism</b>, the claim that science is the only real path to knowledge. The two often travel together, but they aren’t the same claim, and I address each on its own terms (see T3)."}, {"who": "How this section reasons", "b": "Not by mathematical proof and not by pointing at gaps, but by <b>inference to the best explanation</b>: which picture of reality best fits <i>all</i> the evidence we have, judged by the same standards for every view?"}], "qs": ["What do you think is the strongest single reason to believe matter is all there is?", "Is materialism a scientific finding, or a philosophical starting point?", "What would change your mind about the big picture, either way?"], "links": [["#apologetics/wv", "How do we figure out what’s true?"], ["#apologetics/science", "Objection 4: Science and faith"]], "refs": []},
+{"id": "tg-truth", "t": "How Do We Know What’s True? The Football Catch & Pilate’s Question", "cat": "together", "num": "T2", "sum": "Picture a hypothetical play: the receiver dives, and the ball and the turf arrive at almost the same instant. Half the stadium is sure it’s a touchdown; the other half is just as sure it’s incomplete. What actually happened on the field doesn’t change with the allegiance of the fans.", "sc": [["Proverbs 18", "Proverbs 18:17", "He that is first in his own cause seemeth just; but his neighbour cometh and searcheth him."], ["John 18", "John 18:37–38", "Pilate therefore said unto him, Art thou a king then? Jesus answered, Thou sayest that I am a king. To this end was I born, and for this cause came I into the world, that I should bear witness unto the truth. Every one that is of the truth heareth my voice. Pilate saith unto him, What is truth? And when he had said this, he went out again unto the Jews, and saith unto them, I find in him no fault at all."]], "pts": [{"who": "Truth is about reality, not loyalty", "b": "A claim is true if it matches what is actually so. One side of the stadium is right and the other wrong, whether or not anyone can yet tell."}, {"who": "Sincerity is not truth", "b": "People can sincerely believe something false. Fans on both sides are sincere, and they can’t both be right. The same applies to me, which is why I owe you reasons and not just conviction."}, {"who": "Limited evidence limits certainty, but doesn’t make every view equal", "b": "Sometimes the replay is unclear. Even then we can ask which call best fits <i>all</i> the angles we have. That is how historians, detectives and courts reason, and it is how this section reasons."}, {"who": "Pilate’s question (a reflection)", "b": "Jesus said He came “that I should bear witness unto the truth.” Pilate answered, “What is truth?” and then went out again (John 18:37–38). The text doesn’t tell us what was in Pilate’s heart. Still, I find the scene haunting: the most important question a person can ask, put to the One who claimed to <i>be</i> the answer (John 14:6), and the questioner walks out of the room. My hope is that nobody reading this does the same."}], "qs": ["In the football illustration, what would count as good evidence for each side?", "Can you think of a belief you once held sincerely that turned out to be wrong? What changed your mind?", "Read John 18:37–38. Why do you think Pilate didn’t wait for an answer? What keeps people today from staying for it?"], "links": [["#John%2014", "John 14 on the Map"], ["#apologetics/wv-evidence", "Truth test: Evidence"]], "refs": []},
+{"id": "tg-scientism", "t": "Science Is a Gift. Scientism Is a Philosophy.", "cat": "together", "num": "T3", "sum": "I love science. Nothing in this section asks anyone to distrust well-established science. But science, methodological naturalism, metaphysical naturalism, materialism and scientism are different things, and blurring them causes a lot of confusion.", "sc": [["Psalms 19", "Psalm 19:1", "The heavens declare the glory of God; and the firmament sheweth his handywork."]], "pts": [{"who": "History, stated modestly", "b": "Many of science’s early modern pioneers were devout believers, and historians of science have argued that Christian ideas about a rational Creator and an orderly creation helped motivate their work. Historians debate how much weight to give that influence, and the old “warfare” story of science against religion has been widely challenged."}, {"who": "Why scientism undercuts itself", "b": "“Only scientifically testable claims count as knowledge” isn’t itself a scientifically testable claim. It is a philosophical claim, so by its own standard it fails. Logic, mathematics, ethics, history and the reliability of our own reasoning are things science <i>uses</i> and cannot prove from the lab bench."}, {"who": "One consistent standard", "b": "Judge every big-picture explanation, Christian or not, by the same criteria: <b>explanatory scope</b>, <b>explanatory power</b>, <b>coherence</b>, <b>simplicity</b>, and <b>testability or evidential contact</b>. I’m not accusing anyone of bad faith. I am saying that people who rule out God as “unfalsifiable” sometimes accept naturalistic proposals that are, at least for now, just as hard to test. If one standard applies, it should apply to everyone."}], "qs": ["Is “only science gives us knowledge” a scientific claim? How would you test it?", "Can a person accept methodological naturalism in the lab and still believe in God?", "Which of the five criteria do you think matters most, and why?"], "links": [["#apologetics/science", "Objection 4: Science and faith"]], "table": {"caption": "Terms that often get blurred together", "headers": ["Term", "What it means"], "rows": [["Science", "Disciplined study of the natural world through observation, hypothesis, testing and inference."], ["Methodological naturalism", "A working rule inside science: look for natural causes when explaining natural events. Many Christian scientists accept it as a method."], ["Metaphysical (ontological) naturalism", "A philosophical claim: reality contains nothing supernatural; nature is all there is. Science doesn’t conclude this; it is a worldview brought to science."], ["Materialism / physicalism", "A stronger, more specific form: everything that exists is physical, or fixed by the physical. Not every naturalist is a strict materialist."], ["Scientism", "The claim that science is the only (or the only reliable) source of knowledge."], ["Secularism / atheism / agnosticism", "Secularism: keeping public institutions independent of religion. Atheism: in one sense the claim that no God exists, in another simply not believing that God exists. Agnosticism: suspending judgment, or holding that we can’t know. Not every secular person is a materialist."]]}, "refs": []},
+{"id": "tg-five", "t": "The Five Questions Materialism Has to Answer Together", "cat": "together", "num": "T4", "sum": "Earlier in this tab we looked at the four worldview questions everyone answers: origin, meaning, morality and destiny. This card asks something related but different: five features of reality any complete worldview has to explain. The force of the argument is not any one of them alone, but that materialism must account for all five at once, from the same mindless starting materials.", "sc": [], "pts": [{"who": "The five questions", "b": "<b>1. Existence itself</b>: why is there a contingent universe with laws at all? <b>2. Life and biological information</b>: how did living, self-reproducing, information-driven systems arise, and how did features like sexual reproduction develop? <b>3. Consciousness</b>: why does anything <i>experience</i> anything? <b>4. Rationality</b>: why can our minds be trusted to grasp truth, including the mathematics that describes the universe? <b>5. Objective morality</b>: why are some things <i>really</i> wrong, not just disliked? Supporting strands: fine-tuning and a habitable planet (T10)."}, {"who": "The joint burden", "b": "A determined materialist might offer a plausible answer to one or two of these. But a complete materialist worldview has to explain all five together, from matter, energy and law with no purpose behind any of it: something rather than nothing, life from non-life, mind from what isn’t mind, reason from non-rational causes, and <i>ought</i> from what simply <i>is</i>."}, {"who": "Fair to both sides", "b": "The Christian worldview carries obligations too: it has to explain God’s own existence (T11) and answer suffering and divine hiddenness. I’m not claiming Christianity wins just because materialism has open questions. I’m claiming that <b>one hypothesis, an eternal, rational, personal, morally good Creator, makes all five features expected rather than surprising</b>, and that a single unified explanation beats a collection of separate, still-unfinished accounts."}], "qs": ["Which of the five questions do you find strongest? Which is weakest? Why?", "Why might explaining all five together be harder than explaining any one of them?", "What does the Christian worldview itself have to explain?"], "links": [["#home/journey", "Origin, meaning, morality & destiny (My Journey to Faith)"]], "refs": []},
+{"id": "tg-existence", "t": "Question 1: The Moment of Existence", "cat": "together", "num": "T5", "sum": "The evidence for a hot, dense early universe that has been expanding for billions of years is strong. But that is not the same as scientific proof that the universe came from absolutely nothing, or that time itself had an absolute beginning. The deeper question remains: why does a contingent universe with laws exist at all?", "sc": [["Genesis 1", "Genesis 1:1", "In the beginning God created the heaven and the earth."], ["Hebrews 11", "Hebrews 11:3", "Through faith we understand that the worlds were framed by the word of God, so that things which are seen were not made of things which do appear."]], "pts": [{"who": "What science shows", "b": "Independent lines of evidence point to a hot early universe: the cosmic microwave background (the leftover glow of the early universe), the abundances of light elements predicted by big-bang nucleosynthesis, and the observed expansion of space and evolution of galaxies. The original event can’t be re-run, but that doesn’t put it beyond science. Geology, forensics and archaeology study one-time events through the traces they leave, and cosmology does the same."}, {"who": "What science has not shown", "b": "The standard hot Big Bang model describes the universe <i>after</i> an extremely early stage. Our current theories are expected to break down as we approach the first instant, and understanding it will likely need a theory of quantum gravity that doesn’t yet exist. Some models propose a beginning; others propose earlier phases."}, {"who": "The “nothing” problem", "b": "When popular writers say the universe “came from nothing,” they usually mean something like a quantum vacuum or a quantum state governed by physical laws. That isn’t nothing. It is a structured physical reality with properties and rules. Philosophical “nothing” means no space, no time, no energy, no laws, no potential. Swapping one meaning for the other changes the question without answering it."}, {"who": "The deeper question: contingency", "b": "Even if the universe were infinitely old, we would still ask why a universe like this exists at all, with these laws rather than none. A contingent reality calls for an explanation beyond itself, and I believe that explanation is a necessary, non-physical, timeless Creator."}, {"who": "Best materialist response, and my reply", "b": "“The universe, or the laws, may just be a brute fact; asking ‘why’ has to stop somewhere.” Everyone stops somewhere. The question is whether we stop at something <i>contingent</i> (a universe that could have been otherwise) or at something that, if it exists, exists <i>necessarily</i>. Stopping at a contingent brute fact seems the more arbitrary place to end. This is a philosophical argument, not a lab result, and serious philosophers dispute its premises; I find those premises more reasonable than their denials."}, {"who": "A note on the ontological argument", "b": "The ontological argument (A7) is a different kind of argument. It reasons <i>a priori</i> from the idea of a maximally great being, and its premises about what is “possible” are heavily debated. It doesn’t depend on cosmology, and cosmology neither confirms nor refutes it."}], "qs": ["What’s the difference between “a quantum vacuum” and “nothing”? Why does it matter?", "Can science study a one-time event it can’t repeat? How?", "If the universe had no beginning, would the question “why is there something rather than nothing?” go away?"], "links": [["#apologetics/kalam", "A1. Kalam Cosmological Argument"], ["#apologetics/contingency", "A2. Argument from Contingency"], ["#apologetics/ontological", "A7. Ontological Argument"]], "refs": []},
+{"id": "tg-spin", "t": "Sidebar: “If the Universe Started at a Point, Shouldn’t It Be Spinning?”", "cat": "together", "num": "T6", "sum": "A good question that deserves a straight answer, even though the answer doesn’t help the Christian case. Honesty means correcting misconceptions on our own side too. The lack of cosmic spin is not evidence against the Big Bang or against conservation laws; it is what the standard model expects.", "sc": [], "pts": [{"who": "Not an explosion from a center", "b": "The Big Bang wasn’t an explosion from a central point into empty space. It was the expansion of space itself. There is no center the universe is flying away from and no outside edge, so there is no “kick” to conserve against as with an ordinary explosion."}, {"who": "Spin is local, and conserved locally", "b": "A collapsing gas cloud spins faster as it shrinks, like a skater pulling in her arms. That is why stars, planetary systems and galaxies rotate."}, {"who": "No required global spin", "b": "Nothing requires the universe as a whole to have a net spin. In general relativity, “the total angular momentum of the whole universe” isn’t generally a well-defined conserved quantity the way it is for a closed system in a lab, because spacetime itself is dynamic."}, {"who": "What the observations show", "b": "The cosmic microwave background looks almost the same in every direction. Its largest variation is a <i>dipole</i> of about one part in a thousand, warmer on one side of the sky and cooler on the other, best explained by our own motion relative to that background, not by cosmic rotation. Set that aside and the remaining fluctuations are about one part in 100,000. The universe is described as <i>nearly</i>, not perfectly, uniform on large scales. Analyses of Planck satellite data against rotating and anisotropic models found the data consistent with isotropic expansion and placed tight, model-dependent limits on rotation. Some researchers have reported possible alignments in galaxy spin directions, but those claims are disputed and not established."}], "qs": ["Why is it important to correct a weak argument even when it seems to help your side?", "What’s the difference between space expanding and things flying apart through space?", "Where else might apologists be tempted to rely on a misconception?"], "links": [], "refs": []},
+{"id": "tg-life", "t": "Question 2: Life, Information & Reproduction", "cat": "together", "num": "T7", "sum": "Evolution (how populations change over time) and abiogenesis (how life first arose from non-living chemistry) are different questions. My argument doesn’t rest on denying that natural selection operates. It rests on the deep questions that remain open: how a coded, self-reading information system first arose, and the integration of reproduction.", "sc": [["Genesis 1", "Genesis 1:27", "So God created man in his own image, in the image of God created he him; male and female created he them."]], "pts": [{"who": "The information–interpreter problem", "b": "In every living cell today, DNA stores instructions for building proteins, but reading them takes sophisticated machinery: ribosomes, transfer RNAs, the enzymes that load each tRNA with the right amino acid, and the genetic code linking them. The protein parts of that machinery are themselves encoded in the DNA they help read. Which came first, the message or the machine that reads it?"}, {"who": "The leading scientific proposal", "b": "Scientists take this seriously. The leading proposal is an <b>“RNA world,”</b> in which RNA both stored information and catalyzed reactions before DNA and proteins took over. It has real support: RNA does catalyze reactions, and the core of the ribosome itself is RNA. There are also metabolism-first and mixed models. But how a self-replicating system first arose, how the genetic code originated, and how the transition to the modern DNA–protein system happened are still unresolved research problems."}, {"who": "My honest claim", "b": "This isn’t a proof that life <i>couldn’t</i> have arisen naturally. It is an observation that every living thing we know runs on coded information interpreted by complex machinery, and that in our experience coded information systems come from minds. That is a reasonable inference to design, resting on what we <i>do</i> know about the causes of information, not only on what we don’t."}, {"who": "Sexual reproduction, stated accurately", "b": "Sex is costly, and why it arose and spread is a longstanding question in evolutionary biology with several proposed answers. It is <i>not</i> true that every change in one sex needs a simultaneous, matching mutation in the other: males and females of a species share almost all of the same genome, so most changes are inherited by both, and complementary traits can develop step by step as each side adapts to the other (coevolution). Biologists also distinguish the origin of sex itself, the later development of distinct sexes, and the much later elaboration of complex anatomy and behavior."}, {"who": "The design question, stated fairly", "b": "Reproduction requires two coordinated, interdependent systems (molecular recognition, timing, anatomy, behavior) that must stay compatible every generation. Evolutionary models do propose step-by-step pathways. I think the elegance and integration of the result fits naturally with a Creator who designed life to flourish, “male and female created he them.” I offer this as a supporting observation, not a knockout argument."}], "qs": ["Why is it important to distinguish evolution from the origin of life?", "Why is it important not to claim every change in one sex requires a matching mutation in the other? What does accuracy have to do with credibility?", "Is inferring a mind from coded information a “God of the gaps” argument? Why or why not?"], "links": [["#apologetics/science", "Objection 4: Science and faith"]], "refs": []},
+{"id": "tg-mind", "t": "Question 3: Consciousness", "cat": "together", "num": "T8", "sum": "You aren’t just processing information. You experience the color red, the taste of coffee, grief and joy. Even a complete map of what the brain does doesn’t obviously explain why any of it is felt from the inside. Philosophers call this the “hard problem” of consciousness.", "sc": [], "pts": [{"who": "What neuroscience shows", "b": "Consciousness depends on the brain in great detail: damage the brain and the mind is affected. Christians should accept that fully. But <i>correlation</i> and <i>dependence</i> are not the same as <i>identity</i> or explanation."}, {"who": "Best materialist responses", "b": "Some say consciousness <i>is</i> brain activity described in different terms. Some say our sense of inner experience is partly an illusion produced by the brain. Others say we just need more science."}, {"who": "My reply", "b": "The illusion view seems to undermine itself, because an illusion is itself an experience. The “more science” view may turn out right on some details, but it is a promissory note. On theism, mind isn’t a late, strange accident in a mindless cosmos. Mind is <i>first</i>: reality begins with a conscious, personal God, so finite minds made in His image are exactly what we would expect."}], "qs": ["What is the difference between explaining what the brain does and explaining what it is like to experience something?", "Can an illusion exist without someone experiencing it?", "Why would a mind-first universe expect minds to appear?"], "links": [["#apologetics/consciousness", "Argument from Consciousness"]], "refs": []},
+{"id": "tg-reason-moral", "t": "Questions 4 & 5: Reason and Morality (Two Distinct Questions)", "cat": "together", "num": "T9", "sum": "These two share a card because both concern mind and value, but they are separate problems. Reason asks why our minds should be trusted to know what is true. Morality asks why anything is really good or evil. A worldview could answer one and still fail the other.", "sc": [["John 1", "John 1:1", "In the beginning was the Word, and the Word was with God, and the Word was God."], ["Colossians 1", "Colossians 1:17", "And he is before all things, and by him all things consist."], ["Romans 2", "Romans 2:15", "Which shew the work of the law written in their hearts, their conscience also bearing witness, and their thoughts the mean while accusing or else excusing one another;)"]], "pts": [{"who": "Question 4: Reason", "b": "Science depends on trusting that our minds can grasp truth, and that abstract mathematics will actually describe the physical world. On pure materialism, our faculties were shaped by unguided processes that reward <i>survival</i>, not <i>truth</i>. Evolutionary theorists answer that true beliefs usually help survival, and often they do. But philosophers such as Alvin Plantinga have argued that for our most abstract beliefs, including belief in naturalism itself, materialism gives us no strong reason to trust them. That argument is contested, and many philosophers reject it. I still think it lands, and at minimum theism offers a clear ground for trusting reason: a rational God made rational creatures able to know His rational world."}, {"who": "Question 5: Morality", "b": "Almost everyone lives as though some things are <i>really</i> wrong, such as torturing a child for fun, not just inconvenient or unpopular. Materialism can explain <i>why we have</i> moral feelings (evolution and culture). It has far more difficulty explaining why those feelings would be <i>true</i>: why there is an “ought” binding on us whether we feel it or not."}, {"who": "Fair to secular moral realists", "b": "Moral realism itself, the view that some moral claims are actually true, is held by many philosophers, including secular ones who defend it without God. They deserve a real answer rather than a caricature. My claim is that moral facts, binding obligations and human dignity fit far more naturally in a universe grounded in a good, personal God than in one that, at bottom, is indifferent."}], "qs": ["If our minds were shaped only for survival, how confident should we be in our most abstract beliefs?", "Can moral feelings be explained without explaining whether they are true?", "How would you respond to a secular philosopher who believes in objective morality without God?"], "links": [["#apologetics/moral", "A6. Moral Argument"], ["#apologetics/morality", "Objection 5: Objective morality"]], "refs": []},
+{"id": "tg-finetune", "t": "Supporting Strands: Fine-Tuning, a Rare Planet & What “Chance” Means", "cat": "together", "num": "T10", "sum": "Fine-tuning (physics) and planetary habitability (“Rare Earth”) are two different arguments and should be kept apart. Neither is a numeric probability calculation. Together they support a qualitative claim: a universe and a planet so well suited to embodied, rational, moral creatures who can discover that suitability fits a purposeful Creator better than an unguided accident.", "sc": [], "pts": [{"who": "Fine-tuning", "b": "Many physicists have observed that if certain constants and initial conditions of physics were different, sometimes by small amounts, a universe with stable atoms, stars and chemistry would not form. How tightly each value is constrained is still debated and depends on the model."}, {"who": "Naturalist responses", "b": "<b>A multiverse:</b> many universes with varied constants, and we find ourselves in a life-permitting one. Some versions are motivated by inflationary cosmology and string theory, but direct testing is very hard, whether fine-tuning supports a multiverse is itself controversial, and there is an unsolved “measure problem” about counting probabilities across infinitely many universes. <b>Observer selection:</b> we couldn’t observe a universe that didn’t permit observers. True, but that explains why we <i>see</i> fine-tuning, not why it <i>exists</i>. <b>A deeper law:</b> future physics may show the constants had to be what they are; then we would ask why <i>that</i> law permits life."}, {"who": "Rare Earth", "b": "In <i>Rare Earth: Why Complex Life Is Uncommon in the Universe</i> (2000), Peter Ward and Donald Brownlee argued that microbial life may be common while complex animal life may be rare, because it needs an unusual combination of conditions: a location in the galaxy’s habitable zone, a stable star, a long-lasting habitable orbit, the right planetary size, plate tectonics, a magnetic field, the right amounts of water and carbon, and survival through a long chain of geological and biological events. Some proposed factors are debated: for example, simulations have suggested a Jupiter-like planet can sometimes <i>increase</i> asteroid impacts rather than shield Earth, and the role of a large moon is also debated. Estimates of habitable worlds are changing fast with exoplanet discoveries. Ward and Brownlee were not making a case for God."}, {"who": "Why no number", "b": "I don’t attach a probability to the whole package. The individual odds are unknown, many factors depend on each other, and multiplying uncertain numbers would give a false sense of precision."}, {"who": "What “chance” means", "b": "Chance isn’t a force or a thing that <i>does</i> anything. It is a mathematical description of outcomes. Scientific explanations don’t rely on raw chance alone; they combine physical laws, random variation and, in biology, <i>non-random</i> natural selection. So the honest question is not “Did chance do it?” but “Do laws plus randomness plus selection, starting from no purpose at all, adequately explain everything on the list?” I believe the answer is no."}], "qs": ["Why is it important to keep fine-tuning of physics separate from the habitability of Earth?", "Does observer selection explain fine-tuning, or only why we notice it?", "Why might multiplying uncertain probabilities be misleading?"], "links": [["#apologetics/finetuning", "A3. Fine-Tuning Argument"]], "refs": []},
+{"id": "tg-objections", "t": "Fair Objections to My Own View", "cat": "together", "num": "T11", "sum": "A cumulative case only works if it is honest about its costs. Here are the strongest objections to theism that this section raises, and how I would answer them briefly.", "sc": [], "pts": [{"who": "“Then who made God?”", "b": "The arguments here are about things that <i>begin</i> or <i>exist contingently</i>. Christianity has never claimed God began or depends on anything else. God is the necessary, uncaused ground of everything else. The real question is whether there <i>can</i> be a necessary being, and that is where the debate should be."}, {"who": "“Isn’t ‘God’ just an arbitrary stopping point?”", "b": "Every worldview has a stopping point. A necessary, personal mind explains why something exists and why it is rational, conscious and moral. A brute physical fact explains only that it exists, if that."}, {"who": "“How can a mind exist without a brain?”", "b": "On materialism, it can’t, but that assumes the very thing in question. Christians believe the ultimate Mind is not physical, and that human minds depend on brains in this life without being nothing more than brains."}, {"who": "“If God exists, why so much suffering? Why isn’t He more obvious?”", "b": "These are the hardest questions, and I don’t wave them away; see Objection 1, The Problem of Evil. Here I note only that the Christian answer centers on a God who entered suffering Himself, on a cross."}, {"who": "“Even if all this works, it gets you a designer, not Jesus.”", "b": "Exactly right, which is why the case can’t stop here (T12)."}], "qs": ["The Christian worldview has hard questions too. Which one do you think a skeptic would press first, and how would you answer?", "Is a necessary being a coherent idea? Why or why not?", "Why does honesty about weaknesses make a case stronger rather than weaker?"], "links": [["#apologetics/evil", "Objection 1: The problem of evil"], ["#apologetics/lord", "Objection 6: The deity of Christ"]], "refs": []},
+{"id": "tg-christ", "t": "From a Creator to Christ: Why It All Comes Down to the Resurrection", "cat": "together", "num": "T12", "sum": "Everything above points, I believe, toward a Creator: eternal, powerful, rational, personal and good. But natural theology can only take us so far. To know who this God is, we need Him to speak and act in history, and Christianity stakes everything on one public event.", "sc": [["Romans 1", "Romans 1:20", "For the invisible things of him from the creation of the world are clearly seen, being understood by the things that are made, even his eternal power and Godhead; so that they are without excuse:"], ["1 Corinthians 15", "1 Corinthians 15:14, 17", "And if Christ be not risen, then is our preaching vain, and your faith is also vain. And if Christ be not raised, your faith is vain; ye are yet in your sins."], ["John 1", "John 1:14", "And the Word was made flesh, and dwelt among us, (and we beheld his glory, the glory as of the only begotten of the Father,) full of grace and truth."], ["1 Peter 3", "1 Peter 3:15", "But sanctify the Lord God in your hearts: and be ready always to give an answer to every man that asketh you a reason of the hope that is in you with meekness and fear:"]], "pts": [{"who": "A falsifiable center", "b": "Christianity doesn’t hide its central claim in private experience. It points to a specific man, crucified under a named Roman governor, buried, and, it says, raised bodily from the dead. If that claim could be shown false, Christianity would fall by its own standard (1 Corinthians 15:14–17). Other faiths make historical claims too, and those deserve careful examination on their own terms. But Christianity is unusual in how openly it stakes <i>everything</i> on one historically testable event."}, {"who": "The historical case", "b": "The death by crucifixion, the empty tomb, the appearances reported by individuals and groups, and the transformation of the disciples and of skeptics such as James and Paul are set out in Section II. Historians disagree about how to weigh claims of the miraculous, and those debates are real. But here is where the cumulative case lands for me: <b>if there is a Creator who stands behind existence, life, mind, reason and morality, then a resurrection isn’t absurd. It is exactly the kind of act by which such a God might make Himself known.</b>"}, {"who": "My conclusion", "b": "Materialism asks us to believe that being came from non-being (or simply <i>is</i>), life from non-life, mind from non-mind, reason from non-reason, and moral obligation from indifference, all at once, with no purpose behind any of it. I find it far more reasonable to believe that “in the beginning was the Word,” that this Word “was made flesh, and dwelt among us,” and that He rose again."}, {"who": "Back to the replay", "b": "The football play from the start of this section is still on the screen. We all have to make the call. I’ve made mine, and I believe it is the one the evidence supports. I invite you to look at the replay for yourself and, unlike Pilate, to stay in the room long enough to hear the answer."}], "qs": ["In the football illustration, what would count as good evidence for each side? What does that suggest about worldview questions?", "Can you think of a belief you once held sincerely that turned out to be wrong? What changed your mind?", "Is “only science gives us knowledge” a scientific claim? How would you test it?", "What’s the difference between “a quantum vacuum” and “nothing”? Why does it matter?", "Which of the five questions do you find strongest? Which is weakest? Why?", "Why is it important not to claim that every change in one sex requires a matching mutation in the other?", "The Christian worldview has hard questions too. Which would a skeptic press first, and how would you answer?", "Why does the case have to go from “a Creator” to the resurrection of Jesus? What would be lost if we stopped at design?", "Read John 18:37–38. Why do you think Pilate didn’t wait for an answer? What keeps people today from staying for the answer?"], "links": [["#apologetics/resurrection", "Section II: The historical case for the Resurrection"]], "table": {"caption": "Teaching Summary: Putting It All Together", "headers": ["#", "Key point"], "rows": [["1", "Truth isn’t decided by sincerity or loyalty. It is decided by evidence, reasoned through fairly (the football catch)."], ["2", "Science ≠ scientism. Science is a method; “only science gives knowledge” is a philosophical claim that fails its own test."], ["3", "Judge every worldview by the same criteria: scope, power, coherence, simplicity and evidential contact."], ["4", "Five things to explain: existence, life and information, consciousness, reason and morality, supported by fine-tuning and a habitable planet."], ["5", "The cumulative point: materialism has to explain all five together from mindless ingredients; theism explains them with one unified source."], ["6", "Be honest about what science shows: a hot, expanding early universe, yes; creation from absolute nothing or a proven first instant, no. A quantum vacuum isn’t “nothing.” The universe doesn’t need to be spinning."], ["7", "The case doesn’t end with a designer. It ends with Jesus, and Christianity stakes everything on His resurrection (1 Corinthians 15:14–17)."]]}, "refs": []}
 ]};
 
 // === SECTION: Apologetics Multi-Translation Scripture Table (APO_VERSES, [t68u] & [t69u]) ===
@@ -20559,7 +20896,8 @@ if(typeof window!=="undefined") window.APO_VERSES=APO_VERSES;
 //   - Lead-in callout (#apolead)
 //   - Collapsible Worldview card (#apo-wv, right after #apolead so #apolead.nextElementSibling === #apo-wv)
 //   (The About & Purpose card and the "My Journey to Faith" card moved to the Home page on Oct 31, 2026: see home_ui.js.)
-//   - 18 expandable cards grouped across 6 thematic categories ([t68u] & [t69u]), with optional comparative tables and Scripture blockquotes.
+//   - Expandable cards grouped by thematic categories ([t68u] & [t69u]), with optional comparative tables and Scripture blockquotes.
+//   - (Nov 8, 2026) Category VII "Putting It All Together" (12 cards, ids tg-*) is the last category; its final card carries the teaching summary table and discussion questions.
 // Address: #apologetics (all cards closed), #apologetics/wv, or #apologetics/<cardId>. (#about, #apologetics/about and #apologetics/journey are redirected to #home/... by home_ui.js.)
 (function(){
 const A=APO_DATA,q=id=>document.getElementById(id);
@@ -20594,7 +20932,8 @@ function renderTable(tbl){
 }
 function renderSc(scList){
  if(!scList||!scList.length)return "";
- return scList.map(([ch,l,tx])=>`<blockquote class="wvsc">${esc(FORGE_BIBLE.getVerseTextByRef(l,tx))} <span class="lnk"><a href="#${encodeURIComponent(ch)}">${esc(l)} (${esc(FORGE_BIBLE.getVer())}) ↗</a></span></blockquote>`).join("");
+ // [2026-11-08] label = translation actually shown (FORGE_BIBLE.getVerseByRef), with a fallback note
+ return scList.map(([ch,l,tx])=>{const r=FORGE_BIBLE.getVerseByRef(l,tx);return `<blockquote class="wvsc">${esc(r.txt)} <span class="lnk"><a href="#${encodeURIComponent(ch)}">${esc(l)} (${esc(r.ver)}) ↗</a></span>${FORGE_BIBLE.verNoteHtml(r)}</blockquote>`}).join("");
 }
 // --- one card: header button (toggle) + hidden body
 function card(c,i){const ref=[...(c.refs||[]).map(([k,l])=>[`#${encodeURIComponent(k)}`,l+" on the Map"]),...(c.links||[])];
@@ -20621,13 +20960,13 @@ function wvCard(){const W=A.wv;if(!W)return "";const T=W.together,E=W.ex;
  return `<details class="wvcard" id="apo-wv"><summary><span class="atit">${esc(W.t)}</span> <span class="wvhint">Three tests: ${W.tests.map(t=>`<span class="wvb wvb-${t.id}">${t.tag}</span>`).join(" ")}</span></summary><div class="wvbody">${W.intro.map(p=>`<p>${esc(p)}</p>`).join("")}
  <p class="wvline" id="wvfaith"><i>${esc(W.faith)}</i></p>
  ${W.tests.map(t=>`<section class="wvtest" id="apo-wv-${t.id}"><h4><span class="wvb wvb-${t.id}">${t.tag}</span> ${esc(t.h)}</h4>${t.p.map(p=>`<p>${esc(p)}</p>`).join("")}${ul(t.ul)}<p>${esc(t.after)}</p>
-  ${t.sc.map(([ch,l,tx])=>`<blockquote class="wvsc">${esc(FORGE_BIBLE.getVerseTextByRef(l,tx))} <span class="lnk"><a href="#${encodeURIComponent(ch)}">${esc(l)} (${esc(FORGE_BIBLE.getVer())}) ↗</a></span></blockquote>`).join("")}</section>`).join("")}
+  ${t.sc.map(([ch,l,tx])=>{const r=FORGE_BIBLE.getVerseByRef(l,tx);return `<blockquote class="wvsc">${esc(r.txt)} <span class="lnk"><a href="#${encodeURIComponent(ch)}">${esc(l)} (${esc(r.ver)}) ↗</a></span>${FORGE_BIBLE.verNoteHtml(r)}</blockquote>`}).join("")}</section>`).join("")}
  <section class="wvtest" id="apo-wv-together"><h4>${esc(T.h)}</h4><p>${esc(T.p)}</p>${ul(T.ol,"ol")}<p>${esc(T.p2)}</p>${ul(T.ul)}</section>
  <section class="wvtest" id="apo-wv-example"><h4>${esc(E.h)}</h4><p>${esc(E.p).replace("there is no objective right or wrong",`<a href="#apologetics/${E.link}" class="wvex">there is no objective right or wrong</a>`)}</p>${ul(E.ul)}<p>${esc(E.after)}</p><div class="lnk"><a href="#apologetics/${E.link}" id="wvexlink">See the moral argument objection ↓</a></div></section></div></details>`}
 let built=false;
 // === SECTION: Apologetics lead-in callout ===
 // A short boxed paragraph above the cards (APO_DATA.lead) with a scripture line linking to that chapter on the Map.
-const lead=()=>A.lead?`<div class="alead" id="apolead"><p>${esc(A.lead)}</p>${A.leadRef?`<blockquote class="wvsc" style="margin:6px 0">“${esc(FORGE_BIBLE.getVerseTextByRef(A.leadRef[1]))}” <span class="lnk"><a href="#${encodeURIComponent(A.leadRef[0])}">${esc(A.leadRef[1])} (${esc(FORGE_BIBLE.getVer())}) ↗</a></span></blockquote>`:""}</div>`:"";
+const lead=()=>A.lead?`<div class="alead" id="apolead"><p>${esc(A.lead)}</p>${A.leadRef?`<blockquote class="wvsc" style="margin:6px 0">${(r=>`“${esc(r.txt)}” <span class="lnk"><a href="#${encodeURIComponent(A.leadRef[0])}">${esc(A.leadRef[1])} (${esc(r.ver)}) ↗</a></span>${FORGE_BIBLE.verNoteHtml(r)}`)(FORGE_BIBLE.getVerseByRef(A.leadRef[1]))}</blockquote>`:""}</div>`:"";
 function buildCardsWithCategories(){
  let out="",lastCat=null;
  A.cards.forEach((c,i)=>{
@@ -20865,7 +21204,7 @@ var TABINTRO_DATA={approved:"2026-10-31",level:"standard",levels:{standard:[
 [
 "evangelism",
 "Evangelism",
-"This tab is meant to be opened daily, with everyday tools for sharing the Gospel and walking with Christ. It has four sections: Gospel conversations (like the Romans Road, and answers to common objections), a Personal Testimony Builder with a worksheet you can save and print, prayer and spiritual disciplines, and where to turn in Scripture for different situations in life. My own testimony sits beside the builder as one example of how to tell your story."
+"This tab is meant to be opened daily, with everyday tools for sharing the Gospel and walking with Christ. It has five sections: Gospel conversations (like the Romans Road, and answers to common objections), a Personal Testimony Builder with a worksheet you can save and print, prayer and spiritual disciplines, where to turn in Scripture for different situations in life, and a concluding guide to sharing Christ and following the Spirit’s lead. My own testimony sits beside the builder as one example of how to tell your story."
 ],
 [
 "apologetics",
@@ -20959,7 +21298,7 @@ function render(hl){const L=list(),t=TOP[cur];
  q("insbar").querySelectorAll("button").forEach(b=>{const on=b.dataset.t==cur;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)});
  // [2026-10-25 JLC] Render topic header verse text inside Inspiration header banner in active translation
  const ver=FORGE_BIBLE.getVer();
- q("inshead").innerHTML=t?`<h2>${esc(t.t)}</h2><blockquote class="wvsc ins-verse">“${esc(FORGE_BIBLE.getVerseTextByRef(t.ref))}” — <b>${esc(t.ref)} (${esc(ver)})</b> · <span class="lnk"><a href="#${encodeURIComponent(t.ch)}">${esc(t.ch)} on the Map ↗</a></span></blockquote>`:`<h2>All topics</h2><blockquote class="wvsc ins-verse">“${esc(FORGE_BIBLE.getVerseTextByRef("Heb 11:1"))}” — <b>Heb 11:1 (${esc(ver)})</b> · <span class="lnk"><a href="#Hebrews%2011">Hebrews 11 on the Map ↗</a></span></blockquote>`;
+ q("inshead").innerHTML=t?`<h2>${esc(t.t)}</h2><blockquote class="wvsc ins-verse">${(r=>`“${esc(r.txt)}” — <b>${esc(t.ref)} (${esc(r.ver)})</b>${FORGE_BIBLE.verNoteHtml(r)}`)(FORGE_BIBLE.getVerseByRef(t.ref))} · <span class="lnk"><a href="#${encodeURIComponent(t.ch)}">${esc(t.ch)} on the Map ↗</a></span></blockquote>`:`<h2>All topics</h2><blockquote class="wvsc ins-verse">${(r=>`“${esc(r.txt)}” — <b>Heb 11:1 (${esc(r.ver)})</b>${FORGE_BIBLE.verNoteHtml(r)}`)(FORGE_BIBLE.getVerseByRef("Heb 11:1"))} · <span class="lnk"><a href="#Hebrews%2011">Hebrews 11 on the Map ↗</a></span></blockquote>`;
  q("inshead").innerHTML+=`<p class="wvline">These words connect to the <a href="#apologetics/wv-live">livability test</a> (test 3 of How Do We Figure Out What's True?): what believers found when they lived the faith.</p>`;
  // === SECTION: Inspiration → Evangelism "Where to Turn" link === pointer to the life-situations index in the Evangelism tab
  q("inshead").innerHTML+=`<p class="wvline ins-evanlink">Facing a specific struggle? See <a href="#evangelism/where">Where to Turn in Scripture ↗</a> in the Evangelism tab: key passages for assurance, temptation, repentance, anger, marriage, work and decisions.</p>`;
