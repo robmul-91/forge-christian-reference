@@ -93,6 +93,11 @@
                        challenges, contribution, dates, death, with an era selector, a tradition filter,
                        a filterable timeline (persecutions, councils, revivals as bands) and a map that
                        switches to a world outline for cards with places beyond Europe and Asia.
+        Heresies       Church History & Heresies (address #heresies, nav right after Christian Thinkers, before
+                       Martyrs; added Nov 8, 2026): first-person opening, card labels, historical path, 20 topic
+                       cards in three parts (early church, later history, modern comparisons), each labelled as a
+                       doctrinal departure, schism, historical disagreement, fairness card or modern comparison;
+                       conclusion and discussion questions. Deep links #heresies/<card> or #heresies/<part>.
         Martyrs        105 martyrs (individuals and groups) across the same three eras (AD 33–500,
                        AD 500–1500, AD 1500–present): the persecution, the stand they took and their
                        death; legendary accounts are marked as such, and figures also in Christian
@@ -182,6 +187,8 @@
           === SECTION: CSS essentials tab ===
           === SECTION: Essentials tier-test numbered list (2026-10-31) ===   (numbers sit inside the box on iPad)
           === SECTION: Dark Mode rules for Essentials & Convictions tab (#essentials / .essview) ===
+          === SECTION: CSS heresies tab ===
+          === SECTION: Dark Mode rules for Church History & Heresies tab (#heresies / .hersview) ===
           === SECTION: CSS evangelism tab ===
           === SECTION: Dark Mode rules for Evangelism tab (#evangelism / .eview) ===
           === SECTION: Dark Mode rules for Bible Reading tab (#reading / .rdview) ===
@@ -279,6 +286,8 @@
           === SECTION: Types of Christ UI ===   (types_ui.js: #hermeneutics/types page, Map badge, Places / Genealogies / Prophets / Harmony rows, search docs)
           === SECTION: Essentials & Convictions tab data (intro, tier test, 17 cards, Disagreeing Well) ===  (essentials_content.js)
           === SECTION: Essentials & Convictions UI (#essentials) ===  (essentials_ui.js: page, cards, routing, translation, search docs)
+          === SECTION: Church History & Heresies tab data (opening, labels, path, 20 cards, conclusion) ===  (heresies_content.js)
+          === SECTION: Church History & Heresies UI (#heresies) ===  (heresies_ui.js: page, cards, routing, translation, search docs)
           === SECTION: Evangelism tab data (landing, Gospel Conversations, Testimony Builder, Prayer & Disciplines, Where to Turn) ===  (evangelism_content.js)
           === SECTION: Evangelism UI (#evangelism) ===  (evangelism_ui.js: landing, section cards, Romans Road translation, testimony worksheet + print, routing, search docs)
           === SECTION: Bible Reading tab data (365-day chronological plan, eras, conventions, coverage check) ===  (reading_content.js)
@@ -757,6 +766,37 @@ details.ess-card>summary::before{content:"▸";color:#7a5a2a;font-weight:700}det
 html[data-theme="dark"] .ess-callout{background:rgba(212,160,60,.10);border-color:#6b5730;border-left-color:#d4a03c;color:var(--text-main,#e6e1d8)}
 html[data-theme="dark"] .ess-callout-h{color:var(--accent-amber,#e8b866)}html[data-theme="dark"] .ess-callout i{color:var(--text-secondary,#b8b2a6)}
 #essview code{font-size:13px;background:#f1ead9;padding:0 4px;border-radius:4px}
+/* === SECTION: CSS heresies tab ===
+   Plain English: looks of the Church History & Heresies tab (#heresies / #hersview): left list of parts and cards
+   (.tleft#hersleft), the purpose box (.hers-hero), plain sections (.hers-sec), part headings, expandable topic cards
+   (details.hers-card) whose left edge and badge colour show the kind (red = doctrinal departure, blue = schism & church
+   order, green = historical disagreement, gold = fairness card, purple = modern comparison) and the fairness note box. */
+.eview .tleft a.hers-partlink{font-weight:700;margin-top:6px}
+.eview .tleft a.hers-cardlink{padding-left:20px;font-size:13px}
+.hers-hero,.hers-sec{background:#fffdf8;border:1px solid #d8ccb4;border-radius:10px;padding:10px 16px;margin:0 0 12px}
+.hers-hero{border-left:5px solid #8b2e2e;padding:12px 16px;margin-bottom:14px}
+.hers-hero h2{margin:4px 0 2px;font-size:22px;color:#3d342a}.hers-sub{margin:0 0 6px;font-style:italic;color:#5b5245}
+.hers-sec h3,.hers-parth{margin:6px 0 8px;font-size:18px;color:#3d342a}
+.hers-parth{margin-top:20px;border-bottom:2px solid #d8ccb4;padding-bottom:4px}
+.hers-blurb{color:#5b5245;margin:4px 0 10px}
+.hersview .hers-sec ol{padding-left:2em;margin:4px 0 6px}.hersview .hers-sec ol li{padding-left:.3em;margin:5px 0}
+.hers-kinds{list-style:none;padding:0;margin:4px 0}.hers-kinds li{margin:6px 0}
+details.hers-card{color:inherit;border:1px solid #d8ccb4;border-left:5px solid #8b2e2e;border-radius:10px;margin:0 0 10px;background:#fffdf8}
+details.hers-card>summary{cursor:pointer;padding:10px 14px;list-style:none;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+details.hers-card>summary::-webkit-details-marker{display:none}
+details.hers-card>summary::before{content:"▸";color:#7a5a2a;font-weight:700}details.hers-card[open]>summary::before{content:"▾"}
+.hers-ct{font-weight:700;font-size:16px;color:#3d342a}.hers-q{color:#5b5245;font-size:14.5px}
+.hers-full{font-size:11px;border:1px solid #b8860b;color:#7a5a12;border-radius:9px;padding:0 7px}
+.hers-badge{font-size:11px;font-weight:700;border-radius:9px;padding:1px 8px;color:#fff;background:#8b2e2e;white-space:nowrap}
+.hers-k-sch,.hers-k-schb{border-left-color:#2e5a8b}.hers-k-bnd{border-left-color:#3c7a4a}.hers-k-fair{border-left-color:#b8860b}.hers-k-mod{border-left-color:#6a4c93}
+.hers-k-sch .hers-badge,.hers-badge.hers-k-schb{background:#2e5a8b}.hers-k-bnd .hers-badge,.hers-badge.hers-k-bndb{background:#3c7a4a}
+.hers-k-fair .hers-badge,.hers-badge.hers-k-fairb{background:#9a6f0a}.hers-k-mod .hers-badge,.hers-badge.hers-k-modb{background:#6a4c93}
+.hers-body{padding:0 16px 12px;overflow-wrap:anywhere}.hers-body h4{margin:12px 0 4px;font-size:13.5px;color:#6b5332;text-transform:uppercase;letter-spacing:.4px}
+.hers-who{color:#5b5245;font-size:14px}.hers-read{font-size:14px}.hers-read a{white-space:nowrap}
+.hers-links{margin-top:8px}.hers-links a{margin-right:12px}
+.hers-src{font-size:13px;color:#5b5245;margin-top:8px}.hers-src ul{margin:2px 0 0;padding-left:1.4em}
+.hers-fair{margin:12px 0 4px;padding:9px 13px;background:#fbf3e0;border:1px solid #e3cf9e;border-left:5px solid #b8860b;border-radius:8px}
+.hers-fair-h{font-weight:700;font-size:13.5px;color:#7a5a12;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}.hers-fair p{margin:0}
 /* === SECTION: CSS evangelism tab ===
    Plain English: looks of the Evangelism tab (#evangelism / #evanview): left section list (.tleft#evanleft), the landing
    purpose box (.evan-hero), section cards that expand (details.evan-card; its own font rule overrides the global
@@ -2067,6 +2107,12 @@ html[data-theme="dark"] details.ess-card{border-left-color:#c0504d}html[data-the
 html[data-theme="dark"] .ess-hero h2,html[data-theme="dark"] .ess-sec h3,html[data-theme="dark"] .ess-tierh,html[data-theme="dark"] .ess-ct{color:var(--text-main)}
 html[data-theme="dark"] .ess-blurb,html[data-theme="dark"] .ess-body h4{color:var(--text-secondary)}
 html[data-theme="dark"] #essview code{background:var(--bg-hover);color:var(--text-main)}
+/* === SECTION: Dark Mode rules for Church History & Heresies tab (#heresies / .hersview) === */
+html[data-theme="dark"] .hers-hero,html[data-theme="dark"] .hers-sec,html[data-theme="dark"] details.hers-card{background:var(--bg-elevated);border-color:var(--border-main);color:var(--text-main)}
+html[data-theme="dark"] details.hers-card{border-left-color:#c0504d}html[data-theme="dark"] details.hers-card.hers-k-sch{border-left-color:#5b8fd0}html[data-theme="dark"] details.hers-card.hers-k-bnd{border-left-color:#5fae74}html[data-theme="dark"] details.hers-card.hers-k-fair{border-left-color:#d4a03c}html[data-theme="dark"] details.hers-card.hers-k-mod{border-left-color:#9b7fd0}
+html[data-theme="dark"] .hers-hero h2,html[data-theme="dark"] .hers-sec h3,html[data-theme="dark"] .hers-parth,html[data-theme="dark"] .hers-ct{color:var(--text-main)}
+html[data-theme="dark"] .hers-blurb,html[data-theme="dark"] .hers-body h4,html[data-theme="dark"] .hers-q,html[data-theme="dark"] .hers-sub,html[data-theme="dark"] .hers-who,html[data-theme="dark"] .hers-src{color:var(--text-secondary)}
+html[data-theme="dark"] .hers-fair{background:rgba(212,160,60,.10);border-color:#6b5730;border-left-color:#d4a03c;color:var(--text-main,#e6e1d8)}html[data-theme="dark"] .hers-fair-h,html[data-theme="dark"] .hers-full{color:var(--accent-amber,#e8b866)}
 /* === SECTION: Dark Mode rules for Evangelism tab (#evangelism / .eview) === */
 html[data-theme="dark"] .evan-hero{background:var(--bg-elevated);border-color:var(--border-main)}
 html[data-theme="dark"] .evan-hero h2,html[data-theme="dark"] .evan-sechead h2,html[data-theme="dark"] .evan-hero h4,html[data-theme="dark"] details.evan-card>summary .evan-ct,html[data-theme="dark"] .evan-seccard b,html[data-theme="dark"] .evan-h3,html[data-theme="dark"] .evan-journey h4,html[data-theme="dark"] .evan-wsl{color:var(--text-main)}
@@ -2370,8 +2416,8 @@ html[data-theme="dark"] .gg-h2{border-color:#3a3f4a}
      Dark Mode slider (#theme-slider), and Book / Chapter pickers.
      Tab order (display only; every tab is opened by its #address, so routes do not depend on it):
      Home (#home, the landing page; also opened by the title and by an empty address), Bible Reading, Map, Journeys, Places, Prophets, Kings, Kings Harmony, Intertestamental Period, Gospel Harmony,
-     Disciples, Parables, Hermeneutics, Doctrine, Essentials & Convictions, Reliability, Christian Thinkers, Martyrs,
-     Evangelism, Apologetics, Inspiration, Genealogies, Glossary.
+     Disciples, Parables, Hermeneutics, Doctrine, Essentials & Convictions, Reliability, Christian Thinkers, Church History & Heresies,
+     Martyrs, Evangelism, Apologetics, Inspiration, Genealogies, Glossary.
 -->
 <!-- === SECTION: Tab order (2026-10-30) ===
      On 2026-10-30 the top tabs were reordered so they follow the story of the Bible first
@@ -2380,13 +2426,14 @@ html[data-theme="dark"] .gg-h2{border-color:#3a3f4a}
      <nav> links changed; every link keeps its address (href), id and other attributes.
      On 2026-10-31 Essentials & Convictions (#essentials, id navess) was added right after Doctrine.
      On 2026-10-31 Glossary (#glossary, id navglo) was added last, after Genealogies.
+     === SECTION: Church History & Heresies tab (2026-11-08) === #heresies (id navhers) added right after Christian Thinkers, before Martyrs.
      === SECTION: Tab order change (2026-11-01) === Bible Reading (#reading, id navread) moved to first, right after Home
      (Robert, Nov 1, 2026), so the daily reading plan is the first tab; Home stays the landing page.
 -->
 <!-- [2026-10-25 JLC] Added keyboard skip-link to jump straight to #main-content. -->
 <a href="#main-content" class="skip-link">Skip to main content</a>
 <!-- [2026-10-25 JLC] Added aria-label to <nav>, Copy Link button (#copy-link-btn), and top-right Dark Mode Slider toggle (#theme-slider, role="switch"). -->
-<header><h1><a href="#home" id="hometitle" title="Home: About, Why I Built This Tool, all tabs, My Journey to Faith">Forge Christian Reference</a></h1><nav aria-label="Primary study sections"><a href="#home" id="navhome">Home</a><a href="#reading" id="navread">Bible Reading</a><a href="#map" id="navmap">Map</a><a href="#journeys" id="navjou">Journeys</a><a href="#places" id="navpla">Places</a><a href="#prophets" id="navpro">Prophets</a><a href="#kings" id="navkin">Kings</a><a href="#kharmony" id="navkha">Kings Harmony</a><a href="#intertestamental" id="navitp">Intertestamental Period</a><a href="#harmony" id="navhar">Gospel Harmony</a><a href="#disciples" id="navdis">Disciples</a><a href="#parables" id="navpar">Parables</a><a href="#hermeneutics" id="navherm">Hermeneutics</a><a href="#gods" id="navgods">Gods &amp; Gospel</a><a href="#doctrine" id="navdoc">Doctrine</a><a href="#essentials" id="navess">Essentials &amp; Convictions</a><a href="#reliability" id="navrel">Reliability</a><a href="#church" id="navchu">Christian Thinkers</a><a href="#martyrs" id="navmar">Martyrs</a><a href="#evangelism" id="navevan">Evangelism</a><a href="#apologetics" id="navapo">Apologetics</a><a href="#inspiration" id="navins">Inspiration</a><a href="#genealogies" id="navgen">Genealogies</a><a href="#glossary" id="navglo">Glossary</a></nav><span class="hbreak" aria-hidden="true"></span><span id="srch"><button id="sbtn" type="button" title="Search (/)" aria-label="Search">🔍</button><input id="sq" type="search" role="combobox" aria-expanded="false" aria-controls="sdrop" aria-autocomplete="list" placeholder="Search places, people, verses…  ( / )" autocomplete="off" aria-label="Search places, people, chapters, and verses"><div id="sdrop" role="listbox" hidden></div></span><span id="hdr-tools"><!-- [2026-10-25 JLC] Added top-bar Bible translation selector (#bible-version-select) supporting KJV, BSB, and LSB (=== SECTION: [2026-11-01] ESV, NLT, NIV removed ===) --><select id="bible-version-select" class="bible-version-select" aria-label="Select Bible translation" title="Select Bible translation"><option value="KJV">📖 KJV (King James)</option><option value="BSB">📖 BSB (Berean Standard)</option><option value="LSB">📖 LSB (Legacy Standard)</option></select><!-- === SECTION: [2026-11-01] ESV / NLT / NIV options removed === --><button id="copy-link-btn" class="copy-link-btn" type="button" title="Copy direct link to this view" aria-label="Copy link to current view">🔗 Share</button><!-- === SECTION: Send Feedback header button (Nov 2, 2026) === --><button id="fb-open" class="fb-open" type="button" aria-label="Send Feedback" aria-haspopup="dialog" aria-controls="fb-modal" title="Send me private feedback">✉️<span class="fb-lbl"> Send Feedback</span></button><button id="theme-slider" class="theme-slider" type="button" role="switch" aria-checked="false" aria-label="Toggle dark mode" title="Switch to Dark mode"><span class="theme-slider__icon" aria-hidden="true">☀️</span><span class="theme-slider__icon" aria-hidden="true">🌙</span><span class="theme-slider__thumb" aria-hidden="true"></span></button></span><span id="mapctl">
+<header><h1><a href="#home" id="hometitle" title="Home: About, Why I Built This Tool, all tabs, My Journey to Faith">Forge Christian Reference</a></h1><nav aria-label="Primary study sections"><a href="#home" id="navhome">Home</a><a href="#reading" id="navread">Bible Reading</a><a href="#map" id="navmap">Map</a><a href="#journeys" id="navjou">Journeys</a><a href="#places" id="navpla">Places</a><a href="#prophets" id="navpro">Prophets</a><a href="#kings" id="navkin">Kings</a><a href="#kharmony" id="navkha">Kings Harmony</a><a href="#intertestamental" id="navitp">Intertestamental Period</a><a href="#harmony" id="navhar">Gospel Harmony</a><a href="#disciples" id="navdis">Disciples</a><a href="#parables" id="navpar">Parables</a><a href="#hermeneutics" id="navherm">Hermeneutics</a><a href="#gods" id="navgods">Gods &amp; Gospel</a><a href="#doctrine" id="navdoc">Doctrine</a><a href="#essentials" id="navess">Essentials &amp; Convictions</a><a href="#reliability" id="navrel">Reliability</a><a href="#church" id="navchu">Christian Thinkers</a><a href="#heresies" id="navhers">Church History &amp; Heresies</a><a href="#martyrs" id="navmar">Martyrs</a><a href="#evangelism" id="navevan">Evangelism</a><a href="#apologetics" id="navapo">Apologetics</a><a href="#inspiration" id="navins">Inspiration</a><a href="#genealogies" id="navgen">Genealogies</a><a href="#glossary" id="navglo">Glossary</a></nav><span class="hbreak" aria-hidden="true"></span><span id="srch"><button id="sbtn" type="button" title="Search (/)" aria-label="Search">🔍</button><input id="sq" type="search" role="combobox" aria-expanded="false" aria-controls="sdrop" aria-autocomplete="list" placeholder="Search places, people, verses…  ( / )" autocomplete="off" aria-label="Search places, people, chapters, and verses"><div id="sdrop" role="listbox" hidden></div></span><span id="hdr-tools"><!-- [2026-10-25 JLC] Added top-bar Bible translation selector (#bible-version-select) supporting KJV, BSB, and LSB (=== SECTION: [2026-11-01] ESV, NLT, NIV removed ===) --><select id="bible-version-select" class="bible-version-select" aria-label="Select Bible translation" title="Select Bible translation"><option value="KJV">📖 KJV (King James)</option><option value="BSB">📖 BSB (Berean Standard)</option><option value="LSB">📖 LSB (Legacy Standard)</option></select><!-- === SECTION: [2026-11-01] ESV / NLT / NIV options removed === --><button id="copy-link-btn" class="copy-link-btn" type="button" title="Copy direct link to this view" aria-label="Copy link to current view">🔗 Share</button><!-- === SECTION: Send Feedback header button (Nov 2, 2026) === --><button id="fb-open" class="fb-open" type="button" aria-label="Send Feedback" aria-haspopup="dialog" aria-controls="fb-modal" title="Send me private feedback">✉️<span class="fb-lbl"> Send Feedback</span></button><button id="theme-slider" class="theme-slider" type="button" role="switch" aria-checked="false" aria-label="Toggle dark mode" title="Switch to Dark mode"><span class="theme-slider__icon" aria-hidden="true">☀️</span><span class="theme-slider__icon" aria-hidden="true">🌙</span><span class="theme-slider__thumb" aria-hidden="true"></span></button></span><span id="mapctl">
 <label>Book <select id="book" aria-label="Bible Book"></select></label>
 <label>Chapter <select id="chap" aria-label="Bible Chapter"></select></label>
 <label>or type <input id="chapnum" type="number" min="1" aria-label="Type chapter number"></label></span>
@@ -2445,6 +2492,8 @@ html[data-theme="dark"] .gg-h2{border-color:#3a3f4a}
 <!-- === SECTION: Gods & Gospel tab view (#gods, gods_ui.js) === -->
 <section id="godsview" class="tabview rview ggview" hidden><div class="tleft" id="godsleft"></div><div class="tcenter"><div class="tcard" id="godscard"></div></div></section>
 <!-- === SECTION: HTML evangelism view === Evangelism tab: section list (left) and landing, Gospel Conversations, Testimony Builder, Prayer & Disciplines and Where to Turn cards (centre). Filled by evangelism_ui.js. -->
+<!-- === SECTION: HTML heresies view === Church History & Heresies tab: parts and topic cards (left) and the page (centre). Filled by heresies_ui.js. -->
+<section id="hersview" class="tabview rview eview hersview" hidden><div class="tleft" id="hersleft"></div><div class="tcenter"><div class="tcard" id="herscard"></div></div></section>
 <!-- === SECTION: HTML essentials view === Essentials & Convictions tab: list of parts and cards (left) and the page (centre). Filled by essentials_ui.js. -->
 <section id="essview" class="tabview rview eview essview" hidden><div class="tleft" id="essleft"></div><div class="tcenter"><div class="tcard" id="esscard"></div></div></section>
 <section id="evanview" class="tabview rview eview" hidden><div class="tleft" id="evanleft"></div><div class="tcenter"><div class="tcard" id="evancard"></div></div></section>
@@ -4331,6 +4380,8 @@ function build(){if(IX)return IX;const t0=performance.now();BOOKS.forEach((b,i)=
  // === SECTION: Search → Tab intros === one result per tab intro (type "intro", badge ℹ Tab intro), opening that tab
  if(window.TABINTRO_API)for(const x of TABINTRO_API.docs()){const d=doc({type:"intro",id:"intro:"+x.href,name:x.t,sub:x.sub,x});add(d,x.t,2.2);add(d,x.text,.9)}
  if(window.ESS_API)for(const x of ESS_API.docs()){const d=doc({type:"ess",id:"ess:"+x.href,name:x.t,sub:x.sub,x});add(d,x.t,2.7);add(d,x.sub,1);add(d,x.text,1.1)}
+ // === SECTION: Search → Church History & Heresies === topic cards (type "hers", badge 📜 Heresies), linking to #heresies/...
+ if(window.HERS_API)for(const x of HERS_API.docs()){const d=doc({type:"hers",id:"hers:"+x.href,name:x.t,sub:x.sub,x});add(d,x.t,2.7);add(d,x.sub,1);add(d,x.text,1.1)}
  // === SECTION: Search → Glossary === Glossary entries (type "glo", badge 🔤 Glossary), linking to #glossary/<id>
  if(window.GLO_API)for(const x of GLO_API.docs()){const d=doc({type:"glo",id:"glo:"+x.href,name:x.t,sub:x.sub,x});add(d,x.t,2.6);add(d,x.sub,.6);add(d,x.text,1)}
  // === SECTION: Search → Evangelism === Evangelism cards (type "evan", badge 🕊 Evangelism), linking to #evangelism/...
@@ -4355,7 +4406,7 @@ function expand(term,ix){const out=new Map(),put=(t,s)=>{if((out.get(t)||0)<s)ou
   else if(fz&&!out.has(t)&&Math.abs(t.length-term.length)<=2&&t[0]==term[0]){const d=lev(term,t,term.length>=7?2:1);if(d<=(term.length>=7?2:1))put(t,d==1?.62:.45)}}
  return out}
 // search(query): scores every document for all the words typed; places and people rank a little higher.
-const TW={place:1.25,person:1.2,chapter:.9,journey:1,stop:.75,harmony:.85,par:1,rel:.9,doc:.95,herm:.95,gods:.95,ess:.95,intro:.8,evan:.95,read:.9,apo:.95,it:.9,ins:.85,glo:.9,verse:.5};
+const TW={place:1.25,person:1.2,chapter:.9,journey:1,stop:.75,harmony:.85,par:1,rel:.9,doc:.95,herm:.95,gods:.95,ess:.95,hers:.95,intro:.8,evan:.95,read:.9,apo:.95,it:.9,ins:.85,glo:.9,verse:.5};
 function search(query){const ix=build(),t0=performance.now();let terms=toks(query).filter(Boolean);const kept=terms.filter(t=>!STOP.has(t));if(kept.length)terms=kept;
  if(terms.length>1){const j=norm(query).replace(/[^a-z0-9]/g,"");if(ix.vocab.has(j)||(VMAP[j]))terms=[j]}
  if(!terms.length)return {terms,res:[],ms:0,exp:[]};
@@ -4374,7 +4425,7 @@ function hits(D,terms){const ix=build(),out=[];
  if(D.type=="journey"||D.type=="stop"){const P=JH_API.T2.places;return (D.type=="stop"?[D.s]:D.j.stops).map(s=>({k:s.ch,i:null,lat:P[s.pl][1],lon:P[s.pl][0],pl:P[s.pl][2],jref:s.ref}))}
  if(D.type=="harmony"){const P=JH_API.T2.places,e=D.e;return [{k:e.ch,i:null,lat:e.pl?P[e.pl][1]:null,lon:e.pl?P[e.pl][0]:null,pl:e.pl?P[e.pl][2]:""}]}
  if(D.type=="par"){const P=JH_API.T2.places,x=D.x;return (x.chs||[]).map((k,i)=>({k,i:null,lat:i==0&&x.pl?P[x.pl][1]:null,lon:i==0&&x.pl?P[x.pl][0]:null,pl:i==0&&x.pl?P[x.pl][2]:""}))}
- if(D.type=="rel"||D.type=="doc"||D.type=="herm"||D.type=="gods"||D.type=="evan"||D.type=="ess"||D.type=="intro"||D.type=="read"||D.type=="apo"||D.type=="ins"||D.type=="it"||D.type=="glo")return [];
+ if(D.type=="rel"||D.type=="doc"||D.type=="herm"||D.type=="gods"||D.type=="evan"||D.type=="ess"||D.type=="hers"||D.type=="intro"||D.type=="read"||D.type=="apo"||D.type=="ins"||D.type=="it"||D.type=="glo")return [];
  if(D.type=="verse"){const k=D.b+" "+D.c;return CHAPTERS[k]?[{k,i:null,lat:null,lon:null,pl:""}]:[]}
  const words=D.type=="person"?D.words:null,match=s=>words?words.some(w=>s.has(w)):terms.every(t=>[t,...(VMAP[t]||[])].some(w=>s.has(w)));
  for(const k in CHAPTERS){const evs=ix.ET[k];let any=false;evs.forEach((s,i)=>{const e=CHAPTERS[k].events[i];if(match(s)){any=true;if(e.lat!=null)out.push({k,i,lat:e.lat,lon:e.lon,pl:e.place})}});
@@ -4383,8 +4434,8 @@ function hits(D,terms){const ix=build(),out=[];
  return out}
 
 // ---------------- header box + autocomplete ----------------
-const GL={all:"All matches",place:"Places",person:"People",chapter:"Chapters",journey:"Journeys",stop:"Journey stops",harmony:"Gospel Harmony",par:"Parables",rel:"Reliability",doc:"Doctrine",herm:"Hermeneutics",gods:"Gods & Gospel",evan:"Evangelism",ess:"Essentials",intro:"Tab intros",read:"Bible Reading",apo:"Apologetics",it:"Intertestamental Period",ins:"Inspiration quotes",glo:"Glossary",verse:"Gospel verses"};
-const ICON={place:"📍",person:"👤",chapter:"📖",journey:"🧭",stop:"•",harmony:"✝",par:"🌾",rel:"📜",doc:"⛪",herm:"📜",gods:"🏺",ess:"⚖",intro:"ℹ",evan:"🕊",read:"📅",apo:"🛡",it:"🏛",ins:"💬",glo:"🔤",verse:"❝"};
+const GL={all:"All matches",place:"Places",person:"People",chapter:"Chapters",journey:"Journeys",stop:"Journey stops",harmony:"Gospel Harmony",par:"Parables",rel:"Reliability",doc:"Doctrine",herm:"Hermeneutics",gods:"Gods & Gospel",evan:"Evangelism",ess:"Essentials",hers:"Church History & Heresies",intro:"Tab intros",read:"Bible Reading",apo:"Apologetics",it:"Intertestamental Period",ins:"Inspiration quotes",glo:"Glossary",verse:"Gospel verses"};
+const ICON={place:"📍",person:"👤",chapter:"📖",journey:"🧭",stop:"•",harmony:"✝",par:"🌾",rel:"📜",doc:"⛪",herm:"📜",gods:"🏺",ess:"⚖",hers:"📜",intro:"ℹ",evan:"🕊",read:"📅",apo:"🛡",it:"🏛",ins:"💬",glo:"🔤",verse:"❝"};
 let AC=[],ai=-1;
 function acRender(){const box=q("sdrop"),v=q("sq").value.trim();if(!v){box.hidden=true;return}const r=search(v);
  AC=[];const per={};for(const x of r.res){const t=x.d.type;if(t=="verse"&&AC.length>=6)continue;per[t]=(per[t]||0)+1;if(per[t]>3)continue;AC.push(x.d);if(AC.length>=8)break}
@@ -4418,7 +4469,7 @@ function route(query){/* [2026-10-25 JLC] Toggle #mapview instead of <main> so <
  if(PG.length>1){const ev=[];PG.forEach(d=>ev.push(...d.ev));const nch=new Set(ev.map(x=>x.k)).size;const lab=query.trim().replace(/^./,c=>c.toUpperCase());
   const pg={type:"place",id:"pg:"+norm(query),name:`${lab} — ${PG.length} place names combined`,sub:`${nch} chapters`,ev,nch,alias:PG.map(d=>d.name),group:true,q:r.terms};
   const i=DOCS.findIndex(d=>d.id==pg.id);if(i>=0)DOCS[i]=pg;else{pg.n=DOCS.length;DOCS.push(pg)}G.place=[pg,...G.place];r.res.unshift({d:pg,s:99})}
- const order=["place","person","chapter","journey","stop","harmony","par","rel","doc","herm","gods","ess","intro","evan","read","apo","it","ins","glo","verse"];let h=`<div class="sinfo">${r.res.length} results · ${r.ms.toFixed(1)} ms${r.exp.some(e=>e[1].length)?`<br>Also matched: ${r.exp.filter(e=>e[1].length).map(([t,a])=>`<i>${esc(t)}</i> → ${a.map(esc).join(", ")}`).join("; ")}`:""}</div>`;
+ const order=["place","person","chapter","journey","stop","harmony","par","rel","doc","herm","gods","ess","hers","intro","evan","read","apo","it","ins","glo","verse"];let h=`<div class="sinfo">${r.res.length} results · ${r.ms.toFixed(1)} ms${r.exp.some(e=>e[1].length)?`<br>Also matched: ${r.exp.filter(e=>e[1].length).map(([t,a])=>`<i>${esc(t)}</i> → ${a.map(esc).join(", ")}`).join("; ")}`:""}</div>`;
  if(r.terms.some(t=>t=="jesus"||t=="joshua"))h+=`<div class="cert">Note: in the KJV, 'Jesus' in Acts 7:45 and Hebrews 4:8 means Joshua (the Greek form of the name).</div>`;
  if(!r.res.length)h+=`<div class="empty">No results for “${esc(query)}”.<br>Try a shorter word, a different spelling, or a place's modern name.</div>`;
  else{h+=`<h3>${GL.all}</h3><a class="sres" data-id="all">🔎 Words &amp; places matching “${esc(query)}”</a>`;
@@ -4448,6 +4499,7 @@ function scard(){const D=SS.sel,c=q("scard");let h=`<h2>${esc(D.name)}</h2>`;
  if(D.type=="doc")h+=`<div class="al">Doctrine · ${esc(D.x.secT)}</div><div class="lnk"><a href="#doctrine/${D.x.sec}/${D.x.id}">Open in Doctrine ↗</a></div><p>${hl(D.x.text)}</p>`;
  if(D.type=="intro")h+=`<div class="al">ℹ Tab introduction · ${esc(D.x.t)}</div><div class="lnk"><a href="#${D.x.href}">Open the tab ↗</a></div><p>${hl(D.x.text)}</p>`;
  if(D.type=="ess")h+=`<div class="al">⚖ Essentials & Convictions · ${esc(D.x.sub)}</div><div class="lnk"><a href="#${D.x.href}">Open in Essentials ↗</a></div><p>${hl(D.x.text.slice(0,1200))}</p>`;
+ if(D.type=="hers")h+=`<div class="al">📜 Church History & Heresies · ${esc(D.x.sub)}</div><div class="lnk"><a href="#${D.x.href}">Open in Church History & Heresies ↗</a></div><p>${hl(D.x.text.slice(0,1200))}</p>`;
  if(D.type=="glo")h+=`<div class="al">🔤 Glossary · ${esc(D.x.sub.replace("Glossary · ",""))}</div><div class="lnk"><a href="#${D.x.href}">Open in Glossary ↗</a></div><p>${hl(D.x.text.slice(0,1200))}</p>`;
  if(D.type=="evan")h+=`<div class="al">🕊 Evangelism · ${esc(D.x.sub)}</div><div class="lnk"><a href="#${D.x.href}">Open in Evangelism ↗</a></div><p>${hl(D.x.text.slice(0,1200))}</p>`;
  if(D.type=="read")h+=`<div class="al">📅 Bible Reading · ${esc(D.x.sub)}</div><div class="lnk"><a href="#${D.x.href}">Open in Bible Reading ↗</a></div><p>${hl(D.x.text.slice(0,1200))}</p>`;
@@ -20120,6 +20172,1618 @@ window.ESS_API = {
 };
 })();
 
+// === SECTION: Church History & Heresies tab data (#heresies) ===
+// Plain English: content of the Church History & Heresies tab, generated by notes/heresies_src/gen_heresies.py from the
+// proposal approved on Nov 8, 2026 [t300u] (/workspace/drafts/church_history_heresies_proposal_20261108.md): first-person
+// opening and conclusion, historical path, 20 topic cards in three parts (3 full sample cards from the proposal, 17
+// developed from its drafting directions and the sources listed on each card), discussion questions and related tabs.
+// Each card has a kind (dep = doctrinal departure, sch = schism & church order, bnd = historical disagreement,
+// fair = fairness card, mod = modern comparison) so schisms and disputed practices are never shown as denials of doctrine.
+// Text fields are small HTML snippets (<b>, <i>) written by us, not user input.
+// HERS_VERSES = reference -> KJV text copied from data/kjv.json, verse coordinates and the Map chapter key. The Forge
+// edition swaps in the reader's translation at display time (FORGE_BIBLE.getVerseByRef) and labels the one shown.
+const HERS_DATA={
+"title": "Church History & Heresies",
+"sub": "Holding Fast to Christ Through the Centuries",
+"lead": "Christian Thinkers tells us who taught and Martyrs who suffered; this tab explains <b>what was disputed and why it mattered</b>. Twenty topics in three parts, each labelled by kind so that a historical schism or a disputed practice is never confused with a denial of essential doctrine. Inclusion here does not imply that every associated Christian is a heretic.",
+"intro": [
+"I believe Jesus Christ is worth knowing truly, not merely admiring vaguely. When we change who He is, we eventually change the gospel we proclaim. If He is not truly God, we have lost the eternal Son who makes the Father known. If He is not truly human, we have lost the Savior who entered our condition. If salvation finally rests on our unaided goodness, we have lost our need for grace.",
+"That is why I want to study this history. Not to collect accusations, win arguments, or look down on people, but to understand what Christians were protecting when they defended the faith.",
+"Many theological errors return in recognizable patterns: a created Christ, an unreal humanity, a divided Savior, a rejection of the Creator, or salvation reduced to human achievement. New vocabulary can conceal an old mistake. But resemblance is not identity. We must understand what a person actually believes before deciding that an ancient label fits.",
+"Here, <b>heresy</b> means a serious departure from the foundational apostolic faith, not simply a doctrine I disagree with. An honest question, an awkward illustration, and a settled denial are not the same thing. Nor are disagreements about church government, baptismal practice, spiritual gifts, or the timing of Christ’s return automatically denials of Christianity.",
+"This section uses the Nicene confession of the Trinity and the Chalcedonian confession of Christ as its principal historical framework: one God, Father, Son, and Holy Spirit; one Lord Jesus Christ, truly God and truly human. Its account of salvation emphasizes our need for God’s grace. It does not pretend that Christians sharing these foundations agree about every later controversy, or that every historic church accepts identical conciliar terminology.",
+"Councils did not make Jesus divine by voting. They sought to confess faithfully the Lord already proclaimed in Scripture. Their language became more precise as disputed interpretations demanded clearer answers. I value that work without placing church leaders above God’s Word or treating every action they took as righteous.",
+"Read these accounts with an open Bible. Ask what was taught, what Scripture says, why the difference matters, and how to speak the truth with love."
+],
+"intro_refs": [
+[
+"Jude 1:3",
+"Jude 1"
+],
+[
+"Acts 17:11",
+"Acts 17"
+],
+[
+"John 1:1–18",
+"John 1"
+],
+[
+"Matthew 28:19",
+"Matthew 28"
+],
+[
+"2 Timothy 2:24–26",
+"2 Timothy 2"
+]
+],
+"intro_key": "Jude 1:3",
+"path": [
+[
+"Second–third centuries",
+"Creation, Israel’s Scriptures, Christ’s humanity, and distinctions within the Godhead."
+],
+[
+"Nicaea, 325",
+"The Son is truly God, not a creature. Alexander opposed Arius; Athanasius, then a deacon, became a leading defender afterward."
+],
+[
+"Constantinople, 381",
+"Reaffirmation of Nicene faith and the Holy Spirit’s divine status."
+],
+[
+"Ephesus, 431",
+"The unity of Christ’s person in the Nestorian controversy."
+],
+[
+"Chalcedon, 451",
+"One Christ in two natures, without confusion or separation."
+],
+[
+"Orange, 529",
+"A regional council addressing grace after the Pelagian controversies, not an ecumenical council or an endorsement of every later Augustinian system."
+],
+[
+"Medieval to modern periods",
+"Recurring questions, new movements, and the need to distinguish discernment from coercion."
+]
+],
+"parts": [
+[
+"early",
+"Part I — The Early Church",
+"Eight denials of essential doctrine about God, Christ and grace, two related early positions, and one schism."
+],
+[
+"later",
+"Part II — Later History and Disputed Boundaries",
+"Medieval and Reformation-era movements, including one historical disagreement and one fairness card."
+],
+[
+"modern",
+"Part III — Modern Comparisons",
+"Present-day movements compared with Nicene and Chalcedonian faith, using their own current official statements."
+]
+],
+"kinds": {
+"dep": [
+"Doctrinal departure",
+"A serious departure from the foundational apostolic faith (who God is, who Christ is, or grace itself)."
+],
+"sch": [
+"Schism & church order",
+"A division over the church, ministry and sacraments; not a denial of Christ's deity."
+],
+"bnd": [
+"Historical disagreement",
+"A boundary case where faithful Christians still disagree; not a verdict on whole traditions."
+],
+"fair": [
+"Fairness card",
+"A reminder to check labels: the movement contained very different people and beliefs."
+],
+"mod": [
+"Modern comparison",
+"A present-day movement compared with Nicene and Chalcedonian faith, in its own official words."
+]
+},
+"cards": [
+{
+"id": "gnosticism",
+"part": "early",
+"kind": "dep",
+"n": "Gnosticism",
+"q": "Is salvation secret knowledge?",
+"per": "2nd century",
+"who": "Valentinus, Basilides and other teachers; answered by Irenaeus",
+"what": "Second-century teachers including Valentinus and Basilides represent diverse movements now grouped under the label “Gnosticism.” There was no single Gnostic church. Many of these systems distinguished the highest God from the maker of the material world, and presented salvation as liberation through a saving knowledge given to the spiritual few.",
+"ans": "Irenaeus of Lyon answered with the public rule of faith the churches had received: one God, the Creator of heaven and earth; one Christ who truly became flesh; and the resurrection of the body. The apostolic gospel was not a secret passed to an inner circle; it was preached openly.",
+"why": "Creation’s goodness and the hope of resurrection are at stake. If matter is a prison, then the incarnation, the empty tomb and the renewal of all things lose their meaning.",
+"mod": "Some esoteric and New Age teachings offer partial echoes, such as hidden knowledge or a spirit trapped in matter. Echoes are not proof of direct descent, and not every modern spirituality shares every Gnostic belief.",
+"fair": "The label covers many different systems, and much of what we know comes from opponents. Describe a specific teacher’s view rather than a single “Gnostic” creed.",
+"key": "Genesis 1:31",
+"refs": [
+[
+"Genesis 1:31",
+"Genesis 1"
+],
+[
+"John 1:1–14",
+"John 1"
+],
+[
+"1 Corinthians 15:12–22",
+"1 Corinthians 15"
+]
+],
+"see": [
+[
+"#church/irenaeus",
+"Christian Thinkers: Irenaeus"
+],
+[
+"#glossary/gnosticism",
+"Glossary: Gnosticism"
+],
+[
+"#essentials/creation",
+"Essentials: Creation"
+]
+],
+"src": [
+[
+"https://www.newadvent.org/fathers/0103110.htm",
+"Irenaeus, Against Heresies I.10 (rule of faith)"
+],
+[
+"https://www.newadvent.org/fathers/0103111.htm",
+"Irenaeus, Against Heresies I.11 (Valentinus)"
+],
+[
+"https://www.newadvent.org/fathers/0103124.htm",
+"Irenaeus, Against Heresies I.24 (Saturninus and Basilides)"
+]
+]
+},
+{
+"id": "marcionism",
+"part": "early",
+"kind": "dep",
+"n": "Marcionism",
+"q": "Can we separate Jesus from Israel’s God?",
+"per": "mid-2nd century",
+"who": "Marcion of Pontus; answered by Irenaeus and Tertullian",
+"what": "Marcion distinguished the Father of Jesus from the Creator proclaimed in the law and the prophets. He rejected Israel’s Scriptures and used a shortened collection associated with Luke’s Gospel and Paul’s letters, removing passages that tied Jesus to the Creator.",
+"ans": "Irenaeus described and opposed Marcion’s teaching, and Tertullian wrote five books Against Marcion. Both argued that the God who made the world is the Father of Jesus Christ, and that Jesus fulfils the Scriptures rather than introducing an unrelated deity.",
+"why": "Jesus Himself opened the Scriptures to show what was written about Him in Moses, the Prophets and the Psalms. When we set God’s holiness and His mercy against each other, we lose the one God who is both just and the justifier.",
+"mod": "Modern dismissals of the Old Testament, or talk of an “angry Old Testament God” versus a “loving Jesus,” may resemble Marcion’s impulse without being full Marcionism.",
+"fair": "Marcion’s own writings are lost. His collection is reconstructed largely through his opponents, so its exact contents should be described cautiously.",
+"key": "Luke 24:27",
+"refs": [
+[
+"Luke 24:27",
+"Luke 24"
+],
+[
+"Luke 24:44",
+"Luke 24"
+],
+[
+"Romans 1:1–4",
+"Romans 1"
+]
+],
+"see": [
+[
+"#church/irenaeus",
+"Christian Thinkers: Irenaeus"
+],
+[
+"#church/tertullian",
+"Christian Thinkers: Tertullian"
+],
+[
+"#glossary/marcion-marcionism",
+"Glossary: Marcion / Marcionism"
+]
+],
+"src": [
+[
+"https://www.newadvent.org/fathers/0103127.htm",
+"Irenaeus, Against Heresies I.27 (Cerdo and Marcion)"
+],
+[
+"https://www.newadvent.org/fathers/0312.htm",
+"Tertullian, Against Marcion (Books I–V)"
+]
+]
+},
+{
+"id": "docetism",
+"part": "early",
+"kind": "dep",
+"n": "Docetism",
+"q": "Did Jesus only seem human?",
+"per": "late 1st – 2nd century",
+"who": "Various teachers (not one organization); answered by Ignatius of Antioch and Irenaeus",
+"what": "The name comes from a Greek word for “to seem.” Docetic accounts held that Christ only appeared to have real flesh, or only appeared to suffer and die. These were scattered teachings, not one uniform organization.",
+"ans": "Ignatius of Antioch, writing on his way to martyrdom, insisted that Jesus was truly born, truly suffered and truly rose, not, as some unbelievers said, that He only seemed to suffer. Irenaeus likewise defended a real incarnation and a real passion.",
+"why": "A pretend death cannot be the real human death proclaimed in the gospel. If Christ did not truly share our flesh, He did not truly stand in our place.",
+"mod": "Modern suggestions that the incarnation or the crucifixion was merely an appearance are comparable patterns, not necessarily identical systems.",
+"fair": "“Docetism” describes a tendency found in several groups, often overlapping with Gnostic systems. Name the actual claim being made.",
+"key": "1 John 4:2",
+"refs": [
+[
+"1 John 4:1–3",
+"1 John 4"
+],
+[
+"Luke 24:36–43",
+"Luke 24"
+],
+[
+"Hebrews 2:14–18",
+"Hebrews 2"
+]
+],
+"see": [
+[
+"#church/ignatius",
+"Christian Thinkers: Ignatius of Antioch"
+],
+[
+"#glossary/docetism",
+"Glossary: Docetism"
+],
+[
+"#doctrine/christ-atonement/hypostatic-union",
+"Doctrine: The Hypostatic Union"
+]
+],
+"src": [
+[
+"https://www.newadvent.org/fathers/0109.htm",
+"Ignatius, Epistle to the Smyrnaeans, chapters 1–5"
+],
+[
+"https://www.newadvent.org/fathers/0103110.htm",
+"Irenaeus, Against Heresies I.10"
+]
+]
+},
+{
+"id": "modalism",
+"part": "early",
+"kind": "dep",
+"n": "Modalism / Sabellianism",
+"q": "One God, but no eternal personal distinctions?",
+"per": "late 2nd – 3rd century",
+"who": "Praxeas and Sabellius; answered by Tertullian",
+"sample": true,
+"full": [
+"Modalist accounts protect God’s unity by denying eternal personal distinctions. Some speak of manifestations or roles. Ancient positions varied; three successive masks do not describe every ancient or modern account.",
+"Tertullian’s <i>Against Praxeas</i> argued that the Father who sends and the Son who is sent are distinguishable without becoming rival gods. His terminology belongs to an earlier stage of development; not every sentence is an already completed Nicene formula.",
+"Read Matthew 3:16–17: the Son is baptized, the Spirit descends, and the Father speaks. Then read John 17:5, where Jesus speaks of glory with the Father before the world existed. Christian confession holds these personal relationships together with one divine nature.",
+"This is not a technical distraction. The Father’s love for the Son and the sending of the Son belong to the gospel itself. I do not want an illustration that makes God easier to picture by changing what Scripture reveals."
+],
+"mod": "Oneness Pentecostalism rejects three eternal persons while strongly affirming Jesus’ deity. State both facts. Engage its explanations directly; this is not the theology of all Pentecostals.",
+"fair": "Ancient accounts varied and survive largely through their critics.",
+"key": "John 17:5",
+"refs": [
+[
+"Matthew 3:16–17",
+"Matthew 3"
+],
+[
+"John 17:5",
+"John 17"
+],
+[
+"Matthew 28:19",
+"Matthew 28"
+]
+],
+"see": [
+[
+"#church/tertullian",
+"Christian Thinkers: Tertullian"
+],
+[
+"#doctrine/god-trinity/trinity",
+"Doctrine: The Trinity"
+],
+[
+"#glossary/modalism",
+"Glossary: Modalism"
+],
+[
+"#glossary/sabellianism",
+"Glossary: Sabellianism"
+],
+[
+"#essentials/trinity",
+"Essentials: The Trinity"
+],
+[
+"#heresies/oneness",
+"This tab: Oneness Pentecostalism"
+]
+],
+"src": [
+[
+"https://www.newadvent.org/fathers/0317.htm",
+"Tertullian, Against Praxeas (especially chapters 2 and 9–11)"
+]
+]
+},
+{
+"id": "arianism",
+"part": "early",
+"kind": "dep",
+"n": "Arianism",
+"q": "Is the Son a creature?",
+"per": "4th century",
+"who": "Arius; opposed by Alexander of Alexandria, Athanasius and the Council of Nicaea (325)",
+"sample": true,
+"full": [
+"Arius did not simply say Jesus was unimportant. He gave the Son a uniquely exalted place. The decisive question was whether the Son belonged on the Creator’s side of the distinction or among the things God made.",
+"Nicaea answered that the Son is “begotten, not made,” of one substance with the Father. That confession did not end the struggle. Athanasius defended it amid shifting alliances, imperial pressure, and exile.",
+"I find John 1:1–3 especially important. John distinguishes the Word from the one He is with, calls the Word God, and says everything made came into being through Him. Read that alongside Thomas’s confession in John 20:28 and Colossians 1:15–20. The argument concerns whole passages, not one isolated English phrase.",
+"Why does it matter? Christianity calls us to honor Jesus in a way that would be wrong if He were merely a creature. We are not saved by putting a very impressive being between ourselves and God. In the Son, God Himself has come to us."
+],
+"mod": "Jehovah’s Witnesses explicitly deny that Jesus is Almighty God. That resembles Arianism centrally while differing elsewhere. Explain the disagreement rather than using “Arian” as a conversation-ending insult.",
+"fair": "Alexander, bishop of Alexandria, first opposed Arius; Athanasius, then a deacon, became the leading defender of Nicaea afterward.",
+"key": "John 1:3",
+"refs": [
+[
+"John 1:1–3",
+"John 1"
+],
+[
+"John 20:28",
+"John 20"
+],
+[
+"Colossians 1:15–20",
+"Colossians 1"
+]
+],
+"see": [
+[
+"#church/athanasius",
+"Christian Thinkers: Athanasius"
+],
+[
+"#church/arius",
+"Christian Thinkers: Arius"
+],
+[
+"#doctrine/god-trinity/trinity",
+"Doctrine: The Trinity"
+],
+[
+"#glossary/homoousios",
+"Glossary: homoousios"
+],
+[
+"#glossary/arianism",
+"Glossary: Arianism"
+],
+[
+"#heresies/jw",
+"This tab: Jehovah’s Witnesses"
+]
+],
+"src": [
+[
+"https://www.newadvent.org/fathers/3801.htm",
+"The Creed of Nicaea (325), translated text"
+],
+[
+"https://www.newadvent.org/fathers/3819.htm",
+"Second Council of Nicaea (787), decree recalling Nicaea against Arius"
+]
+]
+},
+{
+"id": "apollinarianism",
+"part": "early",
+"kind": "dep",
+"n": "Apollinarianism",
+"q": "Did Christ have a complete human mind?",
+"per": "4th century",
+"who": "Apollinaris of Laodicea; answered by Gregory of Nazianzus and others",
+"what": "Apollinaris wanted to protect the unity of Christ. As his opponents reported it, he taught that in Christ the divine Word took the place of the human mind: Christ had a human body (and soul), but not a human rational mind.",
+"ans": "Gregory of Nazianzus, in his first letter to Cledonius, answered that Christ assumed the whole of human nature, mind included, because the whole of our nature fell and needs healing. His best-known line is that what He has not assumed He has not healed. Gregory reports that synods of the Western and Eastern churches condemned the Apollinarians.",
+"why": "Christ took on a complete human life, not merely a body. His human obedience, His human growth in wisdom and His human sorrow in Gethsemane are part of how He saves us.",
+"mod": "Popular descriptions of Jesus as God “operating” a human body like a costume can drift toward this error without anyone consciously adopting Apollinaris’s system.",
+"fair": "The editor of Gregory’s letters notes a scholarly view that Gregory may have pushed some of Apollinaris’s statements further than Apollinaris himself would have. Apollinaris had earlier been a respected defender of Nicaea.",
+"key": "Hebrews 2:17",
+"refs": [
+[
+"Hebrews 2:17",
+"Hebrews 2"
+],
+[
+"Luke 2:52",
+"Luke 2"
+],
+[
+"Matthew 26:38",
+"Matthew 26"
+]
+],
+"see": [
+[
+"#church/gregory_n",
+"Christian Thinkers: Gregory of Nazianzus"
+],
+[
+"#glossary/apollinarianism",
+"Glossary: Apollinarianism"
+],
+[
+"#doctrine/christ-atonement/hypostatic-union",
+"Doctrine: The Hypostatic Union"
+]
+],
+"src": [
+[
+"https://www.newadvent.org/fathers/3103a.htm",
+"Gregory of Nazianzus, Letters to Cledonius (Ep. 101–102) and to Nectarius (Ep. 202)"
+]
+]
+},
+{
+"id": "nestorianism",
+"part": "early",
+"kind": "dep",
+"n": "The Nestorian controversy",
+"q": "Can we divide the one Savior?",
+"per": "5th century (Council of Ephesus, 431)",
+"who": "Nestorius of Constantinople; opposed by Cyril of Alexandria and the Council of Ephesus",
+"what": "The controversy began over whether Mary should be called <i>Theotokos</i>, “God-bearer.” Nestorius preferred other titles. His opponents charged that the way he distinguished Christ’s divinity and humanity divided Christ into two acting subjects, two Sons.",
+"ans": "Cyril of Alexandria and the Council of Ephesus (431) defended the unity of the incarnate Son: the one born of Mary is the eternal Word made flesh. <i>Theotokos</i> protects the identity of the person born of Mary; it does not mean that Mary is the origin of His deity.",
+"why": "We are not saved by a man closely joined to God, but by God the Son who truly became man. The one who was born, suffered and rose is one and the same Lord.",
+"mod": "Modern teachings that separate “the man Jesus” from a “Christ-spirit” that came upon him require individual assessment; they do not automatically reproduce this controversy.",
+"fair": "Nestorius’s own position is disputed by historians. Do not equate the Assyrian Church of the East with a two-Savior caricature: in its 1994 Common Christological Declaration with the Catholic Church it confesses Christ’s divinity and humanity united in one person. That declaration’s other statements are not adopted here as this tab’s position.",
+"key": "John 1:14",
+"refs": [
+[
+"John 1:14",
+"John 1"
+],
+[
+"Galatians 4:4",
+"Galatians 4"
+],
+[
+"Colossians 2:9",
+"Colossians 2"
+]
+],
+"see": [
+[
+"#church/cyril_a",
+"Christian Thinkers: Cyril of Alexandria"
+],
+[
+"#church/nestorius",
+"Christian Thinkers: Nestorius"
+],
+[
+"#glossary/nestorianism",
+"Glossary: Nestorianism"
+],
+[
+"#doctrine/christ-atonement/hypostatic-union",
+"Doctrine: The Hypostatic Union"
+]
+],
+"src": [
+[
+"https://www.vatican.va/content/john-paul-ii/en/speeches/1994/november/documents/hf_jp-ii_spe_19941111_dichiarazione-cristologica.html",
+"Common Christological Declaration, Catholic Church and Assyrian Church of the East (1994)"
+],
+[
+"https://www.newadvent.org/fathers/3819.htm",
+"Second Council of Nicaea (787), decree recalling Ephesus"
+]
+]
+},
+{
+"id": "eutychianism",
+"part": "early",
+"kind": "dep",
+"n": "Eutychianism",
+"q": "Can Christ’s humanity disappear into His deity?",
+"per": "5th century (Council of Chalcedon, 451)",
+"who": "Eutyches of Constantinople; answered by Leo the Great’s Tome and the Council of Chalcedon",
+"what": "Eutyches, a monk at Constantinople, was condemned for teaching in a way that seemed to confuse Christ’s natures, so that His humanity was no longer truly like ours. “Humanity swallowed by deity” explains the danger; it is not an undisputed quotation of Eutyches.",
+"ans": "Leo the Great’s Tome and the Definition of Chalcedon (451) confessed one and the same Christ in two natures, truly God and truly human, without confusion, change, division or separation.",
+"why": "Our mediator remains genuinely one of us. A high priest who can sympathize with our weaknesses must share our humanity, not merely wear it.",
+"mod": "No forced modern twin is needed for this card.",
+"fair": "The Oriental Orthodox churches (Coptic, Syriac, Armenian, Ethiopian and others) did not accept Chalcedon’s wording and speak of Christ’s one incarnate nature (miaphysite), but they reject Eutyches and confess Christ’s full divinity and full humanity. Do not conflate them with Eutychianism. In the 1973 Common Declaration of Pope Paul VI and Pope Shenouda III, for example, both confessed Christ as perfect God and perfect man, united without mingling, confusion, division or separation.",
+"key": "Hebrews 4:15",
+"refs": [
+[
+"Hebrews 2:14–18",
+"Hebrews 2"
+],
+[
+"Hebrews 4:15",
+"Hebrews 4"
+]
+],
+"see": [
+[
+"#church/leo",
+"Christian Thinkers: Leo the Great"
+],
+[
+"#glossary/monophysitism",
+"Glossary: Monophysitism"
+],
+[
+"#glossary/chalcedon-chalcedonian",
+"Glossary: Chalcedon / Chalcedonian"
+],
+[
+"#doctrine/christ-atonement/hypostatic-union",
+"Doctrine: The Hypostatic Union"
+]
+],
+"src": [
+[
+"https://www.newadvent.org/fathers/3811.htm",
+"Council of Chalcedon (451): Definition and Leo’s Tome"
+],
+[
+"http://syriacorthodoxresources.org/Ecumenism/RC.html",
+"Common Declaration of Pope Paul VI and Pope Shenouda III (1973), text reproduced by Syriac Orthodox Resources"
+]
+]
+},
+{
+"id": "pelagianism",
+"part": "early",
+"kind": "dep",
+"n": "Pelagianism",
+"q": "Can natural ability begin our rescue?",
+"per": "5th century (Orange, 529)",
+"who": "Pelagius and Caelestius; opposed by Augustine and the African councils (Carthage, 418)",
+"sample": true,
+"full": [
+"Pelagius was concerned about moral responsibility and excuses for sin. Those concerns were not themselves the error. The controversy turned on fallen humanity and whether obedience and the beginning of salvation require God’s inward, enabling grace.",
+"Augustine insisted that we need more than an example and stronger determination. We need rescue. Distinguish the positions grouped as Pelagianism from everything Pelagius personally wrote or was accused of teaching; associates and opponents shaped the controversy too.",
+"Read Ephesians 2:1–10 as a whole: death in sin, life with Christ, salvation by grace, and good works as its intended fruit. Grace does not make obedience irrelevant. It makes Christian obedience possible without turning it into grounds for boasting.",
+"Orange later rejected the beginning of faith arising from unaided nature. It did not settle every subsequent debate about predestination or free will.",
+"I need this warning personally. I can speak warmly about Jesus while living as though God accepts me because I have finally become good enough. The gospel leads away from self-rescue toward dependence on Christ."
+],
+"mod": "Moralism and self-salvation. Do not casually call Arminians, Wesleyans, Catholics, Orthodox Christians, or everyone who speaks of cooperation with grace “Pelagian.” Identify the precise disputed proposition.",
+"fair": "The Council of Carthage (418) rejected the claim that grace only forgives past sins or only shows us our duty. Orange (529) was a regional council in Gaul, not an ecumenical council, and not an endorsement of every later Augustinian system.",
+"key": "Ephesians 2:8",
+"refs": [
+[
+"Romans 5:12–19",
+"Romans 5"
+],
+[
+"Ephesians 2:1–10",
+"Ephesians 2"
+],
+[
+"John 15:5",
+"John 15"
+]
+],
+"see": [
+[
+"#church/augustine",
+"Christian Thinkers: Augustine"
+],
+[
+"#church/pelagius",
+"Christian Thinkers: Pelagius"
+],
+[
+"#glossary/pelagianism",
+"Glossary: Pelagianism"
+],
+[
+"#glossary/semi-pelagianism",
+"Glossary: Semi-Pelagianism"
+],
+[
+"#essentials/grace",
+"Essentials: Salvation by Grace"
+],
+[
+"#essentials/calvinism",
+"Essentials: Calvinism and Arminianism"
+]
+],
+"src": [
+[
+"https://www.newadvent.org/fathers/3816.htm",
+"Code of Canons of the African Church, including the Council of Carthage (418) against Pelagius and Caelestius"
+],
+[
+"https://www.romanmissal.org/denzinger/p108.html",
+"Second Council of Orange (529), canons (Denzinger translation)"
+]
+]
+},
+{
+"id": "adoptionism",
+"part": "early",
+"kind": "dep",
+"n": "Adoptionism",
+"q": "Did a mere man become God’s Son?",
+"per": "2nd – 3rd century",
+"who": "Theodotus the cobbler (Rome), later Artemon and Paul of Samosata",
+"what": "Often called “dynamic monarchianism,” these positions treated Jesus as a man specially empowered by God, or adopted as Son, rather than the eternal Son who became incarnate. Eusebius preserves an early writer’s report that Bishop Victor of Rome cut Theodotus off from communion for teaching that Christ was a mere man.",
+"ans": "Early church writers answered that Christ had been confessed as God from the beginning, in Scripture and in the church’s hymns. Later, Gregory of Nazianzus condemned the idea that Christ earned an adoptive Sonship after His baptism or resurrection.",
+"why": "The incarnation is not a promotion earned by a creature. The Son who was with the Father before the world existed humbled Himself to become one of us.",
+"mod": "Some modern accounts of Jesus as a good man whom God rewarded with divine status resemble this pattern.",
+"fair": "The later Spanish Adoptionist controversy (8th century) concerned different questions and needs separate treatment; a shared label does not establish identical theology.",
+"key": "Hebrews 1:2",
+"refs": [
+[
+"John 1:1–14",
+"John 1"
+],
+[
+"John 17:5",
+"John 17"
+],
+[
+"Hebrews 1:1–3",
+"Hebrews 1"
+]
+],
+"see": [
+[
+"#glossary/adoptionism",
+"Glossary: Adoptionism"
+],
+[
+"#doctrine/god-trinity/trinity",
+"Doctrine: The Trinity"
+],
+[
+"#essentials/christ",
+"Essentials: The Person of Christ"
+]
+],
+"src": [
+[
+"https://www.newadvent.org/fathers/250105.htm",
+"Eusebius, Church History V.28 (Theodotus and Artemon)"
+],
+[
+"https://www.newadvent.org/fathers/3103a.htm",
+"Gregory of Nazianzus, Letter 101 to Cledonius"
+]
+]
+},
+{
+"id": "donatism",
+"part": "early",
+"kind": "sch",
+"n": "Donatism",
+"q": "Does Christ’s gift depend on a minister’s purity?",
+"per": "4th – 5th century (North Africa)",
+"who": "Majorinus, then Donatus; opposed by Augustine",
+"what": "This North African division began in 311–312 over the election of Caecilian as bishop of Carthage. Many objected because he had been consecrated by a bishop accused of handing over Scripture during Diocletian’s persecution. The Donatists held that sacraments given by unworthy clergy were invalid and rebaptized those who joined them.",
+"ans": "Augustine opposed the Donatists’ exclusive account of the church and their rebaptism. He argued that baptism is Christ’s gift, not the minister’s. A conference at Carthage in 411 ruled against them, and imperial laws followed.",
+"why": "Ministers matter, but the power of the gospel and the sacraments rests on Christ, not on the purity of the one who serves. That frees ordinary believers from anxiety about the hidden lives of their pastors.",
+"mod": "Modern purity-based exclusivism (only our flawless group is the true church) supplies a limited analogy.",
+"fair": "This was a <b>schism and church-order controversy</b>, not a denial of Christ’s deity. It arose from real disputes about compromise during persecution, and the later use of imperial force against the Donatists is not a biblical argument. Nor is this card an excuse for abusive leaders: Scripture still requires holy lives of those who teach.",
+"key": "1 Corinthians 3:7",
+"refs": [
+[
+"John 4:1–2",
+"John 4"
+],
+[
+"1 Corinthians 3:5–9",
+"1 Corinthians 3"
+]
+],
+"see": [
+[
+"#church/augustine",
+"Christian Thinkers: Augustine"
+],
+[
+"#essentials/government",
+"Essentials: Church Government"
+]
+],
+"src": [
+[
+"https://www.britannica.com/topic/Donatists",
+"Encyclopaedia Britannica, “Donatist”"
+],
+[
+"https://www.newadvent.org/fathers/3816.htm",
+"Code of Canons of the African Church (canons on the Donatists)"
+]
+]
+},
+{
+"id": "catharism",
+"part": "later",
+"kind": "dep",
+"n": "Catharism / Albigensianism",
+"q": "Is matter evil?",
+"per": "12th – 13th century",
+"who": "Cathar “perfect” and believers in southern France and northern Italy; Dominican preachers and Catholic authorities",
+"what": "Medieval sources describe dualist communities teaching that there are two principles, one good and one evil, and that the material world is evil. Their leaders, the “perfect,” lived strict ascetic lives. They rejected the orthodox doctrine of the incarnation, holding that Christ’s human sufferings and death were not real.",
+"ans": "Preaching missions, including those of Dominic and the Dominicans, argued against Cathar teaching. Church and state also responded with the Albigensian Crusade (1209–1229) and later the Inquisition; the fortress of Montségur fell in 1244.",
+"why": "The good Creator, the real incarnation and the bodily resurrection belong together. Salvation is not escape from creation but the redemption of it.",
+"mod": "Modern anti-material spiritualities offer loose echoes, not demonstrated descent.",
+"fair": "Historians still debate how much the surviving evidence (often from inquisitors) reflects one coherent “Cathar church.” Crusade and persecution, which killed Catholics as well as Cathars, are not biblical arguments or the gospel’s victory.",
+"key": "1 Corinthians 15:20",
+"refs": [
+[
+"Genesis 1:31",
+"Genesis 1"
+],
+[
+"John 1:14",
+"John 1"
+],
+[
+"1 Corinthians 15:20–22",
+"1 Corinthians 15"
+]
+],
+"see": [
+[
+"#church/dominic",
+"Christian Thinkers: Dominic"
+],
+[
+"#glossary/cathars",
+"Glossary: Cathars"
+],
+[
+"#glossary/albigensians",
+"Glossary: Albigensians"
+],
+[
+"#martyrs/peter_ver",
+"Martyrs: Peter of Verona"
+]
+],
+"src": [
+[
+"https://www.britannica.com/topic/Cathari",
+"Encyclopaedia Britannica, “Cathari”"
+]
+]
+},
+{
+"id": "socinianism",
+"part": "later",
+"kind": "dep",
+"n": "Socinianism",
+"q": "Christian language without the eternal Son?",
+"per": "16th – 17th century",
+"who": "Laelius and Faustus Socinus; the Polish Brethren (Minor Reformed Church)",
+"what": "Faustus Socinus and the Polish Brethren accepted Jesus as God’s revelation but held that He was a man, divine by office rather than by nature. They rejected the Trinity and Christ’s personal preexistence and reworked His saving work. The Racovian Catechism (1605), printed at Raków, set out their teaching.",
+"ans": "Catholic and mainstream Protestant theologians opposed Socinian teaching. In Poland the Diet closed the Raków academy and press in 1638 and in 1658 forced the Socinians to conform or leave.",
+"why": "Christ’s identity is central: the one who saves us is the eternal Son, not a man raised to an office.",
+"mod": "Socinian ideas influenced John Biddle, often called the father of English Unitarianism. Later Unitarian streams show connections and parallels.",
+"fair": "Disagreement over every detail of atonement theory is not equivalent to Socinianism. Neither all Anabaptists nor all modern Unitarians are interchangeable with Socinus.",
+"key": "John 20:28",
+"refs": [
+[
+"John 1:1–3",
+"John 1"
+],
+[
+"John 17:5",
+"John 17"
+],
+[
+"John 20:28",
+"John 20"
+]
+],
+"see": [
+[
+"#doctrine/god-trinity/trinity",
+"Doctrine: The Trinity"
+],
+[
+"#glossary/unitarian",
+"Glossary: Unitarian"
+],
+[
+"#heresies/uu",
+"This tab: Unitarian Universalism"
+]
+],
+"src": [
+[
+"https://www.britannica.com/topic/Socinians",
+"Encyclopaedia Britannica, “Socinian”"
+]
+]
+},
+{
+"id": "iconoclasm",
+"part": "later",
+"kind": "bnd",
+"n": "Images and iconoclasm",
+"q": "A boundary case",
+"per": "8th – 9th century; Reformation",
+"who": "Byzantine emperors, John of Damascus, the Second Council of Nicaea (787); later Protestant reformers",
+"what": "Byzantine emperors removed and destroyed religious images, and an iconoclast council condemned them, naming John of Damascus among its opponents. Its concern was idolatry: that people would worship created things.",
+"ans": "The Second Council of Nicaea (787) restored images. It distinguished the honour and veneration given to an image, which passes to the person shown, from the true worship (<i>latreia</i>) that belongs to God alone. Defenders such as John of Damascus argued from the incarnation: the invisible God has made Himself visible in Christ.",
+"why": "Both sides wanted to protect something true: that God alone may be worshiped, and that God truly became flesh.",
+"mod": "Modern Orthodox, Catholic and Protestant Christians still disagree about images. That confessional disagreement is not automatically doctrinal collapse.",
+"fair": "This is a <b>historical disagreement</b>, not a verdict that every Reformed Christian is a heretic or every Orthodox Christian an idolater. Later Protestants reconsidered images in different ways.",
+"key": "Exodus 20:4",
+"refs": [
+[
+"Exodus 20:4–5",
+"Exodus 20"
+],
+[
+"John 1:14",
+"John 1"
+]
+],
+"see": [
+[
+"#church/john_d",
+"Christian Thinkers: John of Damascus"
+],
+[
+"#essentials/worship",
+"Essentials: Worship Style"
+]
+],
+"src": [
+[
+"https://www.newadvent.org/fathers/3819.htm",
+"Second Council of Nicaea (787): acts, the iconoclast council’s definition and the decree"
+]
+]
+},
+{
+"id": "radical",
+"part": "later",
+"kind": "fair",
+"n": "The Radical Reformation",
+"q": "Why labels need checking",
+"per": "16th century",
+"who": "Conrad Grebel, Michael Sattler, Menno Simons; the Münster kingdom (1534–1535)",
+"what": "Sixteenth-century Anabaptism included peaceful, Trinitarian believers such as the Swiss Brethren, whose convictions were set out in the Schleitheim Confession (1527) under Michael Sattler, and radically different movements, including the violent apocalyptic kingdom at Münster in 1534–1535.",
+"ans": "Catholic and Protestant authorities persecuted Anabaptists, often without distinguishing the pacifist majority from the violent minority. Many early leaders died in prison or were executed. The pacifist Anabaptists of the Netherlands gathered under Menno Simons and became the Mennonites.",
+"why": "Believer’s baptism, a church separate from the state and refusal of the sword are convictions faithful Christians may weigh; they are not denials of the gospel. Persecution for them was coercion, not confession.",
+"mod": "The modern lesson is careful judgment, not guilt by association.",
+"fair": "Believer’s baptism is not itself heresy, and historians regard Münster as an aberration; it does not fairly describe Mennonites, Hutterites or Baptists. See the Martyrs tab for Felix Manz, Michael Sattler and Dirk Willems rather than retelling their stories here.",
+"key": "John 18:36",
+"refs": [
+[
+"Matthew 28:19",
+"Matthew 28"
+],
+[
+"John 18:36",
+"John 18"
+]
+],
+"see": [
+[
+"#church/menno",
+"Christian Thinkers: Menno Simons"
+],
+[
+"#martyrs/manz",
+"Martyrs: Felix Manz"
+],
+[
+"#martyrs/sattler",
+"Martyrs: Michael Sattler"
+],
+[
+"#martyrs/willems",
+"Martyrs: Dirk Willems"
+],
+[
+"#glossary/anabaptist",
+"Glossary: Anabaptist"
+],
+[
+"#essentials/baptism",
+"Essentials: Baptism"
+]
+],
+"src": [
+[
+"https://www.britannica.com/topic/Anabaptists",
+"Encyclopaedia Britannica, “Anabaptist”"
+]
+]
+},
+{
+"id": "jw",
+"part": "modern",
+"kind": "mod",
+"n": "Jehovah’s Witnesses",
+"q": "Is Jesus Almighty God?",
+"per": "from the 1870s",
+"who": "Bible Students around Charles Taze Russell; today the Watch Tower organization",
+"what": "The movement traces itself to a Bible study group near Pittsburgh in the 1870s, in which Charles Taze Russell took the lead and was the first editor of <i>The Watchtower</i>. Witnesses do not regard Russell as founding a new religion. Their official teaching affirms Jesus’ ransom sacrifice and resurrection, but states that they do not worship Jesus because they do not believe He is Almighty God.",
+"ans": "Nicene Christians confess the eternal divine Son, worthy of the same honour as the Father. Athanasius’s arguments remain relevant, although he never addressed this modern organization.",
+"why": "If the Son is honoured as the Father is honoured, He cannot be a creature. Who Jesus is decides whether worshiping Him is right or wrong.",
+"mod": "The Arian parallel is the denial of full eternal deity, not identical history.",
+"fair": "Ask what “Son of God” means to the person you are talking with before answering. Witnesses identify as Christians; explain the doctrinal disagreement without mocking their sincerity.",
+"key": "John 5:23",
+"refs": [
+[
+"John 1:1–3",
+"John 1"
+],
+[
+"John 5:23",
+"John 5"
+],
+[
+"John 20:28",
+"John 20"
+]
+],
+"see": [
+[
+"#heresies/arianism",
+"This tab: Arianism"
+],
+[
+"#church/athanasius",
+"Christian Thinkers: Athanasius"
+],
+[
+"#doctrine/god-trinity/trinity",
+"Doctrine: The Trinity"
+]
+],
+"src": [
+[
+"https://www.jw.org/en/jehovahs-witnesses/faq/believe-in-jesus/",
+"jw.org, “Do Jehovah’s Witnesses Believe in Jesus?”"
+],
+[
+"https://www.jw.org/en/jehovahs-witnesses/faq/founder/",
+"jw.org, “Who Was the Founder of Jehovah’s Witnesses?”"
+]
+]
+},
+{
+"id": "lds",
+"part": "modern",
+"kind": "mod",
+"n": "The Church of Jesus Christ of Latter-day Saints",
+"q": "Who is God?",
+"per": "from 1830",
+"who": "Joseph Smith; the Church of Jesus Christ of Latter-day Saints",
+"what": "The church was organized in April 1830 under Joseph Smith as a restoration of the ancient church, and receives additional scriptures. Its official teaching describes the Father, the Son and the Holy Ghost as three separate beings, one in purpose and doctrine; the Father and the Son have tangible bodies of flesh and bones.",
+"ans": "The Nicene confession holds one God in three persons, sharing one divine being. Isaiah’s witness that there is no God besides the LORD frames the disagreement.",
+"why": "God’s identity, not a nickname, is at stake: whether there is one God, or a Godhead of separate beings united in purpose.",
+"mod": "No single ancient label captures this system; it is not simply Arianism or Modalism.",
+"fair": "Latter-day Saints identify as Christians. Explain the doctrinal disagreement without denying their self-description. Detailed teaching about exaltation needs its own official-source review and is not summarized here.",
+"key": "Isaiah 44:6",
+"refs": [
+[
+"Isaiah 43:10",
+"Isaiah 43"
+],
+[
+"Isaiah 44:6",
+"Isaiah 44"
+],
+[
+"John 1:1–3",
+"John 1"
+]
+],
+"see": [
+[
+"#doctrine/god-trinity/trinity",
+"Doctrine: The Trinity"
+],
+[
+"#essentials/trinity",
+"Essentials: The Trinity"
+]
+],
+"src": [
+[
+"https://www.churchofjesuschrist.org/study/manual/gospel-topics/godhead?lang=eng",
+"Church of Jesus Christ of Latter-day Saints, Gospel Topics: “Godhead”"
+],
+[
+"https://newsroom.churchofjesuschrist.org/facts-and-statistics",
+"Church Newsroom, “Facts and Statistics” (historical overview)"
+]
+]
+},
+{
+"id": "oneness",
+"part": "modern",
+"kind": "mod",
+"n": "Oneness Pentecostalism",
+"q": "Three eternal persons, or one person in three manifestations?",
+"per": "from the early 20th century",
+"who": "Oneness movements, such as the United Pentecostal Church International (UPCI)",
+"what": "Oneness movements emerged in the early twentieth century. The UPCI confesses one God who has revealed Himself as Father; through His Son, in redemption; and as the Holy Spirit. It teaches that Jesus Christ is God manifested in flesh, both God and man, and baptizes in the name of Jesus Christ.",
+"ans": "Trinitarian Christians confess eternal personal distinctions: the Son shared glory with the Father before the world existed, and at Jesus’ baptism the Father speaks and the Spirit descends. Tertullian’s answer to Praxeas supplies a historical comparison, not an identical genealogy.",
+"why": "The disagreement concerns eternal personal distinctions within God, not whether Jesus is divine; Oneness believers strongly affirm Jesus’ deity.",
+"mod": "The modalist parallel is the denial of three eternal persons.",
+"fair": "Most Pentecostal churches are Trinitarian. Never make this a verdict against Pentecostalism generally.",
+"key": "Matthew 28:19",
+"refs": [
+[
+"John 17:5",
+"John 17"
+],
+[
+"Matthew 3:16–17",
+"Matthew 3"
+],
+[
+"Matthew 28:19",
+"Matthew 28"
+]
+],
+"see": [
+[
+"#heresies/modalism",
+"This tab: Modalism"
+],
+[
+"#church/tertullian",
+"Christian Thinkers: Tertullian"
+],
+[
+"#glossary/oneness-pentecostalism",
+"Glossary: Oneness Pentecostalism"
+],
+[
+"#essentials/gifts",
+"Essentials: Spiritual Gifts"
+]
+],
+"src": [
+[
+"https://upci.org/our-beliefs/",
+"UPCI, “Our Beliefs”"
+]
+]
+},
+{
+"id": "cs",
+"part": "modern",
+"kind": "mod",
+"n": "Christian Science",
+"q": "Is matter real, and did Christ truly die and rise?",
+"per": "from 1866",
+"who": "Mary Baker Eddy; the Church of Christ, Scientist",
+"what": "Christian Science says it was founded in 1866 by Mary Baker Eddy and is based on the Bible and the teachings of Christ Jesus, read with her book <i>Science and Health</i>. It emphasizes healing through prayer and the understanding of God as Spirit. Its tenets call Jesus “the Way-shower,” and say his crucifixion and resurrection served to uplift faith to understand eternal Life and “the nothingness of matter.”",
+"ans": "Historic incarnational Christianity confesses that the Word became real flesh, that Christ truly died for our sins, and that He rose bodily: the risen Jesus invited His disciples to handle Him and see that He had flesh and bones.",
+"why": "Real incarnation, real death and real resurrection matter, because they are the gospel itself, not illustrations of a spiritual principle.",
+"mod": "Comparison with Docetism may illuminate a question, but it cannot replace explaining the movement in its own terms.",
+"fair": "This card relies on the church’s own current statements, not an opponent’s summary. Christian Scientists understand Christ and healing in their own way; ask before assuming.",
+"key": "Luke 24:39",
+"refs": [
+[
+"John 1:14",
+"John 1"
+],
+[
+"Luke 24:39",
+"Luke 24"
+],
+[
+"1 Corinthians 15:3–4",
+"1 Corinthians 15"
+]
+],
+"see": [
+[
+"#heresies/docetism",
+"This tab: Docetism"
+],
+[
+"#essentials/resurrection",
+"Essentials: The Bodily Resurrection"
+]
+],
+"src": [
+[
+"https://www.christianscience.com/what-we-believe/what-a-christian-scientist-believes",
+"Christian Science, “What a Christian Scientist believes” (including the tenets)"
+],
+[
+"https://www.christianscience.com/what-we-believe/frequently-asked-questions",
+"Christian Science, “Frequently asked questions”"
+]
+]
+},
+{
+"id": "uu",
+"part": "modern",
+"kind": "mod",
+"n": "Unitarian Universalism",
+"q": "Not one uniform Christian heresy",
+"per": "from 1961",
+"who": "The Unitarian Universalist Association (UUA)",
+"what": "The Universalist Church of America (founded 1793) and the American Unitarian Association (1825) consolidated in 1961 to form the Unitarian Universalist Association. The UUA describes Unitarian Universalism as a religion whose members draw on many beliefs, including Christian, Hindu, Humanist, Jewish, Muslim and Pagan, and it has no binding creed.",
+"ans": "Historic Unitarian denials of the Trinity invite comparison with Socinianism; contemporary religious pluralism is a different question.",
+"why": "Matthew 28:19 and John 14:6 express the Christian commitments being compared: the one name of Father, Son and Holy Spirit, and Christ as the way to the Father.",
+"mod": "This is a comparison of commitments, not a claim that every member holds one theology.",
+"fair": "Do not attribute one binding theology to every member. Many Unitarian Universalists do not claim to be Nicene Christians at all, so calling them “Christian heretics” misdescribes them.",
+"key": "John 14:6",
+"refs": [
+[
+"Matthew 28:19",
+"Matthew 28"
+],
+[
+"John 14:6",
+"John 14"
+]
+],
+"see": [
+[
+"#heresies/socinianism",
+"This tab: Socinianism"
+],
+[
+"#glossary/unitarian",
+"Glossary: Unitarian"
+]
+],
+"src": [
+[
+"https://www.uua.org/beliefs/who-we-are/history",
+"UUA, “Unitarian Universalist History”"
+],
+[
+"https://www.uua.org/beliefs/what-we-believe",
+"UUA, “What We Believe”"
+]
+]
+}
+],
+"concl": [
+"After studying these controversies, I do not want to become suspicious of everyone. I want to become more deeply rooted in Christ.",
+"History teaches me that familiar Christian words can carry unfamiliar meanings. It also teaches me that labels can be misused, political power can corrupt religious judgment, and faithful Christians can misunderstand one another. Being called a heretic does not prove someone wrong. Winning an imperial decree does not prove someone right. We must examine the teaching and evidence.",
+"Still, fairness must not become indifference. A created savior is not the eternal Son. An apparent incarnation is not God truly entering humanity. Self-salvation is not salvation by grace. These differences matter because the real Jesus matters.",
+"My task is to know the truth, live under it, and speak lovingly. When someone believes differently, I can ask what they mean, listen carefully, open Scripture, and explain why I trust the Christ proclaimed by the apostles. I can acknowledge where my tradition has failed without surrendering what is true.",
+"The goal is not to leave better at saying “heresy.” It is to confess Jesus Christ, recognize a different gospel, and love the person who needs to hear the true one."
+],
+"concl_refs": [
+[
+"Ephesians 4:14–15",
+"Ephesians 4"
+],
+[
+"2 Timothy 2:24–26",
+"2 Timothy 2"
+],
+[
+"Jude 1:3",
+"Jude 1"
+],
+[
+"1 Peter 3:15",
+"1 Peter 3"
+]
+],
+"concl_key": "Ephesians 4:15",
+"questions": [
+"What makes a disagreement essential rather than secondary?",
+"Why must Jesus be truly God and truly human?",
+"Where does a helpful modern comparison become misleading?",
+"What does a council contribute if Scripture remains our standard?",
+"How should persecution affect our reading of history?",
+"Can you explain another person’s position fairly before answering?"
+],
+"related": [
+[
+"#doctrine",
+"Doctrine",
+"the systematic teaching on the Trinity, Christ and salvation"
+],
+[
+"#essentials",
+"Essentials & Convictions",
+"which beliefs are essential and which are secondary"
+],
+[
+"#glossary",
+"Glossary",
+"short definitions of the terms used here"
+],
+[
+"#church",
+"Christian Thinkers",
+"biographies of Irenaeus, Athanasius, Augustine and the others named here"
+],
+[
+"#martyrs",
+"Martyrs",
+"Christians who died for their faith, including those persecuted by other Christians"
+],
+[
+"#apologetics",
+"Apologetics",
+"a reasoned defense of the faith"
+]
+]
+};
+const HERS_VERSES={
+"Genesis 1:31": {
+"KJV": "And God saw every thing that he had made, and, behold, it was very good. And the evening and the morning were the sixth day.",
+"coords": [
+[
+"Genesis",
+1,
+31
+]
+],
+"chap": "Genesis 1"
+},
+"Luke 24:27": {
+"KJV": "And beginning at Moses and all the prophets, he expounded unto them in all the scriptures the things concerning himself.",
+"coords": [
+[
+"Luke",
+24,
+27
+]
+],
+"chap": "Luke 24"
+},
+"1 John 4:2": {
+"KJV": "Hereby know ye the Spirit of God: Every spirit that confesseth that Jesus Christ is come in the flesh is of God:",
+"coords": [
+[
+"1 John",
+4,
+2
+]
+],
+"chap": "1 John 4"
+},
+"John 17:5": {
+"KJV": "And now, O Father, glorify thou me with thine own self with the glory which I had with thee before the world was.",
+"coords": [
+[
+"John",
+17,
+5
+]
+],
+"chap": "John 17"
+},
+"John 1:3": {
+"KJV": "All things were made by him; and without him was not any thing made that was made.",
+"coords": [
+[
+"John",
+1,
+3
+]
+],
+"chap": "John 1"
+},
+"Hebrews 2:17": {
+"KJV": "Wherefore in all things it behoved him to be made like unto his brethren, that he might be a merciful and faithful high priest in things pertaining to God, to make reconciliation for the sins of the people.",
+"coords": [
+[
+"Hebrews",
+2,
+17
+]
+],
+"chap": "Hebrews 2"
+},
+"John 1:14": {
+"KJV": "And the Word was made flesh, and dwelt among us, (and we beheld his glory, the glory as of the only begotten of the Father,) full of grace and truth.",
+"coords": [
+[
+"John",
+1,
+14
+]
+],
+"chap": "John 1"
+},
+"Hebrews 4:15": {
+"KJV": "For we have not an high priest which cannot be touched with the feeling of our infirmities; but was in all points tempted like as we are, yet without sin.",
+"coords": [
+[
+"Hebrews",
+4,
+15
+]
+],
+"chap": "Hebrews 4"
+},
+"Ephesians 2:8": {
+"KJV": "For by grace are ye saved through faith; and that not of yourselves: it is the gift of God:",
+"coords": [
+[
+"Ephesians",
+2,
+8
+]
+],
+"chap": "Ephesians 2"
+},
+"Hebrews 1:2": {
+"KJV": "Hath in these last days spoken unto us by his Son, whom he hath appointed heir of all things, by whom also he made the worlds;",
+"coords": [
+[
+"Hebrews",
+1,
+2
+]
+],
+"chap": "Hebrews 1"
+},
+"1 Corinthians 3:7": {
+"KJV": "So then neither is he that planteth any thing, neither he that watereth; but God that giveth the increase.",
+"coords": [
+[
+"1 Corinthians",
+3,
+7
+]
+],
+"chap": "1 Corinthians 3"
+},
+"1 Corinthians 15:20": {
+"KJV": "But now is Christ risen from the dead, and become the firstfruits of them that slept.",
+"coords": [
+[
+"1 Corinthians",
+15,
+20
+]
+],
+"chap": "1 Corinthians 15"
+},
+"John 20:28": {
+"KJV": "And Thomas answered and said unto him, My Lord and my God.",
+"coords": [
+[
+"John",
+20,
+28
+]
+],
+"chap": "John 20"
+},
+"Exodus 20:4": {
+"KJV": "Thou shalt not make unto thee any graven image, or any likeness of any thing that is in heaven above, or that is in the earth beneath, or that is in the water under the earth:",
+"coords": [
+[
+"Exodus",
+20,
+4
+]
+],
+"chap": "Exodus 20"
+},
+"John 18:36": {
+"KJV": "Jesus answered, My kingdom is not of this world: if my kingdom were of this world, then would my servants fight, that I should not be delivered to the Jews: but now is my kingdom not from hence.",
+"coords": [
+[
+"John",
+18,
+36
+]
+],
+"chap": "John 18"
+},
+"John 5:23": {
+"KJV": "That all men should honour the Son, even as they honour the Father. He that honoureth not the Son honoureth not the Father which hath sent him.",
+"coords": [
+[
+"John",
+5,
+23
+]
+],
+"chap": "John 5"
+},
+"Isaiah 44:6": {
+"KJV": "Thus saith the LORD the King of Israel, and his redeemer the LORD of hosts; I am the first, and I am the last; and beside me there is no God.",
+"coords": [
+[
+"Isaiah",
+44,
+6
+]
+],
+"chap": "Isaiah 44"
+},
+"Matthew 28:19": {
+"KJV": "Go ye therefore, and teach all nations, baptizing them in the name of the Father, and of the Son, and of the Holy Ghost:",
+"coords": [
+[
+"Matthew",
+28,
+19
+]
+],
+"chap": "Matthew 28"
+},
+"Luke 24:39": {
+"KJV": "Behold my hands and my feet, that it is I myself: handle me, and see; for a spirit hath not flesh and bones, as ye see me have.",
+"coords": [
+[
+"Luke",
+24,
+39
+]
+],
+"chap": "Luke 24"
+},
+"John 14:6": {
+"KJV": "Jesus saith unto him, I am the way, the truth, and the life: no man cometh unto the Father, but by me.",
+"coords": [
+[
+"John",
+14,
+6
+]
+],
+"chap": "John 14"
+},
+"Jude 1:3": {
+"KJV": "Beloved, when I gave all diligence to write unto you of the common salvation, it was needful for me to write unto you, and exhort you that ye should earnestly contend for the faith which was once delivered unto the saints.",
+"coords": [
+[
+"Jude",
+1,
+3
+]
+],
+"chap": "Jude 1"
+},
+"Ephesians 4:15": {
+"KJV": "But speaking the truth in love, may grow up into him in all things, which is the head, even Christ:",
+"coords": [
+[
+"Ephesians",
+4,
+15
+]
+],
+"chap": "Ephesians 4"
+}
+};
+
+// === SECTION: Church History & Heresies UI (#heresies) ===
+/* Plain English: draws the Church History & Heresies tab (nav: right after Christian Thinkers, before Martyrs). Addresses:
+     #heresies                 the whole page from the top (opening, labels, historical path, three parts, conclusion)
+     #heresies/<part>          scrolls to a part: intro, kinds, path, early, later, modern, concl, questions, related
+     #heresies/<card>          opens and scrolls to one topic card (e.g. #heresies/arianism, #heresies/jw)
+   Scripture: KJV text from HERS_VERSES. In the Forge edition the text follows the translation picked in the top-right
+   selector through FORGE_BIBLE.getVerseByRef, and the label names the translation actually shown (with a note when a
+   verse is not stored offline in the chosen translation and BSB or KJV is shown instead). */
+(function(){
+const D = HERS_DATA, $ = id => document.getElementById(id);
+const E = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const CARDS = D.cards, BY_ID = Object.fromEntries(CARDS.map(c => [c.id, c]));
+const PARTS = ["intro","kinds","path","early","later","modern","concl","questions","related"];
+const strip = h => String(h || "").replace(/<[^>]+>/g, "");
+
+// === SECTION: Heresies verse box (KJV, or the Forge translation selector, honest label) ===
+function verse(ref){
+  const v = HERS_VERSES[ref]; if (!v) return "";
+  const FB = window.FORGE_BIBLE;
+  const r = FB && FB.getVerseByRef ? FB.getVerseByRef(ref, v.KJV) : {txt: v.KJV, ver: "KJV", note: ""};
+  return `<blockquote class="wvsc hers-verse" data-ref="${E(ref)}" data-ver="${E(r.ver)}">${E(r.txt)} <span class="lnk"><a href="#${encodeURIComponent(v.chap)}">${E(ref)} (${E(r.ver)}) ↗</a></span>${r.note ? ` <small class="ver-fb-note">${E(r.note)}</small>` : ""}</blockquote>`;
+}
+const refLinks = rs => `<p class="hers-read"><b>Read:</b> ${rs.map(([r, ch]) => `<a href="#${encodeURIComponent(ch)}">${E(r)} ↗</a>`).join(" · ")}</p>`;
+const seeLinks = ls => ls && ls.length ? `<div class="lnk hers-links"><b>See also:</b> ${ls.map(([u,l]) => `<a href="${E(u)}">${E(l)} ↗</a>`).join("")}</div>` : "";
+const srcLinks = ls => ls && ls.length ? `<div class="hers-src"><b>Sources:</b><ul>${ls.map(([u,l]) => `<li><a href="${E(u)}" target="_blank" rel="noopener">${E(l)} ↗</a></li>`).join("")}</ul></div>` : "";
+
+// === SECTION: Heresies left sidebar ===
+function drawLeft(curId){
+  let h = `<h3>Church History &amp; Heresies</h3><a href="#heresies/intro" data-p="intro">Why This History Matters</a><a href="#heresies/kinds" data-p="kinds">How the Cards Are Labelled</a><a href="#heresies/path" data-p="path">Historical Path</a>`;
+  for (const [pid, pt] of D.parts) {
+    h += `<a href="#heresies/${pid}" class="hers-partlink" data-p="${pid}">${E(pt)}</a>`;
+    h += CARDS.filter(c => c.part === pid).map(c => `<a href="#heresies/${c.id}" class="hers-cardlink${c.id === curId ? " on" : ""}">${E(c.n)}</a>`).join("");
+  }
+  h += `<a href="#heresies/concl" data-p="concl">Discernment Should Lead Us Back to Jesus</a><a href="#heresies/questions" data-p="questions">Discussion Questions</a><a href="#heresies/related" data-p="related">Related Tabs</a>`;
+  $("hersleft").innerHTML = h;
+}
+
+// === SECTION: Heresies topic cards (one expandable card per topic, labelled by kind) ===
+function card(c){
+  const f = (lab, v) => v ? `<h4>${lab}</h4><p>${v}</p>` : "";
+  let b = `<p class="hers-who"><b>${E(c.per)}</b> · ${E(c.who)}</p>`;
+  if (c.full) b += c.full.map(p => `<p>${p}</p>`).join("");
+  else b += f("What was taught", c.what) + f("How the church answered", c.ans) + f("Why it matters", c.why);
+  b += f(c.id === "pelagianism" ? "Modern echo" : "Modern comparison", c.mod);
+  if (c.fair) b += `<div class="hers-fair" role="note"><div class="hers-fair-h">Fairness note</div><p>${c.fair}</p></div>`;
+  b += `<h4>Key Scripture</h4>` + verse(c.key) + refLinks(c.refs) + seeLinks(c.see) + srcLinks(c.src);
+  const kl = D.kinds[c.kind][0];
+  return `<details class="hers-card hers-k-${c.kind}" id="hers-${c.id}"><summary><span class="hers-badge" title="${E(D.kinds[c.kind][1])}">${E(kl)}</span> <span class="hers-ct">${E(c.n)}</span> <span class="hers-q">— ${E(c.q)}</span>${c.sample ? ` <span class="hers-full">full card</span>` : ""}</summary><div class="hers-body">${b}</div></details>`;
+}
+function page(){
+  let h = `<div class="hers-hero" id="hers-top"><span class="rtag">📜 Church History &amp; Heresies</span><h2>${E(D.title)}</h2><p class="hers-sub">${E(D.sub)}</p><p>${D.lead}</p></div>`;
+  h += `<section class="hers-sec" id="hers-intro"><h3>Why This History Matters</h3>${D.intro.map(p => `<p>${p}</p>`).join("")}${verse(D.intro_key)}${refLinks(D.intro_refs)}</section>`;
+  h += `<section class="hers-sec" id="hers-kinds"><h3>How the Cards Are Labelled</h3><p>Each card carries a label, so a historical schism or a disputed practice is never presented as a denial of essential doctrine.</p><ul class="hers-kinds">${Object.entries(D.kinds).map(([k,[l,d]]) => `<li><span class="hers-badge hers-k-${k}b">${E(l)}</span> ${E(d)}</li>`).join("")}</ul></section>`;
+  h += `<section class="hers-sec" id="hers-path"><h3>Historical Path</h3><ol class="hers-path">${D.path.map(([t,d]) => `<li><b>${E(t)}:</b> ${E(d)}</li>`).join("")}</ol></section>`;
+  for (const [pid, pt, pb] of D.parts) h += `<h3 class="hers-parth" id="hers-${pid}">${E(pt)}</h3><p class="hers-blurb">${E(pb)}</p>` + CARDS.filter(c => c.part === pid).map(card).join("");
+  h += `<section class="hers-sec" id="hers-concl"><h3>Discernment Should Lead Us Back to Jesus</h3>${D.concl.map(p => `<p>${p}</p>`).join("")}${verse(D.concl_key)}${refLinks(D.concl_refs)}</section>`;
+  h += `<section class="hers-sec" id="hers-questions"><h3>Discussion Questions</h3><ol>${D.questions.map(q => `<li>${E(q)}</li>`).join("")}</ol></section>`;
+  h += `<section class="hers-sec" id="hers-related"><h3>Related Tabs</h3><ul>${D.related.map(([u,l,d]) => `<li><a href="${E(u)}">${E(l)} ↗</a> — ${E(d)}</li>`).join("")}</ul></section>`;
+  return h;
+}
+
+// === SECTION: Heresies view switching and routing (TABS_ROUTE chain, like Essentials) ===
+let built = false, curId = null;
+function showView(){
+  document.querySelectorAll(".tabview").forEach(x => x.hidden = true);
+  document.querySelectorAll("nav a").forEach(a => { a.classList.remove("on"); a.removeAttribute("aria-current"); });
+  if ($("genview")) $("genview").hidden = true;
+  $("hersview").hidden = false;
+  const mv = document.getElementById("mapview") || document.querySelector("main");
+  if (mv) mv.style.display = "none";
+  if ($("tl")) $("tl").style.display = "none";
+  if ($("mapctl")) $("mapctl").style.display = "none";
+  const n = $("navhers"); if (n) { n.classList.add("on"); n.setAttribute("aria-current", "page"); }
+}
+function build(){ $("herscard").innerHTML = page(); built = true; }
+function scrollTo(el){ if (el) setTimeout(() => el.scrollIntoView({behavior: "instant", block: "start"}), 0); }
+function hopen(id, keepHash){
+  showView(); if (!built) build();
+  curId = BY_ID[id] ? id : null; drawLeft(curId);
+  if (curId) { const d = $("hers-" + curId); d.open = true; scrollTo(d); }
+  else if (PARTS.includes(id)) scrollTo($("hers-" + id));
+  else { const C = $("herscard"); C.scrollTop = 0; if (C.parentElement) C.parentElement.scrollTop = 0; if (window.innerWidth <= 860) window.scrollTo(0, 0); }
+  if (!keepHash) history.replaceState(null, "", "#heresies" + (id && (BY_ID[id] || PARTS.includes(id)) ? "/" + id : ""));
+}
+function refreshTranslation(){
+  if (!built) return;
+  const open = CARDS.filter(c => $("hers-" + c.id) && $("hers-" + c.id).open).map(c => c.id), C = $("herscard"), sc = C.scrollTop, pc = C.parentElement.scrollTop;
+  build(); open.forEach(id => $("hers-" + id).open = true); C.scrollTop = sc; C.parentElement.scrollTop = pc;
+}
+const _sel = document.getElementById("bible-version-select");
+if (_sel) _sel.addEventListener("change", () => setTimeout(refreshTranslation, 0));
+const prevRoute = window.TABS_ROUTE;
+window.TABS_ROUTE = function(h){
+  if (h === "heresies" || h.startsWith("heresies/")) { hopen(h.split("/")[1], true); return true; }
+  return prevRoute ? prevRoute(h) : false;
+};
+$("navhers").onclick = e => { e.preventDefault(); hopen(curId); };
+
+// === SECTION: Heresies search documents (indexed by search_ui.js as type "hers") ===
+const partName = Object.fromEntries(D.parts.map(([id, t]) => [id, t.split(" — ")[1]]));
+window.HERS_API = {
+  D, open: hopen, refreshTranslation, cards: CARDS,
+  docs: () => [
+    {href: "heresies", t: "Church History & Heresies: Why This History Matters", sub: "Heresies · Overview", text: strip([D.lead, ...D.intro, ...D.path.map(p => p.join(" "))].join(" ")) + " heresy orthodoxy councils Nicaea Constantinople Ephesus Chalcedon Orange"},
+    {href: "heresies/concl", t: "Discernment Should Lead Us Back to Jesus", sub: "Heresies · Conclusion", text: strip([...D.concl, ...D.questions].join(" "))},
+    ...CARDS.map(c => ({href: `heresies/${c.id}`, t: c.n, sub: "Heresies · " + partName[c.part] + " · " + D.kinds[c.kind][0], text: strip([c.q, c.per, c.who, ...(c.full || []), c.what, c.ans, c.why, c.mod, c.fair, ...c.refs.map(r => r[0])].join(" "))}))
+  ]
+};
+})();
+
 // === SECTION: Bible Reading tab data (365-day chronological plan) ===
 // Plain English: generated by /tmp/read/assemble.py (from ot.py, nt.py). Every one of the 1,189 chapters appears exactly
 // once (see READ_DATA.check). Notes contain no Scripture text except short phrases checked against data/kjv.json.
@@ -21017,7 +22681,7 @@ window.APO_API={A,toggle,open,refreshTranslation,docs:getDocs};
 // (APO_DATA.about, Robert's official wording, same as README.md) and My Journey to Faith (APO_DATA.journey),
 // which are read from apologetics_content.js so their wording lives in one place only.
 //   why    = 'Why I Built This Tool' (Robert's text, exact wording, Oct 31 2026; also saved in notes/about_expanded.md)
-//   groups = 'How This Tool Is Organized': every tab in the CURRENT nav order (Bible Reading, Map ... Glossary, 23 tabs since Nov 2, 2026 (Gods & Gospel added after Hermeneutics); Bible Reading first since Nov 1, 2026),
+//   groups = 'How This Tool Is Organized': every tab in the CURRENT nav order (Bible Reading, Map ... Glossary, 24 tabs since Nov 8, 2026 (Church History & Heresies added after Christian Thinkers; 23 since Nov 2, 2026, when Gods & Gospel was added after Hermeneutics); Bible Reading first since Nov 1, 2026),
 //            grouped under headings; each tab = [address, nav label, one-line description].
 const HOME_DATA={
 why:{t:"Why I Built This Tool",p:[
@@ -21052,6 +22716,8 @@ groups:[
  {h:"Faith Through History and in Practice",tabs:[
   ["#reliability","Reliability","How the Bible's text was passed down, with manuscripts, outside sources and archaeology."],
   ["#church","Christian Thinkers","Notable Christians from the early church to today and what they contributed."],
+  // === SECTION: Church History & Heresies card (Nov 8, 2026), right after Christian Thinkers as in the nav ===
+  ["#heresies","Church History & Heresies","What was disputed in church history, why it mattered, and how to tell heresy from honest disagreement."],
   ["#martyrs","Martyrs","Christians who died for their faith: the persecution, the stand they took and their death."],
   ["#evangelism","Evangelism","Everyday tools for sharing the Gospel and walking with Christ."],
   ["#apologetics","Apologetics","A reasoned defense of the faith and responses to common objections."],
@@ -21101,7 +22767,7 @@ window.HOME_API={H,open,show};
 })();
 
 // === SECTION: Tab intros data (tab_intros_content.js, Oct 31, 2026) ===
-// Plain English: a short introduction for each of the 22 tabs (not Home), in Robert Mullen's own voice, approved by
+// Plain English: a short introduction for each of the 24 tabs (not Home; 22 when first approved, Gods & Gospel and Church History & Heresies added later), in Robert Mullen's own voice, approved by
 // Robert on Oct 31, 2026 (draft: notes/tab_intros_draft.md). Shown at the top of each tab by tab_intros_ui.js.
 // Wording is exactly as approved, with one number corrected after checking the real data: Genealogies "39 preset
 // genealogies" -> "41" (genealogy.json has 41 presets). No Scripture text is quoted here (references only).
@@ -21196,6 +22862,12 @@ var TABINTRO_DATA={approved:"2026-10-31",level:"standard",levels:{standard:[
 "Christian Thinkers",
 "I wanted readers to meet the Christian thinkers who came after the apostles and see what they contributed to the faith. This tab covers three eras, the early church, the medieval church and the Reformation to today, with a card for each person showing the challenges they faced, why they matter and where they stood. Use the era selector, the filters and the timeline to explore, and the map shows where they lived and worked. Many cards link to the Apologetics and Inspiration tabs."
 ],
+[
+"heresies",
+"Church History & Heresies",
+"Christian Thinkers shows who taught and Martyrs shows who suffered; I wanted a place to understand what was disputed and why it mattered. This tab follows twenty topics from the early church to modern movements: what was taught, how the church answered, why it matters, and where a modern comparison helps or misleads. Every card is labelled, so a schism or a disputed practice is never confused with a denial of the faith, and each one lists its sources. Read it with an open Bible, and with love for the people involved."
+],
+// === SECTION: Church History & Heresies intro (Nov 8, 2026, approved [t300u]) === inserted before Martyrs, as in the nav
 [
 "martyrs",
 "Martyrs",
@@ -21951,7 +23623,7 @@ M.addEventListener("keydown",e=>{if(e.key==="Escape"){e.preventDefault();e.stopP
   // nav button id -> path name (the hash word each tab uses; the Map tab's hashes are chapter refs like "#Genesis 12")
   var NAV={navhome:"home",navread:"reading",navmap:"map",navjou:"journeys",navpla:"places",navpro:"prophets",navkin:"kings",
     navkha:"kharmony",navitp:"intertestamental",navhar:"harmony",navdis:"disciples",navpar:"parables",navherm:"hermeneutics",
-    navgods:"gods",navdoc:"doctrine",navess:"essentials",navrel:"reliability",navchu:"church",navmar:"martyrs",navevan:"evangelism",
+    navgods:"gods",navdoc:"doctrine",navess:"essentials",navrel:"reliability",navchu:"church",navhers:"heresies",navmar:"martyrs",navevan:"evangelism",
     navapo:"apologetics",navins:"inspiration",navgen:"genealogies",navglo:"glossary"};
   function activeNav(){return document.querySelector('[id^="nav"].on')}
   function tabKey(){
