@@ -3086,7 +3086,7 @@ window.FORGE_BIBLE=(function(){
   const quoteRegex=/(?<![A-Za-z])'([^']+)'(?![A-Za-z])/g;
   // === SECTION: [2026-11-08] Claim badges tell the truth: formatClaimInfo returns {html, ver}. ver = activeVer only when
   // translated wording was actually inserted; "KJV" when the claim keeps its original single-quoted KJV excerpt; "" for paraphrase.
-  // claimBadge(info) gives the badge text: "Bible (LSB)", "Bible (KJV)" or plain "Bible".
+  // claimBadge(info) gives the badge text: "Bible (LSB)", "Bible (KJV)", "Bible (KJV + LSB)" for a mixed claim, or plain "Bible".
   function claimBadge(info){ return info&&info.ver?`Bible (${info.ver})`:"Bible"; }
   function formatClaimInfo(claim, escFn){
     const e=escFn||esc;
@@ -3094,7 +3094,11 @@ window.FORGE_BIBLE=(function(){
     const hasQuote=[...raw.matchAll(quoteRegex)].length>0;
     if(activeVer==="KJV") return {html:e(raw), ver:hasQuote?"KJV":""};
     const html=formatClaimText(claim, escFn);
-    if(html!==e(raw)) return {html, ver:activeVer};
+    // [2026-11-09] mixed claim: some original KJV quotation kept beside inserted translated wording -> "KJV + LSB"
+    if(html!==e(raw)){
+      const keptKjv=[...raw.matchAll(quoteRegex)].some(m=>html.includes(e(m[0])));
+      return {html, ver:keptKjv?`KJV + ${activeVer}`:activeVer, mixed:keptKjv};
+    }
     return {html, ver:hasQuote?"KJV":""};
   }
   function formatClaimText(claim, escFn){
