@@ -2457,6 +2457,32 @@ html[data-theme="dark"] .gg-h2{border-color:#3a3f4a}
 #godsview .apo-lvl{margin:8px 0 12px}
 </style>
 <style>
+/* === SECTION: Sticky engagement-level bar (Nov 9, 2026) ===
+   #lvlbar is a normal flex row between <header> and <main> (body is a fixed-height column and only panels inside <main> scroll),
+   so it never scrolls away and never covers content: <main> simply starts below it. Compact on phones, one row in phone landscape. */
+#lvlbar{flex:none;position:relative;z-index:5;display:flex;align-items:center;justify-content:center;gap:10px;min-width:0;max-width:100%;
+ padding:4px max(16px,env(safe-area-inset-right)) 4px max(16px,env(safe-area-inset-left));background:var(--bg-elevated);color:var(--text-main);border-bottom:1px solid var(--border-main)}
+#lvlbar[hidden]{display:none}
+#lvlbar .lvlbar-lab{font-size:13px;font-weight:600;white-space:nowrap}
+#lvlbar .lvlbar-seg{display:inline-flex;min-width:0;border:1px solid var(--border-strong);border-radius:18px;overflow:hidden;background:var(--bg-panel)}
+#lvlbar button{appearance:none;-webkit-appearance:none;margin:0;border:0;border-left:1px solid var(--border-strong);border-radius:0;background:transparent;color:var(--text-main);
+ font:inherit;font-size:13px;font-weight:600;line-height:1.2;padding:4px 14px;min-height:32px;cursor:pointer;white-space:nowrap}
+#lvlbar button:first-child{border-left:0}
+#lvlbar button:hover{background:var(--bg-hover)}
+#lvlbar button[aria-checked="true"]{background:var(--accent-primary);color:#fff}
+#lvlbar button:focus-visible{outline:3px solid var(--accent-amber);outline-offset:-3px}
+@media (pointer:coarse){#lvlbar button{min-height:40px}}
+@media (max-width:560px){
+ #lvlbar{justify-content:flex-start;gap:8px}
+ #lvlbar .lvlbar-lab{font-size:12px;white-space:normal;line-height:1.15;max-width:5.8em;flex:none}
+ #lvlbar .lvlbar-seg{flex:1 1 auto}
+ #lvlbar button{flex:1 1 0;min-width:0;padding:4px 6px;white-space:normal}
+}
+@media (orientation:landscape) and (max-height:520px){#lvlbar{padding-top:2px;padding-bottom:2px}#lvlbar button{min-height:34px;padding:3px 14px}}
+html.lvlbar-on main .apo-lvl{display:none!important}
+@media print{#lvlbar{display:none!important}}
+</style>
+<style>
 /* === SECTION: Phone landscape header fix (Nov 2, 2026) === when the 🔍 search opens it leaves the header row, and the theme slider then
    sat 1px past the right edge (page scrolled sideways by 1px). Clip the header sideways in phone landscape only. */
 @media (orientation:landscape) and (max-height:520px){header{overflow-x:clip}}
@@ -2490,6 +2516,10 @@ html[data-theme="dark"] .gg-h2{border-color:#3a3f4a}
 <label>Chapter <select id="chap" aria-label="Bible Chapter"></select></label>
 <label>or type <input id="chapnum" type="number" min="1" aria-label="Type chapter number"></label></span>
 </header>
+<!-- === SECTION: Sticky engagement-level bar (Nov 9, 2026) === one compact Engagement level control between the header and <main>,
+     outside every scrolling panel so it stays in view. lvlbar_ui.js shows it only on the 11 tabs with engagement levels and wires it to
+     each tab's own setting (no shared level). Hidden until the script runs; the in-tab pickers are hidden only while it is active. -->
+<div id="lvlbar" hidden><span class="lvlbar-lab" id="lvlbar-lab" aria-hidden="true">Engagement level:</span><div class="lvlbar-seg" role="radiogroup" aria-label="Engagement level"><button type="button" role="radio" data-lvl="gs" aria-checked="false" tabindex="-1">Getting Started</button><button type="button" role="radio" data-lvl="gr" aria-checked="false" tabindex="-1">Growing</button><button type="button" role="radio" data-lvl="ds" aria-checked="true" tabindex="0">Deep Study</button></div></div>
 <!-- === SECTION: HTML map view ===
      The main map (svg#map), hover popup, zoom buttons, and the side panel (aside#side).
      [2026-10-25 JLC] Wrapped #mapview, #tl, all .tabview sections, and #genview inside a persistent <main id="main-content"> landmark.
@@ -24443,6 +24473,197 @@ M.addEventListener("keydown",e=>{if(e.key==="Escape"){e.preventDefault();e.stopP
 <!-- === SECTION: GoatCounter loader (automatic hit disabled; goatcounter_ui.js sends one hit per tab view) ===
      The count.js tag is only added on the live site (robmul-91.github.io), so local copies and the verify_*.js tests never load it. -->
 <script>if(location.hostname==="robmul-91.github.io"){var _gc=document.createElement("script");_gc.async=true;_gc.src="https://gc.zgo.at/count.js";_gc.setAttribute("data-goatcounter","https://mullenforge.goatcounter.com/count");_gc.setAttribute("data-goatcounter-settings",'{"no_onload":true}');document.body.appendChild(_gc)}</script>
+<script>// === SECTION: Sticky engagement-level bar (Nov 9, 2026) ===
+// One compact "Engagement level" control in #lvlbar, between the header and <main>. #lvlbar sits outside every scrolling
+// panel, so it stays visible however far a tab or card is scrolled on desktop and on phones. It shows only on the 11 tabs
+// that have engagement levels. Each tab keeps its own setting, storage key and default (Deep Study): the bar reads and
+// writes each tab's existing API (getLevel/setLevel); there is no shared global level. The in-tab pickers (.apo-lvl) stay
+// in the DOM (their ids/handlers are untouched) but are hidden while the bar is active (html.lvlbar-on).
+// Changing level keeps the reading position: before the switch, the visible scroll panels and their topmost visible stable
+// elements (ids, data-sec, links, headings) are recorded; after the tab re-renders, the same element is put back at the same
+// offset. If no element survives the re-render, the old scroll offset is kept (clamped), never reset to the top.
+(() => {
+  const LV = [["gs","Getting Started"],["gr","Growing"],["ds","Deep Study"]];
+  const TABS = [
+    // [nav id, view id, tab name, api getter, get, set]
+    ["navitp","itview","Intertestamental Period",()=>window.IT_API,"getLevel","setLevel"],
+    ["navherm","hermview","Hermeneutics",()=>window.HERM_API,"getLevel","setLevel"],
+    ["navgods","godsview","Gods & Gospel",()=>window.GODS_API,"getLevel","setLevel"],
+    ["navdoc","docview","Doctrine",()=>window.DOC_API,"getLevel","setLevel"],
+    ["navess","essview","Essentials & Convictions",()=>window.ESS_API,"getLevel","setLevel"],
+    ["navrel","relview","Reliability",()=>window.REL_API,"getLevel","setLevel"],
+    ["navchu","chuview","Christian Thinkers",()=>window.TABS_API,"getLevel","setLevel"],
+    ["navhers","hersview","Church History & Heresies",()=>window.HERS_API,"getLevel","setLevel"],
+    ["navmar","marview","Martyrs",()=>window.TABS_API,"getMarLevel","setMarLevel"],
+    ["navevan","evanview","Evangelism",()=>window.EVAN_API,"getLevel","setLevel"],
+    ["navapo","apoview","Apologetics",()=>window.APO_API,"getLevel","setLevel"]
+  ];
+  const bar = document.getElementById("lvlbar");
+  if (!bar) return;
+  const grp = bar.querySelector(".lvlbar-seg");
+  const btns = [...bar.querySelectorAll("button[data-lvl]")];
+  let cur = null;
+
+  function active() {
+    for (const t of TABS) { const v = document.getElementById(t[1]); if (v && !v.hidden && t[3]()) return t; }
+    return null;
+  }
+  const getLv = t => { try { const a = t[3](); const v = a && a[t[4]] && a[t[4]](); return (v === "gs" || v === "gr" || v === "ds") ? v : "ds"; } catch (e) { return "ds"; } };
+
+  const hdr = document.querySelector("body > header") || document.querySelector("header");
+  let refit = null;
+  const relayout = () => { clearTimeout(refit); refit = setTimeout(() => window.dispatchEvent(new Event("resize")), 30); }; // maps refit to the new height
+  function paint() {
+    const t = active(); cur = t;
+    // keep the bar directly under the header (above the "About this tab" box, which is also inserted after the header)
+    if (hdr && hdr.nextElementSibling !== bar) hdr.insertAdjacentElement("afterend", bar);
+    if (!t) { if (!bar.hidden) { bar.hidden = true; relayout(); } return; }
+    if (bar.hidden) { bar.hidden = false; relayout(); }
+    const lv = getLv(t);
+    grp.setAttribute("aria-label", "Engagement level for " + t[2]);
+    bar.dataset.tab = t[1];
+    for (const b of btns) { const on = b.dataset.lvl === lv; b.setAttribute("aria-checked", on ? "true" : "false"); b.tabIndex = on ? 0 : -1; b.classList.toggle("on", on); }
+  }
+
+  // ---- reading-position keeper ----
+  // Candidates per scroll panel, best first: (1) elements with a stable id/data-* key whose top edge is in view, (2) other
+  // keyed elements (links, headings, quotes, list items) whose top edge is in view, (3) the innermost keyed element cut by
+  // the top edge (e.g. the card being read), restored at the same relative depth inside it, (4) keyed elements just above.
+  // A key is only trusted if it occurs the same number of times before and after the switch, so repeated quotes or links
+  // cannot pull the panel to a different copy. Sticky/fixed elements are ignored (they sit at the top whatever the scroll).
+  const SEL = "[id],[data-sec],[data-id],[data-mod],a[href^='#'],h1,h2,h3,h4,h5,summary,blockquote,li";
+  const keyOf = el => {
+    if (el.id && !/^__/.test(el.id)) return "#" + el.id;
+    if (el.dataset.sec) return "S:" + el.tagName + ":" + el.dataset.sec;
+    if (el.dataset.id) return "D:" + el.tagName + ":" + el.dataset.id;
+    if (el.dataset.mod) return "M:" + el.tagName + ":" + el.dataset.mod;
+    if (el.tagName === "A") { const h = el.getAttribute("href"); if (h && h.length > 1) return "A:" + h; }
+    if (/^(H[1-5]|SUMMARY|BLOCKQUOTE|LI)$/.test(el.tagName)) { const tx = (el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 90); return tx ? "T:" + el.tagName + ":" + tx : null; }
+    return null;
+  };
+  const structural = k => k[0] === "#" || k[1] === ":" && "SDM".includes(k[0]);
+  const pathOf = (el, root) => { if (el.id) return { id: el.id }; const p = []; let n = el; while (n && n !== root) { p.unshift([...n.parentElement.children].indexOf(n)); n = n.parentElement; } return { p }; };
+  const fromPath = (k, root) => { if (k.id) return document.getElementById(k.id); let n = root; for (const i of k.p) { n = n && n.children[i]; } return n || null; };
+  const scrollable = el => { if (el.scrollHeight <= el.clientHeight + 2) return false; const o = getComputedStyle(el).overflowY; return o === "auto" || o === "scroll"; };
+  function stuck(el, s, memo) {
+    const chain = [];
+    for (let n = el; n && n !== s; n = n.parentElement) {
+      if (memo.has(n)) { const v = memo.get(n); chain.forEach(c => memo.set(c, v)); return v; }
+      chain.push(n);
+      const p = getComputedStyle(n).position;
+      if (p === "sticky" || p === "fixed") { chain.forEach(c => memo.set(c, true)); return true; }
+    }
+    chain.forEach(c => memo.set(c, false)); return false;
+  }
+
+  function snapshot(view) {
+    const out = [];
+    const cands = [view, ...view.querySelectorAll("div,section,aside,article,main,ul,ol,nav")].filter(e => e.offsetParent !== null || e === view);
+    for (const s of cands) {
+      if (!scrollable(s)) continue;
+      const sr = s.getBoundingClientRect(); if (sr.height < 20) continue;
+      const inS = [], inT = [], cut = [], above = []; const seen = new Map(), memo = new Map();
+      for (const el of s.querySelectorAll(SEL)) {
+        if (el.closest(".apo-lvl")) continue;
+        const k = keyOf(el); if (!k) continue;
+        const n = seen.get(k) || 0; seen.set(k, n + 1);
+        const r = el.getBoundingClientRect(); if (!r.height && !r.width) continue;
+        if (r.top >= sr.bottom) continue;
+        const c = { k, n, off: r.top - sr.top, h: r.height };
+        if (r.bottom <= sr.top + 1) { if (structural(k)) above.push(c); continue; }
+        if (stuck(el, s, memo)) continue;
+        if (r.top >= sr.top - 0.5) (structural(k) ? inS : inT).push(c);
+        else if (r.height < s.scrollHeight * 0.9) cut.push(c);
+      }
+      for (const L of [inS, inT, cut, above]) for (const c of L) c.cnt = seen.get(c.k);
+      inS.sort((a, b) => a.off - b.off); inT.sort((a, b) => a.off - b.off); cut.sort((a, b) => a.h - b.h);
+      out.push({ path: pathOf(s, view), top: s.scrollTop,
+        list: inS.slice(0, 15).concat(inT.slice(0, 25), cut.slice(0, 12).map(c => Object.assign(c, { cut: true })), above.slice(-8).reverse()) });
+    }
+    return out;
+  }
+  function index(s) {
+    const m = new Map();
+    for (const el of s.querySelectorAll(SEL)) {
+      if (el.closest(".apo-lvl")) continue;
+      const k = keyOf(el); if (!k) continue;
+      (m.get(k) || m.set(k, []).get(k)).push(el);
+    }
+    return m;
+  }
+  function restore(view, snap, pass) {
+    for (const x of snap) {
+      const s = fromPath(x.path, view); if (!s) continue;
+      if (pass > 0 && lastInput > snap.t0) return; // the user has scrolled/acted since the switch: leave everything as it is
+      const max = Math.max(0, s.scrollHeight - s.clientHeight);
+      if (x.top > 0) {
+        const sr = s.getBoundingClientRect(), m = index(s);
+        let done = false;
+        for (const c of x.list) {
+          const L = m.get(c.k); if (!L || L.length !== c.cnt) continue;
+          const el = L[c.n]; if (!el) continue;
+          const r = el.getBoundingClientRect(); if (!r.height && !r.width) continue;
+          const delta = c.cut ? (r.top - sr.top) + (-c.off / Math.max(1, c.h)) * r.height : (r.top - sr.top) - c.off;
+          s.scrollTop = s.scrollTop + delta; done = true; x.anchor = (c.cut ? "cut " : "") + c.k; break;
+        }
+        if (!done) { s.scrollTop = Math.min(x.top, max); x.anchor = "(kept offset)"; }
+      } else { s.scrollTop = 0; x.anchor = "(top0)"; }
+      x.set = s.scrollTop;
+    }
+  }
+
+  function choose(lv) {
+    const t = active(); if (!t) return;
+    if (getLv(t) === lv) { paint(); return; }
+    const view = document.getElementById(t[1]);
+    let snap = [];
+    try { snap = snapshot(view); } catch (e) { snap = []; }
+    snap.t0 = performance.now();
+    const a = t[3]();
+    a[t[5]](lv);
+    paint();
+    // Some tabs re-render or scroll their selected card into view in a timer (e.g. Doctrine), so restore again after those.
+    const run = pass => { try { restore(view, snap, pass); } catch (e) {} };
+    run(0);
+    requestAnimationFrame(() => run(1));
+    for (const ms of [40, 180, 450]) setTimeout(() => run(2), ms);
+    window.__lvlbarLast = snap;
+    bar.dispatchEvent(new CustomEvent("lvlchange", { bubbles: true, detail: { tab: t[1], level: lv } }));
+  }
+
+  // Real user input (not app scrolling) since a switch stops further position restores.
+  let lastInput = 0;
+  const mark = e => { if (!(e.target && e.target.closest && e.target.closest("#lvlbar"))) lastInput = performance.now(); };
+  for (const ev of ["wheel", "touchstart", "touchmove", "pointerdown", "keydown"]) window.addEventListener(ev, mark, { capture: true, passive: true });
+
+  btns.forEach(b => b.addEventListener("click", () => { choose(b.dataset.lvl); b.focus(); }));
+  grp.addEventListener("keydown", e => {
+    const i = btns.indexOf(document.activeElement); if (i < 0) return;
+    let j = null;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") j = (i + 1) % btns.length;
+    else if (e.key === "ArrowLeft" || e.key === "ArrowUp") j = (i + btns.length - 1) % btns.length;
+    else if (e.key === "Home") j = 0; else if (e.key === "End") j = btns.length - 1;
+    if (j == null) return;
+    e.preventDefault(); btns[j].focus(); choose(btns[j].dataset.lvl);
+  });
+
+  // Keep the bar in step when a tab's level is set through its API (tests, other code).
+  for (const t of TABS) {
+    const a = t[3](); if (!a || typeof a[t[5]] !== "function" || a[t[5]].__lvlbar) continue;
+    const orig = a[t[5]];
+    const w = function () { const r = orig.apply(this, arguments); try { paint(); } catch (e) {} return r; };
+    w.__lvlbar = true; a[t[5]] = w;
+  }
+  // Route sync: repaint when the visible tab changes.
+  const mo = new MutationObserver(() => paint());
+  for (const t of TABS) { const v = document.getElementById(t[1]); if (v) mo.observe(v, { attributes: true, attributeFilter: ["hidden"] }); }
+  window.addEventListener("hashchange", () => { paint(); setTimeout(paint, 60); });
+  window.addEventListener("storage", e => { if (e.key && /^forge_[a-z]+_level$/.test(e.key)) paint(); });
+  document.documentElement.classList.add("lvlbar-on");
+  paint(); setTimeout(paint, 0);
+  window.LVLBAR_API = { paint, choose, active: () => { const t = active(); return t ? { view: t[1], tab: t[2], level: getLv(t) } : null; }, TABS: TABS.map(t => ({ nav: t[0], view: t[1], tab: t[2] })) };
+})();
+</script>
 <script>// === SECTION: GoatCounter tab-view analytics (draft, Nov 2026) ===
 // One pageview per tab view: path "/forge-christian-reference/#<tab>", title "<Tab name> – Forge Christian Reference".
 // count.js is loaded with {"no_onload":true}, so it never sends its own automatic hit; every hit comes from here.
