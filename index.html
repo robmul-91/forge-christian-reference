@@ -17,7 +17,7 @@
 
       WHAT YOU SEE (tabs along the top, in this order):
         Home           The landing page (opens when there is no #address, or #home; the title also links here):
-                       hero, About & Purpose (official wording, as in README.md), 'Why I Built This Tool',
+                       hero, About, Purpose, and Using This Tool (official wording, as in README.md), 'Why I Built This Tool',
                        'How This Tool Is Organized' (a card for each of the 22 tabs below, in nav order, under
                        group headings), and Robert Mullen's 'My Journey to Faith'. The Map is drawn only when opened.
         Tab intros     Every tab except Home opens with a short intro in Robert's own words (why the tab is there,
@@ -122,7 +122,7 @@
                        V. World Religions, Cults & Counterfeit Gospels (9-row comparative matrix + evaluation);
                        VI. Conversational Apologetics (questions to surface assumptions).
                        Opens with a lead-in callout (1 Peter 3:15), the 'How Do We Figure Out What's True?' worldview
-                       card (#apologetics/wv). (The About & Purpose statement and
+                       card (#apologetics/wv). (The About, Purpose, and Using This Tool statement and
                        'My Journey to Faith' moved to the Home page on Oct 31, 2026; #about, #apologetics/about and
                        #apologetics/journey now redirect to #home/about and #home/journey.)
         Inspiration    114 confirmed quotes from 22 people on the Christian Thinkers list plus Malcolm
@@ -10190,7 +10190,7 @@ function build(){if(IX&&IX.pv===PARLV())return IX;if(IX){IX=null;DOCS.length=0}c
  // === SECTION: Search → Doctrine === Doctrine tab cards (type "doc"): title, module name and body/proof-text content, linking to #doctrine/<sec>/<id>
  if(window.DOC_API)for(const x of DOC_API.docs()){const d=doc({type:"doc",id:`doc:${x.sec}/${x.id}`,name:x.t,sub:x.secT,x});add(d,x.t,2.7);add(d,x.secT,1);add(d,x.text,1.1)}
  // === SECTION: Search → Apologetics === Apologetics tab cards (type "apo"): title, category and arguments/tables/questions, linking to #apologetics/<id>
- // (plus "About & Purpose" and "My Journey to Faith", which carry href "#home/about" / "#home/journey": they live on the Home page)
+ // (plus "About, Purpose, and Using This Tool" and "My Journey to Faith", which carry href "#home/about" / "#home/journey": they live on the Home page)
  if(window.APO_API)for(const x of APO_API.docs()){const d=doc({type:"apo",id:`apo:${x.id}`,name:x.t,sub:x.catT||"Apologetics",x});add(d,x.t,2.7);add(d,x.catT||"Apologetics",1);add(d,x.text,1.1)}
  // === SECTION: Search → Hermeneutics === Hermeneutics cards and 66 Book Overview cards (type "herm", badge 📜 Hermeneutics), linking to #hermeneutics/...
  if(window.HERM_API)for(const x of HERM_API.docs()){const d=doc({type:"herm",id:"herm:"+x.href,name:x.t,sub:x.sub,x});add(d,x.t,2.7);add(d,x.sub,1);add(d,x.text,1.1)}
@@ -28504,11 +28504,13 @@ leadRef:["1 Peter 3","1 Peter 3:15"],
 // === SECTION: Official Purpose & About Statement ([t70u]) ===
 // Robert Mullen's official two-paragraph Purpose / About statement for the tool, shown on the Home page (#home/about; #about and #apologetics/about redirect there). links = no longer shown (the Home page has its own tab cards).
 about:{
- t:"About & Purpose of This Tool",
+ t:"About, Purpose, and Using This Tool",
  sub:"Why this study companion exists — complementing personal Scripture engagement with geography, history, doctrine, and apologetics",
  p:[
   "This tool exists to complement—not replace—your personal engagement with Scripture. It provides maps, apologetic arguments, and doctrinal insights that give richer context to the passages you are reading, helping you understand God’s Word more clearly and equipping you to defend your faith with greater confidence.",
-  "It also places that study on a historical timeline, showing how prophets, kings, and disciples engaged the cultures around them. This includes the intertestamental period—the roughly 400 years of prophetic silence and the events that shaped the world into which Jesus came. Beyond the biblical era, it explores the lives of influential Christian thinkers and martyrs: the struggles they faced, the stands they took, and the consequences they endured for their convictions. Alongside these, it shares inspirational quotes that have offered encouragement in both seasons of struggle and moments of triumph."
+  "It also places that study on a historical timeline, showing how prophets, kings, and disciples engaged the cultures around them. This includes the intertestamental period—the roughly 400 years of prophetic silence and the events that shaped the world into which Jesus came. Beyond the biblical era, it explores the lives of influential Christian thinkers and martyrs: the struggles they faced, the stands they took, and the consequences they endured for their convictions. Alongside these, it shares inspirational quotes that have offered encouragement in both seasons of struggle and moments of triumph.",
+  "Many of the study tabs include an Engagement level control at the top of the page, so you can choose how much detail you want as you read. Getting Started is a short orientation to a person or a subject. Growing adds more of the central teaching and how it fits the rest of Scripture. Deep Study is the fullest form of the same material, including the notes and longer discussion where a tab has them.",
+  "The control defaults to Deep Study, and each tab remembers its own setting. Scripture itself is never shortened or rewritten by this choice. Tabs that do not have the control, such as the Map, Genealogies, and the Glossary, read the same at every visit."
  ],
  // About links (updated Oct 31, 2026): one link per main tab, kept in the same order as before with the
  // new tabs (Reading, Hermeneutics, Essentials, Evangelism, Apologetics, Glossary) slotted in by nav position.
@@ -29150,8 +29152,8 @@ function getDocs(){
   const scTxt=(c.sc||[]).map(x=>x[1]+" "+x[2]).join(" ");
   return {id:c.id,t:c.t,catT:catObj?catObj.t:"Apologetics",text:strip(c.sum+" "+(c.body||"")+" "+scTxt+" "+tblTxt+" "+c.pts.map(p=>p.who+" "+p.b).join(" ")+" "+c.qs.join(" "))};
  });
- // About & Purpose and My Journey to Faith now live on the Home page, so their search results open #home/... (href)
- if(A.about) list.push({id:"about",href:"#home/about",t:"About & Purpose",catT:"Home",text:strip(A.about.sub+" "+A.about.p.join(" "))});
+ // About, Purpose, and Using This Tool (was "About & Purpose") and My Journey to Faith now live on the Home page, so their search results open #home/... (href)
+ if(A.about) list.push({id:"about",href:"#home/about",t:"About, Purpose, and Using This Tool",catT:"Home",text:strip(A.about.sub+" "+A.about.p.join(" "))});
  if(A.journey) list.push({id:"journey",href:"#home/journey",t:"My Journey to Faith",catT:"Home · Personal Testimony",text:strip(A.journey.hint+" "+A.journey.sections.map(s=>s.h+" "+s.p.join(" ")).join(" "))});
  if(A.wv) list.push({id:"wv",t:A.wv.t,catT:"Worldview & Truth Tests",text:strip(A.wv.intro.join(" ")+" "+A.wv.tests.map(t=>t.h+" "+t.p.join(" ")+" "+t.ul.join(" ")).join(" "))});
  return list;
@@ -29161,7 +29163,7 @@ window.APO_API={A,toggle,open,refreshTranslation,docs:getDocs,setLevel,getLevel:
 })();
 
 // === SECTION: Home (landing page) data ===
-// HOME_DATA = what the landing page (#home, #homeview) shows besides the About & Purpose statement
+// HOME_DATA = what the landing page (#home, #homeview) shows besides the About, Purpose, and Using This Tool statement
 // (APO_DATA.about, Robert's official wording, same as README.md) and My Journey to Faith (APO_DATA.journey),
 // which are read from apologetics_content.js so their wording lives in one place only.
 //   why    = 'Why I Built This Tool' (Robert's text, exact wording, Oct 31 2026; also saved in notes/about_expanded.md)
@@ -29214,7 +29216,8 @@ groups:[
 // === SECTION: Home (landing page) UI (#home, #homeview) ===
 // The first page shown when the file is opened with no address (or #home). In order:
 //   1. Hero: title + subtitle (APO_DATA.about.sub)
-//   2. About & Purpose (#home-about): APO_DATA.about.p, Robert's official wording (same as README.md)
+//   2. About, Purpose, and Using This Tool (#home-about): APO_DATA.about.p, Robert's official wording (same as README.md;
+//      paragraphs 3–4 on the Engagement level control added Nov 11, 2026, t461u)
 //   3. Why I Built This Tool (#home-why): HOME_DATA.why
 //   4. How This Tool Is Organized (#home-tabs): a card for each of the 22 tabs, in nav order, under group headings
 //   5. My Journey to Faith (#home-journey): APO_DATA.journey (the same data the Evangelism Testimony Builder reads)
@@ -29230,7 +29233,7 @@ function build(){if(built)return;built=true;const AB=A.about,J=A.journey;
  const tabs=H.groups.map(g=>`<div class="home-grp"><h4>${esc(g.h)}</h4>${g.d?`<p class="home-gd">${esc(g.d)}</p>`:""}<div class="home-grid">${g.tabs.map(([u,l,d])=>`<a class="home-tab" href="${u}"><b>${esc(l)}</b><span>${esc(d)}</span></a>`).join("")}</div></div>`).join("");
  const jny=J?`<section class="home-sec home-jny" id="home-journey"><h3>${esc(J.t)}</h3><p class="home-hint">${esc(J.hint)}</p>${J.sections.map(s=>`<section class="home-jsec" id="home-journey-${esc(s.id)}"><h4>${esc(s.h)}</h4>${s.p.map(p=>`<p>${p.includes("<a ")?p:esc(p)}</p>`).join("")}</section>`).join("")}${J.links&&J.links.length?`<div class="lnk home-lnk">${J.links.map(([u,l])=>`<a href="${u}">${esc(l)} ↗</a>`).join("")}</div>`:""}</section>`:"";
  q("homecard").innerHTML=`<div class="home-hero"><h2>Forge Christian Reference</h2><p class="home-sub">${esc(AB.sub)}</p>
- <div class="home-jump"><a href="#home/about">About &amp; Purpose</a><a href="#home/why">Why I Built This Tool</a><a href="#home/tabs">How This Tool Is Organized</a><a href="#home/journey">My Journey to Faith</a></div></div>
+ <div class="home-jump"><a href="#home/about">About, Purpose, and Using This Tool</a><a href="#home/why">Why I Built This Tool</a><a href="#home/tabs">How This Tool Is Organized</a><a href="#home/journey">My Journey to Faith</a></div></div>
  <section class="home-sec" id="home-about"><h3>${esc(AB.t)}</h3>${AB.p.map(p=>`<p>${esc(p)}</p>`).join("")}</section>
  <section class="home-sec" id="home-why"><h3>${esc(H.why.t)}</h3>${H.why.p.map(p=>`<p>${esc(p)}</p>`).join("")}</section>
  <section class="home-sec" id="home-tabs"><h3>How This Tool Is Organized</h3>${tabs}</section>${jny}`}
