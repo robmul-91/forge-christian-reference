@@ -2588,9 +2588,6 @@ html.lvlbar-on main .apo-lvl{display:none!important}
 #tlview{--tl-good:#2f7d3a;--tl-mixed:#d8a21b;--tl-bad:#a33a1f;--tl-none:#8a8170;--tl-ev:#3d6fa8;--tl-pro:#6b4fa0;--tl-world:#5f7f73;--tl-arch:#7a6a55;--tl-people:#8a5a32;--tl-era1:#efe4cf;--tl-era2:#e9ddc4;
  flex-direction:column;overflow:hidden;min-height:0;background:var(--bg-page,#f4f1ea);color:var(--text-main,#2b2b2b);font-size:var(--body-fs,15px)}
 html[data-theme="dark"] #tlview{--tl-era1:#1d2027;--tl-era2:#23262e;--tl-ev:#6c9bd2;--tl-pro:#a58bd6;--tl-world:#7fa597;--tl-arch:#a8967c;--tl-people:#d4a06a}
-#tlview .tlv-about{flex:none;padding:6px 16px;border-bottom:1px solid var(--border-main,#d8ccb4);background:var(--bg-panel,#fffdf8)}
-#tlview .tlv-about summary{cursor:pointer;color:var(--accent-primary,#a33a1f);font-weight:600;font-size:14px}
-#tlview .tlv-about p{margin:4px 0;max-width:900px;font-size:14px;line-height:1.5}
 #tlv-erabar{flex:none;display:flex;gap:4px;padding:8px 16px 4px;overflow-x:auto;scrollbar-width:thin}
 #tlv-erabar button{flex:1 1 0;min-width:96px;border:1px solid var(--border-main,#d8ccb4);background:var(--bg-panel,#fffdf8);color:var(--text-muted,#6b5d47);border-radius:8px;padding:4px 6px;font:inherit;font-size:12px;line-height:1.25;cursor:pointer;text-align:center}
 #tlv-erabar button b{display:block;font-size:12.5px;color:var(--text-secondary,#5b5245)}
@@ -2612,7 +2609,7 @@ html[data-theme="dark"] #tlview{--tl-era1:#1d2027;--tl-era2:#23262e;--tl-ev:#6c9
 #tlv-lanes{flex:none;width:150px;border-right:1px solid var(--border-main,#d8ccb4);position:relative;background:var(--bg-elevated,#f8f2e6);overflow:hidden}
 #tlv-lanes div{position:absolute;left:0;right:0;padding:4px 10px;font-size:12.5px;font-weight:700;color:var(--text-secondary,#5b5245);border-top:1px solid var(--border-main,#d8ccb4)}
 #tlv-lanes div small{display:block;font-weight:400;color:var(--text-muted,#6b5d47);font-size:11px;line-height:1.2}
-#tlv-scroller{flex:1 1 auto;overflow:auto;position:relative}
+#tlv-scroller{flex:1 1 auto;overflow:auto;position:relative;overscroll-behavior:contain}
 #tlv-canvas{position:relative}
 #tlview .tlv-band{position:absolute;top:0;bottom:0;border-left:1px dashed var(--border-strong,#bba98f)}
 #tlview .tlv-band.u{background:var(--tl-era1)}#tlview .tlv-band.d{background:var(--tl-era2)}
@@ -2667,7 +2664,6 @@ html[data-theme="dark"] #tlv-panel .tlv-pb h3{color:#7fa8dc}
  #tlv-tools,#tlv-wrap{display:none}
  #tlv-erabar{padding:6px 8px 2px}#tlv-erabar button{flex:none;min-width:auto;padding:3px 8px}
  #tlv-erabar button span{display:none}#tlv-erabar button em{display:inline;margin-left:4px}#tlv-erabar button b{display:inline}
- #tlview .tlv-about{padding:4px 10px}
  #tlv-mob{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
  #tlv-chips{flex:none;display:flex;gap:6px;overflow-x:auto;padding:6px 8px;border-bottom:1px solid var(--border-main,#d8ccb4)}
  #tlv-chips button{flex:none;font:inherit;font-size:12.5px;border:1px solid var(--border-strong,#bba98f);border-radius:14px;background:var(--bg-panel,#fffdf8);color:var(--text-main,#2b2b2b);padding:2px 10px}
@@ -2779,10 +2775,9 @@ html[data-theme="dark"] #tlv-panel .tlv-pb h3{color:#7fa8dc}
 <section id="evanview" class="tabview rview eview" hidden><div class="tleft" id="evanleft"></div><div class="tcenter"><div class="tcard" id="evancard"></div></div></section>
 <!-- === SECTION: HTML bible reading view === Bible Reading tab: era list (left) and landing/progress toolbar or one era's day cards (centre). Filled by reading_ui.js. -->
 <section id="readview" class="tabview rview rdview" hidden><div class="tleft" id="readleft"></div><div class="tcenter"><div class="tcard" id="readcard"></div></div></section>
-<!-- === SECTION: HTML timeline view (Phase 1, Nov 20, 2026) === Timeline tab (#timeline): About box, era bar (nine eras, Creation through the Early Church),
+<!-- === SECTION: HTML timeline view (Phase 1, Nov 20, 2026) === Timeline tab (#timeline): era bar (nine eras, Creation through the Early Church),
      zoom + legend, desktop lanes (#tlv-lanes, #tlv-scroller > #tlv-canvas), phone list (#tlv-mob), and the read-more drawer / bottom sheet (#tlv-panel). Filled by timeline_ui.js. -->
 <section id="tlview" class="tabview tlview" aria-label="Timeline" hidden>
- <details class="tlv-about"><summary>About this tab · Timeline</summary><p id="tlv-about"></p></details>
  <div id="tlv-erabar" role="group" aria-label="Jump to an era"></div>
  <div id="tlv-tools">
   <span class="tlv-lg"><b>Zoom</b></span><div class="tlv-seg" role="radiogroup" aria-label="Zoom"><button type="button" role="radio" data-z="fit">Whole period</button><button type="button" role="radio" data-z="4">Decades</button><button type="button" role="radio" data-z="10">Years</button></div>
@@ -11601,7 +11596,7 @@ const DOC_DATA = {
             {
               "ref": "Ezek 36:26–27",
               "chap": "Ezekiel 36",
-              "kjv": "A new heart also will I give you, and a new spirit will I put within you: and I will take away the stony heart out of your flesh, and I will give you an heart of flesh. And I will put my spirit within you, and cause you to walk in my statutes, and ye shall keep my judgments, and do them .",
+              "kjv": "A new heart also will I give you, and a new spirit will I put within you: and I will take away the stony heart out of your flesh, and I will give you an heart of flesh. And I will put my spirit within you, and cause you to walk in my statutes, and ye shall keep my judgments, and do them.",
               "lsb": "Moreover, I will give you a new heart and put a new spirit within you; and I will remove the heart of stone from your flesh and give you a heart of flesh. I will put My Spirit within you and cause you to walk in My statutes, and you will be careful to do My judgments.",
               "bsb": "I will give you a new heart and put a new spirit within you; I will remove your heart of stone and give you a heart of flesh. And I will put My Spirit within you and cause you to walk in My statutes and to carefully observe My ordinances.",
               "note": "Step 3 (Regeneration): Old Testament promise of the New Covenant heart transplant fulfilled in John 3:5."
@@ -11717,7 +11712,7 @@ const DOC_DATA = {
             {
               "ref": "Rom 3:21–26",
               "chap": "Romans 3",
-              "kjv": "But now the righteousness of God without the law is manifested, being witnessed by the law and the prophets; Even the righteousness of God which is by faith of Jesus Christ unto all and upon all them that believe: for there is no difference: For all have sinned, and come short of the glory of God; Being justified freely by his grace through the redemption that is in Christ Jesus: Whom God hath set forth to be a propitiation through faith in his blood, to declare his righteousness for the remission of sins that are past, through the forbearance of God; To declare, I say , at this time his righteousness: that he might be just, and the justifier of him which believeth in Jesus.",
+              "kjv": "But now the righteousness of God without the law is manifested, being witnessed by the law and the prophets; Even the righteousness of God which is by faith of Jesus Christ unto all and upon all them that believe: for there is no difference: For all have sinned, and come short of the glory of God; Being justified freely by his grace through the redemption that is in Christ Jesus: Whom God hath set forth to be a propitiation through faith in his blood, to declare his righteousness for the remission of sins that are past, through the forbearance of God; To declare, I say, at this time his righteousness: that he might be just, and the justifier of him which believeth in Jesus.",
               "lsb": "But now apart from the Law the righteousness of God has been manifested, being witnessed by the Law and the Prophets, even the righteousness of God through faith in Jesus Christ for all those who believe; for there is no distinction; for all have sinned and fall short of the glory of God, being justified as a gift by His grace through the redemption which is in Christ Jesus; whom God displayed publicly as a propitiation in His blood through faith, for a demonstration of His righteousness, because in the forbearance of God He passed over the sins previously committed; for the demonstration of His righteousness at the present time, so that He would be just and the justifier of the one who has faith in Jesus.",
               "bsb": "But now, apart from the law, the righteousness of God has been revealed, as attested by the Law and the Prophets. And this righteousness from God comes through faith in Jesus Christ to all who believe. There is no distinction, for all have sinned and fall short of the glory of God, and are justified freely by His grace through the redemption that is in Christ Jesus. God presented Him as the atoning sacrifice through faith in His blood, in order to demonstrate His righteousness, because in His forbearance He had passed over the sins committed beforehand. He did this to demonstrate His righteousness at the present time, so as to be just and the justifier of the one who has faith in Jesus.",
               "note": "Step 5 (Justification): The heart of the Gospel—justified as a gift by His grace through redemption and propitiation in Christ's blood, so God is both just and Justifier."
@@ -11725,7 +11720,7 @@ const DOC_DATA = {
             {
               "ref": "Rom 4:3–8",
               "chap": "Romans 4",
-              "kjv": "For what saith the scripture? Abraham believed God, and it was counted unto him for righteousness. Now to him that worketh is the reward not reckoned of grace, but of debt. But to him that worketh not, but believeth on him that justifieth the ungodly, his faith is counted for righteousness. Even as David also describeth the blessedness of the man, unto whom God imputeth righteousness without works, Saying , Blessed are they whose iniquities are forgiven, and whose sins are covered. Blessed is the man to whom the Lord will not impute sin.",
+              "kjv": "For what saith the scripture? Abraham believed God, and it was counted unto him for righteousness. Now to him that worketh is the reward not reckoned of grace, but of debt. But to him that worketh not, but believeth on him that justifieth the ungodly, his faith is counted for righteousness. Even as David also describeth the blessedness of the man, unto whom God imputeth righteousness without works, Saying, Blessed are they whose iniquities are forgiven, and whose sins are covered. Blessed is the man to whom the Lord will not impute sin.",
               "lsb": "For what does the Scripture say? 'ABRAHAM BELIEVED GOD, AND IT WAS CREDITED TO HIM AS RIGHTEOUSNESS.' Now to the one who works, his wage is not credited as a favor, but as what is due. But to the one who does not work, but believes in Him who justifies the ungodly, his faith is credited as righteousness, just as David also speaks of the blessing on the man to whom God credits righteousness apart from works: 'BLESSED ARE THOSE WHOSE LAWLESS DEEDS HAVE BEEN FORGIVEN, AND WHOSE SINS HAVE BEEN COVERED. BLESSED IS THE MAN WHOSE SIN THE LORD WILL NOT TAKE INTO ACCOUNT.'",
               "bsb": "For what does the Scripture say? 'Abraham believed God, and it was credited to him as righteousness.' Now the wages of the worker are not credited as a gift, but as an obligation. However, to the one who does not work, but believes in Him who justifies the wicked, his faith is credited as righteousness. And David speaks likewise of the blessedness of the man to whom God credits righteousness apart from works: 'Blessed are they whose lawless acts are forgiven, whose sins are covered. Blessed is the man whose sin the Lord will never count against him.'",
               "note": "Step 5 (Justification): Double imputation—positive crediting of righteousness apart from works (v. 6) and negative non-imputation of sin (v. 8)."
@@ -11804,7 +11799,7 @@ const DOC_DATA = {
             {
               "ref": "Rom 8:15–17",
               "chap": "Romans 8",
-              "kjv": "For ye have not received the spirit of bondage again to fear; but ye have received the Spirit of adoption, whereby we cry, Abba, Father. The Spirit itself beareth witness with our spirit, that we are the children of God: And if children, then heirs; heirs of God, and joint-heirs with Christ; if so be that we suffer with him , that we may be also glorified together.",
+              "kjv": "For ye have not received the spirit of bondage again to fear; but ye have received the Spirit of adoption, whereby we cry, Abba, Father. The Spirit itself beareth witness with our spirit, that we are the children of God: And if children, then heirs; heirs of God, and joint-heirs with Christ; if so be that we suffer with him, that we may be also glorified together.",
               "lsb": "For you have not received a spirit of slavery leading to fear again, but you have received the Spirit of adoption as sons by whom we cry out, 'Abba! Father!' The Spirit Himself testifies with our spirit that we are children of God, and if children, also heirs, heirs of God and fellow heirs with Christ, if indeed we suffer with Him so that we may also be glorified with Him.",
               "bsb": "For you did not receive a spirit of slavery that returns you to fear, but you received the Spirit of sonship, by whom we cry, 'Abba! Father!' The Spirit Himself testifies with our spirit that we are God's children. And if we are children, then we are heirs: heirs of God and co-heirs with Christ—if indeed we suffer with Him, so that we may also be glorified with Him.",
               "note": "Step 6 (Adoption): Delivered from slavish fear into filial intimacy ('Abba! Father!') and joint-inheritance with Christ."
@@ -12178,7 +12173,7 @@ const DOC_DATA = {
             {
               "ref": "Exod 34:6–7",
               "chap": "Exodus 34",
-              "kjv": "And the LORD passed by before him, and proclaimed, The LORD , The LORD God, merciful and gracious, longsuffering, and abundant in goodness and truth, Keeping mercy for thousands, forgiving iniquity and transgression and sin, and that will by no means clear the guilty; visiting the iniquity of the fathers upon the children, and upon the children’s children, unto the third and to the fourth generation .",
+              "kjv": "And the LORD passed by before him, and proclaimed, The LORD, The LORD God, merciful and gracious, longsuffering, and abundant in goodness and truth, Keeping mercy for thousands, forgiving iniquity and transgression and sin, and that will by no means clear the guilty; visiting the iniquity of the fathers upon the children, and upon the children’s children, unto the third and to the fourth generation.",
               "lsb": "Then Yahweh passed by in front of him and proclaimed, 'Yahweh, Yahweh God, compassionate and gracious, slow to anger, and abounding in lovingkindness and truth; who keeps lovingkindness for thousands, who forgives iniquity, transgression, and sin; yet He will by no means leave the guilty unpunished, visiting the iniquity of fathers on the children and on the grandchildren to the third and fourth generations.'",
               "bsb": "And the LORD passed in front of Moses and called out: 'The LORD, the LORD God, is compassionate and gracious, slow to anger, abounding in loving devotion and faithfulness, maintaining loving devotion to a thousand generations, forgiving iniquity, transgression, and sin. Yet He will by no means leave the guilty unpunished; He will visit the iniquity of the fathers upon their children and grandchildren to the third and fourth generations.'",
               "note": "Yahweh's self-proclamation on Sinai: uniting compassion, grace, lovingkindness (hesed, חֶסֶד), truth, forgiveness, and unyielding justice."
@@ -12325,7 +12320,7 @@ const DOC_DATA = {
             {
               "ref": "Mal 3:6",
               "chap": "Malachi 3",
-              "kjv": "For I am the LORD , I change not; therefore ye sons of Jacob are not consumed.",
+              "kjv": "For I am the LORD, I change not; therefore ye sons of Jacob are not consumed.",
               "lsb": "'For I, Yahweh, do not change; therefore you, O sons of Jacob, are not consumed.'",
               "bsb": "'For I, the LORD, do not change; therefore you, O sons of Jacob, are not consumed.'",
               "note": "Immutability: Covenant security rests on the unchangeable character of Yahweh."
@@ -12357,7 +12352,7 @@ const DOC_DATA = {
             {
               "ref": "Isa 57:15",
               "chap": "Isaiah 57",
-              "kjv": "For thus saith the high and lofty One that inhabiteth eternity, whose name is Holy; I dwell in the high and holy place , with him also that is of a contrite and humble spirit, to revive the spirit of the humble, and to revive the heart of the contrite ones.",
+              "kjv": "For thus saith the high and lofty One that inhabiteth eternity, whose name is Holy; I dwell in the high and holy place, with him also that is of a contrite and humble spirit, to revive the spirit of the humble, and to revive the heart of the contrite ones.",
               "lsb": "For thus says the high and exalted One who lives forever, whose name is Holy, 'I dwell on a high and holy place, and also with the contrite and lowly of spirit in order to revive the spirit of the lowly and to revive the heart of the contrite.'",
               "bsb": "For thus says the One who is high and lifted up, who inhabits eternity, whose name is Holy: 'I dwell in a high and holy place, and with the oppressed and humble in spirit, to restore the spirit of the lowly and revive the heart of the contrite.'",
               "note": "Eternity & Immanence: The Holy One who inhabits eternity also dwells near the contrite and lowly of spirit."
@@ -12365,7 +12360,7 @@ const DOC_DATA = {
             {
               "ref": "Ps 139:7–10",
               "chap": "Psalms 139",
-              "kjv": "Whither shall I go from thy spirit? or whither shall I flee from thy presence? If I ascend up into heaven, thou art there: if I make my bed in hell, behold, thou art there . If I take the wings of the morning, and dwell in the uttermost parts of the sea; Even there shall thy hand lead me, and thy right hand shall hold me.",
+              "kjv": "Whither shall I go from thy spirit? or whither shall I flee from thy presence? If I ascend up into heaven, thou art there: if I make my bed in hell, behold, thou art there. If I take the wings of the morning, and dwell in the uttermost parts of the sea; Even there shall thy hand lead me, and thy right hand shall hold me.",
               "lsb": "Where can I go from Your Spirit? Or where can I flee from Your presence? If I ascend to heaven, You are there; if I make my bed in Sheol, behold, You are there. If I lift up the wings of the dawn, if I dwell in the remotest part of the sea, even there Your hand will lead me, and Your right hand will lay hold of me.",
               "bsb": "Where can I go to escape Your Spirit? Where can I flee from Your presence? If I ascend to the heavens, You are there; if I make my bed in Sheol, You are there. If I rise on the wings of the dawn, if I settle by the farthest sea, even there Your hand will guide me; Your right hand will hold me fast.",
               "note": "Omnipresence: Everywhere in the cosmos—heaven, Sheol, and the farthest sea—God's Spirit and guiding hand are present."
@@ -12373,7 +12368,7 @@ const DOC_DATA = {
             {
               "ref": "Jer 23:23–24",
               "chap": "Jeremiah 23",
-              "kjv": "Am I a God at hand, saith the LORD , and not a God afar off? Can any hide himself in secret places that I shall not see him? saith the LORD . Do not I fill heaven and earth? saith the LORD .",
+              "kjv": "Am I a God at hand, saith the LORD, and not a God afar off? Can any hide himself in secret places that I shall not see him? saith the LORD. Do not I fill heaven and earth? saith the LORD.",
               "lsb": "'Am I a God who is near,' declares Yahweh, 'and not a God far off? Can a man hide himself in hiding places so I do not see him?' declares Yahweh. 'Do I not fill the heavens and the earth?' declares Yahweh.",
               "bsb": "'Am I only a God nearby,' declares the LORD, 'and not a God far away? Can a man hide in secret places where I cannot see him?' declares the LORD. 'Do I not fill the heavens and the earth?' declares the LORD.",
               "note": "Omnipresence (Immensity): Yahweh is simultaneously near (immanent) and far off (transcendent), filling heaven and earth."
@@ -12381,7 +12376,7 @@ const DOC_DATA = {
             {
               "ref": "Ps 139:1–6",
               "chap": "Psalms 139",
-              "kjv": "O LORD , thou hast searched me, and known me . Thou knowest my downsitting and mine uprising, thou understandest my thought afar off. Thou compassest my path and my lying down, and art acquainted with all my ways. For there is not a word in my tongue, but , lo, O LORD , thou knowest it altogether. Thou hast beset me behind and before, and laid thine hand upon me. Such knowledge is too wonderful for me; it is high, I cannot attain unto it.",
+              "kjv": "O LORD, thou hast searched me, and known me. Thou knowest my downsitting and mine uprising, thou understandest my thought afar off. Thou compassest my path and my lying down, and art acquainted with all my ways. For there is not a word in my tongue, but, lo, O LORD, thou knowest it altogether. Thou hast beset me behind and before, and laid thine hand upon me. Such knowledge is too wonderful for me; it is high, I cannot attain unto it.",
               "lsb": "O Yahweh, You have searched me and known me. You know when I sit down and when I rise up; You understand my thought from afar. You scrutinize my path and my lying down, and are intimately acquainted with all my ways. Even before there is a word on my tongue, behold, O Yahweh, You know it all. You have enclosed me behind and before, and laid Your hand upon me. Such knowledge is too wonderful for me; it is too high, I cannot attain to it.",
               "bsb": "O LORD, You have searched me and known me. You know when I sit and when I rise; You understand my thoughts from afar. You search out my path and my lying down; You are aware of all my ways. Even before a word is on my tongue, You know all about it, O LORD. You hem me in behind and before; You have laid Your hand upon me. Such knowledge is too wonderful for me, too lofty for me to attain.",
               "note": "Omniscience: Exhaustive divine knowledge of our actions, paths, thoughts, and words before they are spoken."
@@ -12405,7 +12400,7 @@ const DOC_DATA = {
             {
               "ref": "Job 42:2",
               "chap": "Job 42",
-              "kjv": "I know that thou canst do every thing , and that no thought can be withholden from thee.",
+              "kjv": "I know that thou canst do every thing, and that no thought can be withholden from thee.",
               "lsb": "'I know that You can do all things, and that no purpose of Yours can be thwarted.'",
               "bsb": "'I know that You can do all things, and that no purpose of Yours can be thwarted.'",
               "note": "Omnipotence & Sovereignty: Job's humble confession before the Creator—no purpose of God can be thwarted."
@@ -12413,7 +12408,7 @@ const DOC_DATA = {
             {
               "ref": "Jer 32:17",
               "chap": "Jeremiah 32",
-              "kjv": "Ah Lord GOD ! behold, thou hast made the heaven and the earth by thy great power and stretched out arm, and there is nothing too hard for thee:",
+              "kjv": "Ah Lord GOD! behold, thou hast made the heaven and the earth by thy great power and stretched out arm, and there is nothing too hard for thee:",
               "lsb": "'Ah Lord Yahweh! Behold, You have made the heavens and the earth by Your great power and by Your outstretched arm! Nothing is too difficult for You,'",
               "bsb": "'Oh, Lord GOD! You have made the heavens and the earth by Your great power and outstretched arm. Nothing is too difficult for You!'",
               "note": "Omnipotence: Creation ex nihilo and redemption by Yahweh's outstretched arm prove that nothing is too difficult for Him."
@@ -12780,7 +12775,7 @@ const DOC_DATA = {
             {
               "ref": "Deut 6:4",
               "chap": "Deuteronomy 6",
-              "kjv": "Hear, O Israel: The LORD our God is one LORD :",
+              "kjv": "Hear, O Israel: The LORD our God is one LORD:",
               "lsb": "'Hear, O Israel! Yahweh is our God, Yahweh is one!'",
               "bsb": "'Hear, O Israel: The LORD our God, the LORD is One.'",
               "note": "One Divine Essence (Ousia): The Shema—foundational confession of biblical monotheism."
@@ -12890,7 +12885,7 @@ const DOC_DATA = {
             {
               "ref": "Col 1:15–20",
               "chap": "Colossians 1",
-              "kjv": "Who is the image of the invisible God, the firstborn of every creature: For by him were all things created, that are in heaven, and that are in earth, visible and invisible, whether they be thrones, or dominions, or principalities, or powers: all things were created by him, and for him: And he is before all things, and by him all things consist. And he is the head of the body, the church: who is the beginning, the firstborn from the dead; that in all things he might have the preeminence. For it pleased the Father that in him should all fulness dwell; And, having made peace through the blood of his cross, by him to reconcile all things unto himself; by him, I say , whether they be things in earth, or things in heaven.",
+              "kjv": "Who is the image of the invisible God, the firstborn of every creature: For by him were all things created, that are in heaven, and that are in earth, visible and invisible, whether they be thrones, or dominions, or principalities, or powers: all things were created by him, and for him: And he is before all things, and by him all things consist. And he is the head of the body, the church: who is the beginning, the firstborn from the dead; that in all things he might have the preeminence. For it pleased the Father that in him should all fulness dwell; And, having made peace through the blood of his cross, by him to reconcile all things unto himself; by him, I say, whether they be things in earth, or things in heaven.",
               "lsb": "Who is the image of the invisible God, the firstborn of all creation. For in Him all things were created, both in the heavens and on earth, visible and invisible, whether thrones or dominions or rulers or authorities—all things have been created through Him and for Him. And He is before all things, and in Him all things hold together. And He is the head of the body, the church; Who is the beginning, the firstborn from the dead, so that He Himself will come to have first place in everything. For in Him all the fullness was pleased to dwell, and through Him to reconcile all things to Himself, having made peace through the blood of His cross—through Him, whether things on earth or things in heaven.",
               "bsb": "The Son is the image of the invisible God, the firstborn over all creation. For in Him all things were created, things in heaven and on earth, visible and invisible, whether thrones or dominions or rulers or authorities. All things were created through Him and for Him. He is before all things, and in Him all things hold together. And He is the head of the body, the church; He is the beginning and firstborn from among the dead, so that in all things He may have preeminence. For God was pleased to have all His fullness dwell in Him, and through Him to reconcile to Himself all things, whether things on earth or things in heaven, by making peace through the blood of His cross.",
               "note": "Supremacy of Christ in Creation and New Creation: All things were created in Him, through Him, and for Him, and He reconciles all things through the blood of His cross."
@@ -13042,7 +13037,7 @@ const DOC_DATA = {
             {
               "ref": "Heb 7:23–28",
               "chap": "Hebrews 7",
-              "kjv": "And they truly were many priests, because they were not suffered to continue by reason of death: But this man , because he continueth ever, hath an unchangeable priesthood. Wherefore he is able also to save them to the uttermost that come unto God by him, seeing he ever liveth to make intercession for them. For such an high priest became us, who is holy, harmless, undefiled, separate from sinners, and made higher than the heavens; Who needeth not daily, as those high priests, to offer up sacrifice, first for his own sins, and then for the people’s: for this he did once, when he offered up himself. For the law maketh men high priests which have infirmity; but the word of the oath, which was since the law, maketh the Son, who is consecrated for evermore.",
+              "kjv": "And they truly were many priests, because they were not suffered to continue by reason of death: But this man, because he continueth ever, hath an unchangeable priesthood. Wherefore he is able also to save them to the uttermost that come unto God by him, seeing he ever liveth to make intercession for them. For such an high priest became us, who is holy, harmless, undefiled, separate from sinners, and made higher than the heavens; Who needeth not daily, as those high priests, to offer up sacrifice, first for his own sins, and then for the people’s: for this he did once, when he offered up himself. For the law maketh men high priests which have infirmity; but the word of the oath, which was since the law, maketh the Son, who is consecrated for evermore.",
               "lsb": "And the former priests, on the one hand, existed in greater numbers because they were prevented by death from continuing, but He, on the other hand, because He continues forever, holds His priesthood permanently. Therefore He is able also to save forever those who draw near to God through Him, since He always lives to make intercession for them. For it was fitting for us to have such a high priest, holy, innocent, undefiled, separated from sinners and exalted above the heavens; who does not need daily, like those high priests, to offer up sacrifices, first for His own sins and then for the sins of the people, because this He did once for all when He offered up Himself. For the Law appoints men as high priests who are weak, but the word of the oath, which came after the Law, appoints a Son, made perfect forever.",
               "bsb": "Now there have been many of those priests, since death prevented them from continuing in office; but because Jesus lives forever, He has a permanent priesthood. Therefore He is able to save completely those who draw near to God through Him, since He always lives to intercede for them. Such a high priest truly befits us—One who is holy, innocent, undefiled, set apart from sinners, and exalted above the heavens. Unlike the other high priests, He does not need to offer daily sacrifices, first for His own sins and then for the sins of the people; He sacrificed for sin once for all when He offered up Himself. For the law appoints as high priests men who are weak; but the oath, which came after the law, appointed the Son, who has been made perfect forever.",
               "note": "Priest: Inviolable priesthood (aparabaton hierōsynēn)—once-for-all self-sacrifice (ephapax) and perpetual intercession."
@@ -13050,7 +13045,7 @@ const DOC_DATA = {
             {
               "ref": "Heb 9:11–14",
               "chap": "Hebrews 9",
-              "kjv": "But Christ being come an high priest of good things to come, by a greater and more perfect tabernacle, not made with hands, that is to say, not of this building; Neither by the blood of goats and calves, but by his own blood he entered in once into the holy place, having obtained eternal redemption for us . For if the blood of bulls and of goats, and the ashes of an heifer sprinkling the unclean, sanctifieth to the purifying of the flesh: How much more shall the blood of Christ, who through the eternal Spirit offered himself without spot to God, purge your conscience from dead works to serve the living God?",
+              "kjv": "But Christ being come an high priest of good things to come, by a greater and more perfect tabernacle, not made with hands, that is to say, not of this building; Neither by the blood of goats and calves, but by his own blood he entered in once into the holy place, having obtained eternal redemption for us. For if the blood of bulls and of goats, and the ashes of an heifer sprinkling the unclean, sanctifieth to the purifying of the flesh: How much more shall the blood of Christ, who through the eternal Spirit offered himself without spot to God, purge your conscience from dead works to serve the living God?",
               "lsb": "But when Christ appeared as a high priest of the good things to come, He entered through the greater and more perfect tabernacle, not made with hands, that is to say, not of this creation; and not through the blood of goats and calves, but through His own blood, He entered the holy place once for all, having obtained eternal redemption. For if the blood of goats and bulls and the ashes of a heifer sprinkling those who have been defiled sanctify for the cleansing of the flesh, how much more will the blood of Christ, who through the eternal Spirit offered Himself without blemish to God, cleanse your conscience from dead works to serve the living God?",
               "bsb": "But when Christ came as high priest of the good things that have come, He went through the greater and more perfect tabernacle that is not made by hands—that is, not of this creation. He did not enter by the blood of goats and calves, but He entered the Most Holy Place once for all by His own blood, thus securing eternal redemption. For if the blood of goats and bulls and the ashes of a heifer sprinkled on those who are ceremonially unclean sanctify them so that their bodies are clean, how much more will the blood of Christ, who through the eternal Spirit offered Himself unblemished to God, purify our consciences from works of death, so that we may serve the living God!",
               "note": "Priest: Trinitarian sacrifice—Christ through the eternal Spirit offered Himself without blemish to God, obtaining eternal redemption."
@@ -13258,7 +13253,7 @@ const DOC_DATA = {
             {
               "ref": "Rom 5:10–11",
               "chap": "Romans 5",
-              "kjv": "For if, when we were enemies, we were reconciled to God by the death of his Son, much more, being reconciled, we shall be saved by his life. And not only so , but we also joy in God through our Lord Jesus Christ, by whom we have now received the atonement.",
+              "kjv": "For if, when we were enemies, we were reconciled to God by the death of his Son, much more, being reconciled, we shall be saved by his life. And not only so, but we also joy in God through our Lord Jesus Christ, by whom we have now received the atonement.",
               "lsb": "For if while we were enemies we were reconciled to God through the death of His Son, much more, having been reconciled, we shall be saved by His life. And not only this, but we also boast in God through our Lord Jesus Christ, through whom we have now received the reconciliation.",
               "bsb": "For if, when we were enemies of God, we were reconciled to Him through the death of His Son, how much more, having been reconciled, shall we be saved through His life! Not only that, but we also rejoice in God through our Lord Jesus Christ, through whom we have now received reconciliation.",
               "note": "Reconciliation: Former enemies reconciled to God by the death of His Son and saved by His resurrection life."
@@ -13525,7 +13520,7 @@ const DOC_DATA = {
             {
               "ref": "Eph 1:13–14",
               "chap": "Ephesians 1",
-              "kjv": "In whom ye also trusted , after that ye heard the word of truth, the gospel of your salvation: in whom also after that ye believed, ye were sealed with that holy Spirit of promise, Which is the earnest of our inheritance until the redemption of the purchased possession, unto the praise of his glory.",
+              "kjv": "In whom ye also trusted, after that ye heard the word of truth, the gospel of your salvation: in whom also after that ye believed, ye were sealed with that holy Spirit of promise, Which is the earnest of our inheritance until the redemption of the purchased possession, unto the praise of his glory.",
               "lsb": "In Him, you also, after listening to the word of truth, the gospel of your salvation—having also believed, you were sealed in Him with the Holy Spirit of promise, who is given as a pledge of our inheritance, unto the redemption of God's own possession, to the praise of His glory.",
               "bsb": "And in Him, having heard and believed the word of truth—the gospel of your salvation—you were sealed with the promised Holy Spirit, who is the pledge of our inheritance until the redemption of those who are God's possession, to the praise of His glory.",
               "note": "Sealing & Pledge: Upon believing the Gospel, the Christian is sealed (esphragisthēte) with the Spirit as the arrabōn (down-payment guarantee) of our inheritance."
@@ -13541,7 +13536,7 @@ const DOC_DATA = {
             {
               "ref": "1 Cor 2:12–14",
               "chap": "1 Corinthians 2",
-              "kjv": "Now we have received, not the spirit of the world, but the spirit which is of God; that we might know the things that are freely given to us of God. Which things also we speak, not in the words which man’s wisdom teacheth, but which the Holy Ghost teacheth; comparing spiritual things with spiritual. But the natural man receiveth not the things of the Spirit of God: for they are foolishness unto him: neither can he know them , because they are spiritually discerned.",
+              "kjv": "Now we have received, not the spirit of the world, but the spirit which is of God; that we might know the things that are freely given to us of God. Which things also we speak, not in the words which man’s wisdom teacheth, but which the Holy Ghost teacheth; comparing spiritual things with spiritual. But the natural man receiveth not the things of the Spirit of God: for they are foolishness unto him: neither can he know them, because they are spiritually discerned.",
               "lsb": "Now we have received, not the spirit of the world, but the Spirit who is from God, so that we may know the things freely given to us by God, which things we also speak, not in words taught by human wisdom, but in those taught by the Spirit, combining spiritual thoughts with spiritual words. But a natural man does not accept the things of the Spirit of God, for they are foolishness to him; and he cannot understand them, because they are spiritually appraised.",
               "bsb": "We have not received the spirit of the world, but the Spirit who is from God, that we may understand what God has freely given us. And this is what we speak, not in words taught us by human wisdom, but in words taught by the Spirit, expressing spiritual truths in spiritual words. The natural man does not accept the things that come from the Spirit of God. For they are foolishness to him, and he cannot understand them, because they are spiritually discerned.",
               "note": "Illumination: The natural man (psychikos anthrōpos) regards God's truth as foolishness, whereas the Spirit enables believers to discern spiritual truth."
@@ -13647,7 +13642,7 @@ const DOC_DATA = {
             {
               "ref": "Eph 2:20",
               "chap": "Ephesians 2",
-              "kjv": "And are built upon the foundation of the apostles and prophets, Jesus Christ himself being the chief corner stone ;",
+              "kjv": "And are built upon the foundation of the apostles and prophets, Jesus Christ himself being the chief corner stone;",
               "lsb": "having been built on the foundation of the apostles and prophets, Christ Jesus Himself being the corner stone,",
               "bsb": "built on the foundation of the apostles and prophets, with Christ Jesus Himself as the cornerstone.",
               "note": "Foundation of the Church: Built upon the historical foundation of the apostles and New Testament prophets, with Christ Jesus as the cornerstone."
@@ -13655,7 +13650,7 @@ const DOC_DATA = {
             {
               "ref": "Heb 2:3–4",
               "chap": "Hebrews 2",
-              "kjv": "How shall we escape, if we neglect so great salvation; which at the first began to be spoken by the Lord, and was confirmed unto us by them that heard him ; God also bearing them witness, both with signs and wonders, and with divers miracles, and gifts of the Holy Ghost, according to his own will?",
+              "kjv": "How shall we escape, if we neglect so great salvation; which at the first began to be spoken by the Lord, and was confirmed unto us by them that heard him; God also bearing them witness, both with signs and wonders, and with divers miracles, and gifts of the Holy Ghost, according to his own will?",
               "lsb": "how will we escape if we neglect so great a salvation? That salvation, first spoken by the Lord, was confirmed to us by those who heard, God also testifying with them, both by signs and wonders and by various miracles and by gifts of the Holy Spirit according to His own will.",
               "bsb": "how shall we escape if we neglect such a great salvation? This salvation was first announced by the Lord, was confirmed to us by those who heard Him, and was accompanied by God's testimony of signs, wonders, various miracles, and gifts of the Holy Spirit distributed according to His will.",
               "note": "Apostolic Attestation: God bore witness to the message of those who heard the Lord by signs, wonders, miracles, and distributions of the Holy Spirit."
@@ -13671,7 +13666,7 @@ const DOC_DATA = {
             {
               "ref": "1 Cor 14:1–3, 39–40",
               "chap": "1 Corinthians 14",
-              "kjv": "Follow after charity, and desire spiritual gifts , but rather that ye may prophesy. For he that speaketh in an unknown tongue speaketh not unto men, but unto God: for no man understandeth him ; howbeit in the spirit he speaketh mysteries. But he that prophesieth speaketh unto men to edification, and exhortation, and comfort. Wherefore, brethren, covet to prophesy, and forbid not to speak with tongues. Let all things be done decently and in order.",
+              "kjv": "Follow after charity, and desire spiritual gifts, but rather that ye may prophesy. For he that speaketh in an unknown tongue speaketh not unto men, but unto God: for no man understandeth him; howbeit in the spirit he speaketh mysteries. But he that prophesieth speaketh unto men to edification, and exhortation, and comfort. Wherefore, brethren, covet to prophesy, and forbid not to speak with tongues. Let all things be done decently and in order.",
               "lsb": "Pursue love, yet earnestly desire spiritual gifts, but especially that you may prophesy. For one who speaks in a tongue does not speak to men but to God; for no one understands, but in his spirit he speaks mysteries. But one who prophesies speaks to men for edification and exhortation and consolation... Therefore, my brothers, earnestly desire to prophesy, and do not forbid to speak in tongues. But all things must be done properly and in an orderly manner.",
               "bsb": "Earnestly pursue love and eagerly desire spiritual gifts, especially the gift of prophecy. For he who speaks in a tongue does not speak to men, but to God. Indeed, no one understands him; he utters mysteries in the Spirit. But he who prophesies speaks to men for their strengthening, encouragement, and comfort... So, my brothers, be eager to prophesy, and do not forbid speaking in tongues. But everything must be done in a proper and orderly manner.",
               "note": "Pauline Regulation of Spiritual Gifts: Pursue love, prioritize intelligible edification of the church, and do all things decently and in order."
@@ -13839,7 +13834,7 @@ const DOC_DATA = {
       "chap": "John 3"
     },
     "Ezek 36:26–27": {
-      "KJV": "A new heart also will I give you, and a new spirit will I put within you: and I will take away the stony heart out of your flesh, and I will give you an heart of flesh. And I will put my spirit within you, and cause you to walk in my statutes, and ye shall keep my judgments, and do them .",
+      "KJV": "A new heart also will I give you, and a new spirit will I put within you: and I will take away the stony heart out of your flesh, and I will give you an heart of flesh. And I will put my spirit within you, and cause you to walk in my statutes, and ye shall keep my judgments, and do them.",
       "LSB": "Moreover, I will give you a new heart and put a new spirit within you; and I will remove the heart of stone from your flesh and give you a heart of flesh. I will put My Spirit within you and cause you to walk in My statutes, and you will be careful to do My judgments.",
       "BSB": "I will give you a new heart and put a new spirit within you; I will remove your heart of stone and give you a heart of flesh. And I will put My Spirit within you and cause you to walk in My statutes and to carefully observe My ordinances.",
       "chap": "Ezekiel 36"
@@ -13863,13 +13858,13 @@ const DOC_DATA = {
       "chap": "Acts 20"
     },
     "Rom 3:21–26": {
-      "KJV": "But now the righteousness of God without the law is manifested, being witnessed by the law and the prophets; Even the righteousness of God which is by faith of Jesus Christ unto all and upon all them that believe: for there is no difference: For all have sinned, and come short of the glory of God; Being justified freely by his grace through the redemption that is in Christ Jesus: Whom God hath set forth to be a propitiation through faith in his blood, to declare his righteousness for the remission of sins that are past, through the forbearance of God; To declare, I say , at this time his righteousness: that he might be just, and the justifier of him which believeth in Jesus.",
+      "KJV": "But now the righteousness of God without the law is manifested, being witnessed by the law and the prophets; Even the righteousness of God which is by faith of Jesus Christ unto all and upon all them that believe: for there is no difference: For all have sinned, and come short of the glory of God; Being justified freely by his grace through the redemption that is in Christ Jesus: Whom God hath set forth to be a propitiation through faith in his blood, to declare his righteousness for the remission of sins that are past, through the forbearance of God; To declare, I say, at this time his righteousness: that he might be just, and the justifier of him which believeth in Jesus.",
       "LSB": "But now apart from the Law the righteousness of God has been manifested, being witnessed by the Law and the Prophets, even the righteousness of God through faith in Jesus Christ for all those who believe; for there is no distinction; for all have sinned and fall short of the glory of God, being justified as a gift by His grace through the redemption which is in Christ Jesus; whom God displayed publicly as a propitiation in His blood through faith, for a demonstration of His righteousness, because in the forbearance of God He passed over the sins previously committed; for the demonstration of His righteousness at the present time, so that He would be just and the justifier of the one who has faith in Jesus.",
       "BSB": "But now, apart from the law, the righteousness of God has been revealed, as attested by the Law and the Prophets. And this righteousness from God comes through faith in Jesus Christ to all who believe. There is no distinction, for all have sinned and fall short of the glory of God, and are justified freely by His grace through the redemption that is in Christ Jesus. God presented Him as the atoning sacrifice through faith in His blood, in order to demonstrate His righteousness, because in His forbearance He had passed over the sins committed beforehand. He did this to demonstrate His righteousness at the present time, so as to be just and the justifier of the one who has faith in Jesus.",
       "chap": "Romans 3"
     },
     "Rom 4:3–8": {
-      "KJV": "For what saith the scripture? Abraham believed God, and it was counted unto him for righteousness. Now to him that worketh is the reward not reckoned of grace, but of debt. But to him that worketh not, but believeth on him that justifieth the ungodly, his faith is counted for righteousness. Even as David also describeth the blessedness of the man, unto whom God imputeth righteousness without works, Saying , Blessed are they whose iniquities are forgiven, and whose sins are covered. Blessed is the man to whom the Lord will not impute sin.",
+      "KJV": "For what saith the scripture? Abraham believed God, and it was counted unto him for righteousness. Now to him that worketh is the reward not reckoned of grace, but of debt. But to him that worketh not, but believeth on him that justifieth the ungodly, his faith is counted for righteousness. Even as David also describeth the blessedness of the man, unto whom God imputeth righteousness without works, Saying, Blessed are they whose iniquities are forgiven, and whose sins are covered. Blessed is the man to whom the Lord will not impute sin.",
       "LSB": "For what does the Scripture say? 'ABRAHAM BELIEVED GOD, AND IT WAS CREDITED TO HIM AS RIGHTEOUSNESS.' Now to the one who works, his wage is not credited as a favor, but as what is due. But to the one who does not work, but believes in Him who justifies the ungodly, his faith is credited as righteousness, just as David also speaks of the blessing on the man to whom God credits righteousness apart from works: 'BLESSED ARE THOSE WHOSE LAWLESS DEEDS HAVE BEEN FORGIVEN, AND WHOSE SINS HAVE BEEN COVERED. BLESSED IS THE MAN WHOSE SIN THE LORD WILL NOT TAKE INTO ACCOUNT.'",
       "BSB": "For what does the Scripture say? 'Abraham believed God, and it was credited to him as righteousness.' Now the wages of the worker are not credited as a gift, but as an obligation. However, to the one who does not work, but believes in Him who justifies the wicked, his faith is credited as righteousness. And David speaks likewise of the blessedness of the man to whom God credits righteousness apart from works: 'Blessed are they whose lawless acts are forgiven, whose sins are covered. Blessed is the man whose sin the Lord will never count against him.'",
       "chap": "Romans 4"
@@ -13893,7 +13888,7 @@ const DOC_DATA = {
       "chap": "Philippians 3"
     },
     "Rom 8:15–17": {
-      "KJV": "For ye have not received the spirit of bondage again to fear; but ye have received the Spirit of adoption, whereby we cry, Abba, Father. The Spirit itself beareth witness with our spirit, that we are the children of God: And if children, then heirs; heirs of God, and joint-heirs with Christ; if so be that we suffer with him , that we may be also glorified together.",
+      "KJV": "For ye have not received the spirit of bondage again to fear; but ye have received the Spirit of adoption, whereby we cry, Abba, Father. The Spirit itself beareth witness with our spirit, that we are the children of God: And if children, then heirs; heirs of God, and joint-heirs with Christ; if so be that we suffer with him, that we may be also glorified together.",
       "LSB": "For you have not received a spirit of slavery leading to fear again, but you have received the Spirit of adoption as sons by whom we cry out, 'Abba! Father!' The Spirit Himself testifies with our spirit that we are children of God, and if children, also heirs, heirs of God and fellow heirs with Christ, if indeed we suffer with Him so that we may also be glorified with Him.",
       "BSB": "For you did not receive a spirit of slavery that returns you to fear, but you received the Spirit of sonship, by whom we cry, 'Abba! Father!' The Spirit Himself testifies with our spirit that we are God's children. And if we are children, then we are heirs: heirs of God and co-heirs with Christ—if indeed we suffer with Him, so that we may also be glorified with Him.",
       "chap": "Romans 8"
@@ -13977,7 +13972,7 @@ const DOC_DATA = {
       "chap": "Exodus 3"
     },
     "Exod 34:6–7": {
-      "KJV": "And the LORD passed by before him, and proclaimed, The LORD , The LORD God, merciful and gracious, longsuffering, and abundant in goodness and truth, Keeping mercy for thousands, forgiving iniquity and transgression and sin, and that will by no means clear the guilty; visiting the iniquity of the fathers upon the children, and upon the children’s children, unto the third and to the fourth generation .",
+      "KJV": "And the LORD passed by before him, and proclaimed, The LORD, The LORD God, merciful and gracious, longsuffering, and abundant in goodness and truth, Keeping mercy for thousands, forgiving iniquity and transgression and sin, and that will by no means clear the guilty; visiting the iniquity of the fathers upon the children, and upon the children’s children, unto the third and to the fourth generation.",
       "LSB": "Then Yahweh passed by in front of him and proclaimed, 'Yahweh, Yahweh God, compassionate and gracious, slow to anger, and abounding in lovingkindness and truth; who keeps lovingkindness for thousands, who forgives iniquity, transgression, and sin; yet He will by no means leave the guilty unpunished, visiting the iniquity of fathers on the children and on the grandchildren to the third and fourth generations.'",
       "BSB": "And the LORD passed in front of Moses and called out: 'The LORD, the LORD God, is compassionate and gracious, slow to anger, abounding in loving devotion and faithfulness, maintaining loving devotion to a thousand generations, forgiving iniquity, transgression, and sin. Yet He will by no means leave the guilty unpunished; He will visit the iniquity of the fathers upon their children and grandchildren to the third and fourth generations.'",
       "chap": "Exodus 34"
@@ -14001,7 +13996,7 @@ const DOC_DATA = {
       "chap": "Acts 17"
     },
     "Mal 3:6": {
-      "KJV": "For I am the LORD , I change not; therefore ye sons of Jacob are not consumed.",
+      "KJV": "For I am the LORD, I change not; therefore ye sons of Jacob are not consumed.",
       "LSB": "'For I, Yahweh, do not change; therefore you, O sons of Jacob, are not consumed.'",
       "BSB": "'For I, the LORD, do not change; therefore you, O sons of Jacob, are not consumed.'",
       "chap": "Malachi 3"
@@ -14025,25 +14020,25 @@ const DOC_DATA = {
       "chap": "Psalms 90"
     },
     "Isa 57:15": {
-      "KJV": "For thus saith the high and lofty One that inhabiteth eternity, whose name is Holy; I dwell in the high and holy place , with him also that is of a contrite and humble spirit, to revive the spirit of the humble, and to revive the heart of the contrite ones.",
+      "KJV": "For thus saith the high and lofty One that inhabiteth eternity, whose name is Holy; I dwell in the high and holy place, with him also that is of a contrite and humble spirit, to revive the spirit of the humble, and to revive the heart of the contrite ones.",
       "LSB": "For thus says the high and exalted One who lives forever, whose name is Holy, 'I dwell on a high and holy place, and also with the contrite and lowly of spirit in order to revive the spirit of the lowly and to revive the heart of the contrite.'",
       "BSB": "For thus says the One who is high and lifted up, who inhabits eternity, whose name is Holy: 'I dwell in a high and holy place, and with the oppressed and humble in spirit, to restore the spirit of the lowly and revive the heart of the contrite.'",
       "chap": "Isaiah 57"
     },
     "Ps 139:7–10": {
-      "KJV": "Whither shall I go from thy spirit? or whither shall I flee from thy presence? If I ascend up into heaven, thou art there: if I make my bed in hell, behold, thou art there . If I take the wings of the morning, and dwell in the uttermost parts of the sea; Even there shall thy hand lead me, and thy right hand shall hold me.",
+      "KJV": "Whither shall I go from thy spirit? or whither shall I flee from thy presence? If I ascend up into heaven, thou art there: if I make my bed in hell, behold, thou art there. If I take the wings of the morning, and dwell in the uttermost parts of the sea; Even there shall thy hand lead me, and thy right hand shall hold me.",
       "LSB": "Where can I go from Your Spirit? Or where can I flee from Your presence? If I ascend to heaven, You are there; if I make my bed in Sheol, behold, You are there. If I lift up the wings of the dawn, if I dwell in the remotest part of the sea, even there Your hand will lead me, and Your right hand will lay hold of me.",
       "BSB": "Where can I go to escape Your Spirit? Where can I flee from Your presence? If I ascend to the heavens, You are there; if I make my bed in Sheol, You are there. If I rise on the wings of the dawn, if I settle by the farthest sea, even there Your hand will guide me; Your right hand will hold me fast.",
       "chap": "Psalms 139"
     },
     "Jer 23:23–24": {
-      "KJV": "Am I a God at hand, saith the LORD , and not a God afar off? Can any hide himself in secret places that I shall not see him? saith the LORD . Do not I fill heaven and earth? saith the LORD .",
+      "KJV": "Am I a God at hand, saith the LORD, and not a God afar off? Can any hide himself in secret places that I shall not see him? saith the LORD. Do not I fill heaven and earth? saith the LORD.",
       "LSB": "'Am I a God who is near,' declares Yahweh, 'and not a God far off? Can a man hide himself in hiding places so I do not see him?' declares Yahweh. 'Do I not fill the heavens and the earth?' declares Yahweh.",
       "BSB": "'Am I only a God nearby,' declares the LORD, 'and not a God far away? Can a man hide in secret places where I cannot see him?' declares the LORD. 'Do I not fill the heavens and the earth?' declares the LORD.",
       "chap": "Jeremiah 23"
     },
     "Ps 139:1–6": {
-      "KJV": "O LORD , thou hast searched me, and known me . Thou knowest my downsitting and mine uprising, thou understandest my thought afar off. Thou compassest my path and my lying down, and art acquainted with all my ways. For there is not a word in my tongue, but , lo, O LORD , thou knowest it altogether. Thou hast beset me behind and before, and laid thine hand upon me. Such knowledge is too wonderful for me; it is high, I cannot attain unto it.",
+      "KJV": "O LORD, thou hast searched me, and known me. Thou knowest my downsitting and mine uprising, thou understandest my thought afar off. Thou compassest my path and my lying down, and art acquainted with all my ways. For there is not a word in my tongue, but, lo, O LORD, thou knowest it altogether. Thou hast beset me behind and before, and laid thine hand upon me. Such knowledge is too wonderful for me; it is high, I cannot attain unto it.",
       "LSB": "O Yahweh, You have searched me and known me. You know when I sit down and when I rise up; You understand my thought from afar. You scrutinize my path and my lying down, and are intimately acquainted with all my ways. Even before there is a word on my tongue, behold, O Yahweh, You know it all. You have enclosed me behind and before, and laid Your hand upon me. Such knowledge is too wonderful for me; it is too high, I cannot attain to it.",
       "BSB": "O LORD, You have searched me and known me. You know when I sit and when I rise; You understand my thoughts from afar. You search out my path and my lying down; You are aware of all my ways. Even before a word is on my tongue, You know all about it, O LORD. You hem me in behind and before; You have laid Your hand upon me. Such knowledge is too wonderful for me, too lofty for me to attain.",
       "chap": "Psalms 139"
@@ -14061,13 +14056,13 @@ const DOC_DATA = {
       "chap": "Hebrews 4"
     },
     "Job 42:2": {
-      "KJV": "I know that thou canst do every thing , and that no thought can be withholden from thee.",
+      "KJV": "I know that thou canst do every thing, and that no thought can be withholden from thee.",
       "LSB": "'I know that You can do all things, and that no purpose of Yours can be thwarted.'",
       "BSB": "'I know that You can do all things, and that no purpose of Yours can be thwarted.'",
       "chap": "Job 42"
     },
     "Jer 32:17": {
-      "KJV": "Ah Lord GOD ! behold, thou hast made the heaven and the earth by thy great power and stretched out arm, and there is nothing too hard for thee:",
+      "KJV": "Ah Lord GOD! behold, thou hast made the heaven and the earth by thy great power and stretched out arm, and there is nothing too hard for thee:",
       "LSB": "'Ah Lord Yahweh! Behold, You have made the heavens and the earth by Your great power and by Your outstretched arm! Nothing is too difficult for You,'",
       "BSB": "'Oh, Lord GOD! You have made the heavens and the earth by Your great power and outstretched arm. Nothing is too difficult for You!'",
       "chap": "Jeremiah 32"
@@ -14175,7 +14170,7 @@ const DOC_DATA = {
       "chap": "Romans 1"
     },
     "Deut 6:4": {
-      "KJV": "Hear, O Israel: The LORD our God is one LORD :",
+      "KJV": "Hear, O Israel: The LORD our God is one LORD:",
       "LSB": "'Hear, O Israel! Yahweh is our God, Yahweh is one!'",
       "BSB": "'Hear, O Israel: The LORD our God, the LORD is One.'",
       "chap": "Deuteronomy 6"
@@ -14211,7 +14206,7 @@ const DOC_DATA = {
       "chap": "Philippians 2"
     },
     "Col 1:15–20": {
-      "KJV": "Who is the image of the invisible God, the firstborn of every creature: For by him were all things created, that are in heaven, and that are in earth, visible and invisible, whether they be thrones, or dominions, or principalities, or powers: all things were created by him, and for him: And he is before all things, and by him all things consist. And he is the head of the body, the church: who is the beginning, the firstborn from the dead; that in all things he might have the preeminence. For it pleased the Father that in him should all fulness dwell; And, having made peace through the blood of his cross, by him to reconcile all things unto himself; by him, I say , whether they be things in earth, or things in heaven.",
+      "KJV": "Who is the image of the invisible God, the firstborn of every creature: For by him were all things created, that are in heaven, and that are in earth, visible and invisible, whether they be thrones, or dominions, or principalities, or powers: all things were created by him, and for him: And he is before all things, and by him all things consist. And he is the head of the body, the church: who is the beginning, the firstborn from the dead; that in all things he might have the preeminence. For it pleased the Father that in him should all fulness dwell; And, having made peace through the blood of his cross, by him to reconcile all things unto himself; by him, I say, whether they be things in earth, or things in heaven.",
       "LSB": "Who is the image of the invisible God, the firstborn of all creation. For in Him all things were created, both in the heavens and on earth, visible and invisible, whether thrones or dominions or rulers or authorities—all things have been created through Him and for Him. And He is before all things, and in Him all things hold together. And He is the head of the body, the church; Who is the beginning, the firstborn from the dead, so that He Himself will come to have first place in everything. For in Him all the fullness was pleased to dwell, and through Him to reconcile all things to Himself, having made peace through the blood of His cross—through Him, whether things on earth or things in heaven.",
       "BSB": "The Son is the image of the invisible God, the firstborn over all creation. For in Him all things were created, things in heaven and on earth, visible and invisible, whether thrones or dominions or rulers or authorities. All things were created through Him and for Him. He is before all things, and in Him all things hold together. And He is the head of the body, the church; He is the beginning and firstborn from among the dead, so that in all things He may have preeminence. For God was pleased to have all His fullness dwell in Him, and through Him to reconcile to Himself all things, whether things on earth or things in heaven, by making peace through the blood of His cross.",
       "chap": "Colossians 1"
@@ -14259,13 +14254,13 @@ const DOC_DATA = {
       "chap": "Hebrews 4"
     },
     "Heb 7:23–28": {
-      "KJV": "And they truly were many priests, because they were not suffered to continue by reason of death: But this man , because he continueth ever, hath an unchangeable priesthood. Wherefore he is able also to save them to the uttermost that come unto God by him, seeing he ever liveth to make intercession for them. For such an high priest became us, who is holy, harmless, undefiled, separate from sinners, and made higher than the heavens; Who needeth not daily, as those high priests, to offer up sacrifice, first for his own sins, and then for the people’s: for this he did once, when he offered up himself. For the law maketh men high priests which have infirmity; but the word of the oath, which was since the law, maketh the Son, who is consecrated for evermore.",
+      "KJV": "And they truly were many priests, because they were not suffered to continue by reason of death: But this man, because he continueth ever, hath an unchangeable priesthood. Wherefore he is able also to save them to the uttermost that come unto God by him, seeing he ever liveth to make intercession for them. For such an high priest became us, who is holy, harmless, undefiled, separate from sinners, and made higher than the heavens; Who needeth not daily, as those high priests, to offer up sacrifice, first for his own sins, and then for the people’s: for this he did once, when he offered up himself. For the law maketh men high priests which have infirmity; but the word of the oath, which was since the law, maketh the Son, who is consecrated for evermore.",
       "LSB": "And the former priests, on the one hand, existed in greater numbers because they were prevented by death from continuing, but He, on the other hand, because He continues forever, holds His priesthood permanently. Therefore He is able also to save forever those who draw near to God through Him, since He always lives to make intercession for them. For it was fitting for us to have such a high priest, holy, innocent, undefiled, separated from sinners and exalted above the heavens; who does not need daily, like those high priests, to offer up sacrifices, first for His own sins and then for the sins of the people, because this He did once for all when He offered up Himself. For the Law appoints men as high priests who are weak, but the word of the oath, which came after the Law, appoints a Son, made perfect forever.",
       "BSB": "Now there have been many of those priests, since death prevented them from continuing in office; but because Jesus lives forever, He has a permanent priesthood. Therefore He is able to save completely those who draw near to God through Him, since He always lives to intercede for them. Such a high priest truly befits us—One who is holy, innocent, undefiled, set apart from sinners, and exalted above the heavens. Unlike the other high priests, He does not need to offer daily sacrifices, first for His own sins and then for the sins of the people; He sacrificed for sin once for all when He offered up Himself. For the law appoints as high priests men who are weak; but the oath, which came after the law, appointed the Son, who has been made perfect forever.",
       "chap": "Hebrews 7"
     },
     "Heb 9:11–14": {
-      "KJV": "But Christ being come an high priest of good things to come, by a greater and more perfect tabernacle, not made with hands, that is to say, not of this building; Neither by the blood of goats and calves, but by his own blood he entered in once into the holy place, having obtained eternal redemption for us . For if the blood of bulls and of goats, and the ashes of an heifer sprinkling the unclean, sanctifieth to the purifying of the flesh: How much more shall the blood of Christ, who through the eternal Spirit offered himself without spot to God, purge your conscience from dead works to serve the living God?",
+      "KJV": "But Christ being come an high priest of good things to come, by a greater and more perfect tabernacle, not made with hands, that is to say, not of this building; Neither by the blood of goats and calves, but by his own blood he entered in once into the holy place, having obtained eternal redemption for us. For if the blood of bulls and of goats, and the ashes of an heifer sprinkling the unclean, sanctifieth to the purifying of the flesh: How much more shall the blood of Christ, who through the eternal Spirit offered himself without spot to God, purge your conscience from dead works to serve the living God?",
       "LSB": "But when Christ appeared as a high priest of the good things to come, He entered through the greater and more perfect tabernacle, not made with hands, that is to say, not of this creation; and not through the blood of goats and calves, but through His own blood, He entered the holy place once for all, having obtained eternal redemption. For if the blood of goats and bulls and the ashes of a heifer sprinkling those who have been defiled sanctify for the cleansing of the flesh, how much more will the blood of Christ, who through the eternal Spirit offered Himself without blemish to God, cleanse your conscience from dead works to serve the living God?",
       "BSB": "But when Christ came as high priest of the good things that have come, He went through the greater and more perfect tabernacle that is not made by hands—that is, not of this creation. He did not enter by the blood of goats and calves, but He entered the Most Holy Place once for all by His own blood, thus securing eternal redemption. For if the blood of goats and bulls and the ashes of a heifer sprinkled on those who are ceremonially unclean sanctify them so that their bodies are clean, how much more will the blood of Christ, who through the eternal Spirit offered Himself unblemished to God, purify our consciences from works of death, so that we may serve the living God!",
       "chap": "Hebrews 9"
@@ -14343,7 +14338,7 @@ const DOC_DATA = {
       "chap": "1 Peter 1"
     },
     "Rom 5:10–11": {
-      "KJV": "For if, when we were enemies, we were reconciled to God by the death of his Son, much more, being reconciled, we shall be saved by his life. And not only so , but we also joy in God through our Lord Jesus Christ, by whom we have now received the atonement.",
+      "KJV": "For if, when we were enemies, we were reconciled to God by the death of his Son, much more, being reconciled, we shall be saved by his life. And not only so, but we also joy in God through our Lord Jesus Christ, by whom we have now received the atonement.",
       "LSB": "For if while we were enemies we were reconciled to God through the death of His Son, much more, having been reconciled, we shall be saved by His life. And not only this, but we also boast in God through our Lord Jesus Christ, through whom we have now received the reconciliation.",
       "BSB": "For if, when we were enemies of God, we were reconciled to Him through the death of His Son, how much more, having been reconciled, shall we be saved through His life! Not only that, but we also rejoice in God through our Lord Jesus Christ, through whom we have now received reconciliation.",
       "chap": "Romans 5"
@@ -14415,7 +14410,7 @@ const DOC_DATA = {
       "chap": "1 Corinthians 12"
     },
     "Eph 1:13–14": {
-      "KJV": "In whom ye also trusted , after that ye heard the word of truth, the gospel of your salvation: in whom also after that ye believed, ye were sealed with that holy Spirit of promise, Which is the earnest of our inheritance until the redemption of the purchased possession, unto the praise of his glory.",
+      "KJV": "In whom ye also trusted, after that ye heard the word of truth, the gospel of your salvation: in whom also after that ye believed, ye were sealed with that holy Spirit of promise, Which is the earnest of our inheritance until the redemption of the purchased possession, unto the praise of his glory.",
       "LSB": "In Him, you also, after listening to the word of truth, the gospel of your salvation—having also believed, you were sealed in Him with the Holy Spirit of promise, who is given as a pledge of our inheritance, unto the redemption of God's own possession, to the praise of His glory.",
       "BSB": "And in Him, having heard and believed the word of truth—the gospel of your salvation—you were sealed with the promised Holy Spirit, who is the pledge of our inheritance until the redemption of those who are God's possession, to the praise of His glory.",
       "chap": "Ephesians 1"
@@ -14427,7 +14422,7 @@ const DOC_DATA = {
       "chap": "2 Corinthians 1"
     },
     "1 Cor 2:12–14": {
-      "KJV": "Now we have received, not the spirit of the world, but the spirit which is of God; that we might know the things that are freely given to us of God. Which things also we speak, not in the words which man’s wisdom teacheth, but which the Holy Ghost teacheth; comparing spiritual things with spiritual. But the natural man receiveth not the things of the Spirit of God: for they are foolishness unto him: neither can he know them , because they are spiritually discerned.",
+      "KJV": "Now we have received, not the spirit of the world, but the spirit which is of God; that we might know the things that are freely given to us of God. Which things also we speak, not in the words which man’s wisdom teacheth, but which the Holy Ghost teacheth; comparing spiritual things with spiritual. But the natural man receiveth not the things of the Spirit of God: for they are foolishness unto him: neither can he know them, because they are spiritually discerned.",
       "LSB": "Now we have received, not the spirit of the world, but the Spirit who is from God, so that we may know the things freely given to us by God, which things we also speak, not in words taught by human wisdom, but in those taught by the Spirit, combining spiritual thoughts with spiritual words. But a natural man does not accept the things of the Spirit of God, for they are foolishness to him; and he cannot understand them, because they are spiritually appraised.",
       "BSB": "We have not received the spirit of the world, but the Spirit who is from God, that we may understand what God has freely given us. And this is what we speak, not in words taught us by human wisdom, but in words taught by the Spirit, expressing spiritual truths in spiritual words. The natural man does not accept the things that come from the Spirit of God. For they are foolishness to him, and he cannot understand them, because they are spiritually discerned.",
       "chap": "1 Corinthians 2"
@@ -14445,13 +14440,13 @@ const DOC_DATA = {
       "chap": "Galatians 5"
     },
     "Eph 2:20": {
-      "KJV": "And are built upon the foundation of the apostles and prophets, Jesus Christ himself being the chief corner stone ;",
+      "KJV": "And are built upon the foundation of the apostles and prophets, Jesus Christ himself being the chief corner stone;",
       "LSB": "having been built on the foundation of the apostles and prophets, Christ Jesus Himself being the corner stone,",
       "BSB": "built on the foundation of the apostles and prophets, with Christ Jesus Himself as the cornerstone.",
       "chap": "Ephesians 2"
     },
     "Heb 2:3–4": {
-      "KJV": "How shall we escape, if we neglect so great salvation; which at the first began to be spoken by the Lord, and was confirmed unto us by them that heard him ; God also bearing them witness, both with signs and wonders, and with divers miracles, and gifts of the Holy Ghost, according to his own will?",
+      "KJV": "How shall we escape, if we neglect so great salvation; which at the first began to be spoken by the Lord, and was confirmed unto us by them that heard him; God also bearing them witness, both with signs and wonders, and with divers miracles, and gifts of the Holy Ghost, according to his own will?",
       "LSB": "how will we escape if we neglect so great a salvation? That salvation, first spoken by the Lord, was confirmed to us by those who heard, God also testifying with them, both by signs and wonders and by various miracles and by gifts of the Holy Spirit according to His own will.",
       "BSB": "how shall we escape if we neglect such a great salvation? This salvation was first announced by the Lord, was confirmed to us by those who heard Him, and was accompanied by God's testimony of signs, wonders, various miracles, and gifts of the Holy Spirit distributed according to His will.",
       "chap": "Hebrews 2"
@@ -14463,7 +14458,7 @@ const DOC_DATA = {
       "chap": "1 Corinthians 13"
     },
     "1 Cor 14:1–3, 39–40": {
-      "KJV": "Follow after charity, and desire spiritual gifts , but rather that ye may prophesy. For he that speaketh in an unknown tongue speaketh not unto men, but unto God: for no man understandeth him ; howbeit in the spirit he speaketh mysteries. But he that prophesieth speaketh unto men to edification, and exhortation, and comfort. Wherefore, brethren, covet to prophesy, and forbid not to speak with tongues. Let all things be done decently and in order.",
+      "KJV": "Follow after charity, and desire spiritual gifts, but rather that ye may prophesy. For he that speaketh in an unknown tongue speaketh not unto men, but unto God: for no man understandeth him; howbeit in the spirit he speaketh mysteries. But he that prophesieth speaketh unto men to edification, and exhortation, and comfort. Wherefore, brethren, covet to prophesy, and forbid not to speak with tongues. Let all things be done decently and in order.",
       "LSB": "Pursue love, yet earnestly desire spiritual gifts, but especially that you may prophesy. For one who speaks in a tongue does not speak to men but to God; for no one understands, but in his spirit he speaks mysteries. But one who prophesies speaks to men for edification and exhortation and consolation... Therefore, my brothers, earnestly desire to prophesy, and do not forbid to speak in tongues. But all things must be done properly and in an orderly manner.",
       "BSB": "Earnestly pursue love and eagerly desire spiritual gifts, especially the gift of prophecy. For he who speaks in a tongue does not speak to men, but to God. Indeed, no one understands him; he utters mysteries in the Spirit. But he who prophesies speaks to men for their strengthening, encouragement, and comfort... So, my brothers, be eager to prophesy, and do not forbid speaking in tongues. But everything must be done in a proper and orderly manner.",
       "chap": "1 Corinthians 14"
@@ -18384,7 +18379,7 @@ const HERM_VERSES = {
   "chap": "Hebrews 9"
  },
  "Judges 6:37": {
-  "KJV": "Behold, I will put a fleece of wool in the floor; and if the dew be on the fleece only, and it be dry upon all the earth beside , then shall I know that thou wilt save Israel by mine hand, as thou hast said.",
+  "KJV": "Behold, I will put a fleece of wool in the floor; and if the dew be on the fleece only, and it be dry upon all the earth beside, then shall I know that thou wilt save Israel by mine hand, as thou hast said.",
   "coords": [
    [
     "Judges",
@@ -18395,7 +18390,7 @@ const HERM_VERSES = {
   "chap": "Judges 6"
  },
  "Acts 2:44-45": {
-  "KJV": "And all that believed were together, and had all things common; And sold their possessions and goods, and parted them to all men , as every man had need.",
+  "KJV": "And all that believed were together, and had all things common; And sold their possessions and goods, and parted them to all men, as every man had need.",
   "coords": [
    [
     "Acts",
@@ -18510,7 +18505,7 @@ const HERM_VERSES = {
   "chap": "Deuteronomy 22"
  },
  "Leviticus 19:18": {
-  "KJV": "Thou shalt not avenge, nor bear any grudge against the children of thy people, but thou shalt love thy neighbour as thyself: I am the LORD .",
+  "KJV": "Thou shalt not avenge, nor bear any grudge against the children of thy people, but thou shalt love thy neighbour as thyself: I am the LORD.",
   "coords": [
    [
     "Leviticus",
@@ -18543,7 +18538,7 @@ const HERM_VERSES = {
   "chap": "Judges 21"
  },
  "Judges 6:36-40": {
-  "KJV": "And Gideon said unto God, If thou wilt save Israel by mine hand, as thou hast said, Behold, I will put a fleece of wool in the floor; and if the dew be on the fleece only, and it be dry upon all the earth beside , then shall I know that thou wilt save Israel by mine hand, as thou hast said. And it was so: for he rose up early on the morrow, and thrust the fleece together, and wringed the dew out of the fleece, a bowl full of water. And Gideon said unto God, Let not thine anger be hot against me, and I will speak but this once: let me prove, I pray thee, but this once with the fleece; let it now be dry only upon the fleece, and upon all the ground let there be dew. And God did so that night: for it was dry upon the fleece only, and there was dew on all the ground.",
+  "KJV": "And Gideon said unto God, If thou wilt save Israel by mine hand, as thou hast said, Behold, I will put a fleece of wool in the floor; and if the dew be on the fleece only, and it be dry upon all the earth beside, then shall I know that thou wilt save Israel by mine hand, as thou hast said. And it was so: for he rose up early on the morrow, and thrust the fleece together, and wringed the dew out of the fleece, a bowl full of water. And Gideon said unto God, Let not thine anger be hot against me, and I will speak but this once: let me prove, I pray thee, but this once with the fleece; let it now be dry only upon the fleece, and upon all the ground let there be dew. And God did so that night: for it was dry upon the fleece only, and there was dew on all the ground.",
   "coords": [
    [
     "Judges",
@@ -18763,7 +18758,7 @@ const HERM_VERSES = {
   "chap": "Ephesians 2"
  },
  "1 Corinthians 7:26": {
-  "KJV": "I suppose therefore that this is good for the present distress, I say , that it is good for a man so to be.",
+  "KJV": "I suppose therefore that this is good for the present distress, I say, that it is good for a man so to be.",
   "coords": [
    [
     "1 Corinthians",
@@ -18903,7 +18898,7 @@ const HERM_VERSES = {
   "chap": "Acts 17"
  },
  "Exodus 12:13": {
-  "KJV": "And the blood shall be to you for a token upon the houses where ye are: and when I see the blood, I will pass over you, and the plague shall not be upon you to destroy you , when I smite the land of Egypt.",
+  "KJV": "And the blood shall be to you for a token upon the houses where ye are: and when I see the blood, I will pass over you, and the plague shall not be upon you to destroy you, when I smite the land of Egypt.",
   "coords": [
    [
     "Exodus",
@@ -18941,7 +18936,7 @@ const HERM_VERSES = {
   "chap": "Numbers 21"
  },
  "Deuteronomy 6:4-5": {
-  "KJV": "Hear, O Israel: The LORD our God is one LORD : And thou shalt love the LORD thy God with all thine heart, and with all thy soul, and with all thy might.",
+  "KJV": "Hear, O Israel: The LORD our God is one LORD: And thou shalt love the LORD thy God with all thine heart, and with all thy soul, and with all thy might.",
   "coords": [
    [
     "Deuteronomy",
@@ -19065,7 +19060,7 @@ const HERM_VERSES = {
   "chap": "2 Chronicles 7"
  },
  "Ezra 7:10": {
-  "KJV": "For Ezra had prepared his heart to seek the law of the LORD , and to do it , and to teach in Israel statutes and judgments.",
+  "KJV": "For Ezra had prepared his heart to seek the law of the LORD, and to do it, and to teach in Israel statutes and judgments.",
   "coords": [
    [
     "Ezra",
@@ -19098,7 +19093,7 @@ const HERM_VERSES = {
   "chap": "Job 19"
  },
  "Psalms 19:14": {
-  "KJV": "Let the words of my mouth, and the meditation of my heart, be acceptable in thy sight, O LORD , my strength, and my redeemer.",
+  "KJV": "Let the words of my mouth, and the meditation of my heart, be acceptable in thy sight, O LORD, my strength, and my redeemer.",
   "coords": [
    [
     "Psalms",
@@ -19158,7 +19153,7 @@ const HERM_VERSES = {
   "chap": "Isaiah 53"
  },
  "Jeremiah 31:33": {
-  "KJV": "But this shall be the covenant that I will make with the house of Israel; After those days, saith the LORD , I will put my law in their inward parts, and write it in their hearts; and will be their God, and they shall be my people.",
+  "KJV": "But this shall be the covenant that I will make with the house of Israel; After those days, saith the LORD, I will put my law in their inward parts, and write it in their hearts; and will be their God, and they shall be my people.",
   "coords": [
    [
     "Jeremiah",
@@ -19245,7 +19240,7 @@ const HERM_VERSES = {
   "chap": "Amos 5"
  },
  "Obadiah 1:21": {
-  "KJV": "And saviours shall come up on mount Zion to judge the mount of Esau; and the kingdom shall be the LORD’s .",
+  "KJV": "And saviours shall come up on mount Zion to judge the mount of Esau; and the kingdom shall be the LORD’s.",
   "coords": [
    [
     "Obadiah",
@@ -19256,7 +19251,7 @@ const HERM_VERSES = {
   "chap": "Obadiah 1"
  },
  "Jonah 2:9": {
-  "KJV": "But I will sacrifice unto thee with the voice of thanksgiving; I will pay that that I have vowed. Salvation is of the LORD .",
+  "KJV": "But I will sacrifice unto thee with the voice of thanksgiving; I will pay that that I have vowed. Salvation is of the LORD.",
   "coords": [
    [
     "Jonah",
@@ -20987,7 +20982,7 @@ var GODS_DATA={
 "Less certain"
 ],
 "meta": "<b>Passages:</b> 1 Corinthians 8; 10:14–33; compare Deuteronomy 32:17; Revelation 2:14, 20 · <b>Reading Companion:</b> Day <a class=\"gg-day\" href=\"#reading/day/329\">329</a> (1 Corinthians 5–8), Day <a class=\"gg-day\" href=\"#reading/day/330\">330</a> (1 Corinthians 9–11)",
-"html": "<h5>Backdrop.</h5><ul><li><b>Sacrifice and dinner went together.</b> In the Greco-Roman world animals were sacrificed to the gods and then eaten, and many temples had dining rooms where groups feasted. Papyri preserve invitations to dine at the <i>kline</i> (couch) of the god Sarapis. (Blue, \"The House Church at Corinth and the Lord's Supper,\" <i>Criswell Theological Review</i>)</li><li><b>Corinth's dining rooms.</b> The sanctuary of <b><a class=\"gg-glo\" href=\"#glossary/asclepius-asklepieion\">Asclepius</a></b>, the healing god, at Corinth had a row of three dining rooms beneath its <i>abaton</i> (sacred sleeping hall). The older sanctuary of <b>Demeter and Kore</b> on Acrocorinth had some 40 dining rooms, each seating seven to ten. (Roebuck, <i>Corinth XIV: The Asklepieion and Lerna</i>, American School of Classical Studies; Blue, citing Murphy-O'Connor, <i>St Paul's Corinth</i>; Hesperia report on the Demeter and Kore sanctuary)</li><li><b>Four settings.</b> Paul mentions idol food in a temple precinct (8:10), at \"the table of devils\" (10:21), at a meal in an unbeliever's home (10:27), and in the meat market, the <i>macellum</i> (KJV \"shambles,\" 10:25).</li></ul><h5>How the text answers it</h5><ul><li><b>8:1, 4</b> \"Now as touching things offered unto idols, we know that we all have knowledge\". The Corinthians' slogan was true as far as it went: \"we know that an idol is nothing in the world, and that there is none other God but one\".</li><li><b>8:10</b> But \"if any man see thee which hast knowledge sit at meat in the idol’s temple\", a weaker believer may be drawn back into idolatry. Knowledge without love can destroy a brother (8:11–13).</li><li><b>10:14</b> \"Wherefore, my dearly beloved, flee from idolatry.\"</li><li><b>10:16</b> \"The cup of blessing which we bless, is it not the communion of the blood of Christ?\" A meal joins the eater to the one it honours.</li><li><b>10:19–20</b> \"What say I then? that the idol is any thing\". No: the idol itself is nothing. \"But I say , that the things which the Gentiles sacrifice, they sacrifice to devils, and not to God\". Paul is echoing Moses: \"They sacrificed unto devils, not to God\" (Deut 32:17). Behind the empty statue are real spiritual powers. (KJV \"devils\" translates the Greek <i>daimonia</i>, \"demons.\")</li><li><b>10:21</b> \"Ye cannot drink the cup of the Lord, and the cup of devils: ye cannot be partakers of the Lord’s table, and of the table of devils.\" The phrase \"table\" was the ordinary language of a god's banquet; Paul sets the Lord's Supper against it.</li><li><b>10:22</b> \"Do we provoke the Lord to jealousy? are we stronger than he?\" The same jealousy as in Ezekiel 8 (card <a class=\"gg-cardlink\" href=\"#gods/s15\">S15</a>).</li><li><b>10:25–26</b> In the market, \"Whatsoever is sold in the shambles, that eat, asking no question for conscience sake\", because \"the earth is the Lord’s, and the fulness thereof\" (Psalm 24:1). The meat is God's creation, not Zeus's property.</li><li><b>10:27–28</b> At a private dinner, eat what is served; but \"if any man say unto you, This is offered in sacrifice unto idols, eat not for his sake that shewed it\". Once it is announced as an act of worship, eating becomes a public statement.</li><li><b>Revelation 2:14, 20</b> Decades later the risen Christ rebukes churches at Pergamos and Thyatira for teaching believers \"to eat things sacrificed unto idols\". The issue did not go away.</li></ul><h5>Both sides.</h5><ul><li><b>How Paul's rules fit.</b> Paul forbids eating in an idol's temple (8:10; 10:21) yet allows market meat and private meals (10:25–27). Some scholars think chapters 8 and 10 address different situations: social dining versus clearly religious meals. Others think the line is simply whether the food is presented as worship.</li><li><b>\"Nothing\" and \"demons\" together.</b> Paul holds both that an idol is nothing (8:4; 10:19) and that pagan sacrifice is offered to demons (10:20). Most interpreters read this as: there is no god in the statue, but idolatry is not spiritually neutral.</li></ul>",
+"html": "<h5>Backdrop.</h5><ul><li><b>Sacrifice and dinner went together.</b> In the Greco-Roman world animals were sacrificed to the gods and then eaten, and many temples had dining rooms where groups feasted. Papyri preserve invitations to dine at the <i>kline</i> (couch) of the god Sarapis. (Blue, \"The House Church at Corinth and the Lord's Supper,\" <i>Criswell Theological Review</i>)</li><li><b>Corinth's dining rooms.</b> The sanctuary of <b><a class=\"gg-glo\" href=\"#glossary/asclepius-asklepieion\">Asclepius</a></b>, the healing god, at Corinth had a row of three dining rooms beneath its <i>abaton</i> (sacred sleeping hall). The older sanctuary of <b>Demeter and Kore</b> on Acrocorinth had some 40 dining rooms, each seating seven to ten. (Roebuck, <i>Corinth XIV: The Asklepieion and Lerna</i>, American School of Classical Studies; Blue, citing Murphy-O'Connor, <i>St Paul's Corinth</i>; Hesperia report on the Demeter and Kore sanctuary)</li><li><b>Four settings.</b> Paul mentions idol food in a temple precinct (8:10), at \"the table of devils\" (10:21), at a meal in an unbeliever's home (10:27), and in the meat market, the <i>macellum</i> (KJV \"shambles,\" 10:25).</li></ul><h5>How the text answers it</h5><ul><li><b>8:1, 4</b> \"Now as touching things offered unto idols, we know that we all have knowledge\". The Corinthians' slogan was true as far as it went: \"we know that an idol is nothing in the world, and that there is none other God but one\".</li><li><b>8:10</b> But \"if any man see thee which hast knowledge sit at meat in the idol’s temple\", a weaker believer may be drawn back into idolatry. Knowledge without love can destroy a brother (8:11–13).</li><li><b>10:14</b> \"Wherefore, my dearly beloved, flee from idolatry.\"</li><li><b>10:16</b> \"The cup of blessing which we bless, is it not the communion of the blood of Christ?\" A meal joins the eater to the one it honours.</li><li><b>10:19–20</b> \"What say I then? that the idol is any thing\". No: the idol itself is nothing. \"But I say, that the things which the Gentiles sacrifice, they sacrifice to devils, and not to God\". Paul is echoing Moses: \"They sacrificed unto devils, not to God\" (Deut 32:17). Behind the empty statue are real spiritual powers. (KJV \"devils\" translates the Greek <i>daimonia</i>, \"demons.\")</li><li><b>10:21</b> \"Ye cannot drink the cup of the Lord, and the cup of devils: ye cannot be partakers of the Lord’s table, and of the table of devils.\" The phrase \"table\" was the ordinary language of a god's banquet; Paul sets the Lord's Supper against it.</li><li><b>10:22</b> \"Do we provoke the Lord to jealousy? are we stronger than he?\" The same jealousy as in Ezekiel 8 (card <a class=\"gg-cardlink\" href=\"#gods/s15\">S15</a>).</li><li><b>10:25–26</b> In the market, \"Whatsoever is sold in the shambles, that eat, asking no question for conscience sake\", because \"the earth is the Lord’s, and the fulness thereof\" (Psalm 24:1). The meat is God's creation, not Zeus's property.</li><li><b>10:27–28</b> At a private dinner, eat what is served; but \"if any man say unto you, This is offered in sacrifice unto idols, eat not for his sake that shewed it\". Once it is announced as an act of worship, eating becomes a public statement.</li><li><b>Revelation 2:14, 20</b> Decades later the risen Christ rebukes churches at Pergamos and Thyatira for teaching believers \"to eat things sacrificed unto idols\". The issue did not go away.</li></ul><h5>Both sides.</h5><ul><li><b>How Paul's rules fit.</b> Paul forbids eating in an idol's temple (8:10; 10:21) yet allows market meat and private meals (10:25–27). Some scholars think chapters 8 and 10 address different situations: social dining versus clearly religious meals. Others think the line is simply whether the food is presented as worship.</li><li><b>\"Nothing\" and \"demons\" together.</b> Paul holds both that an idol is nothing (8:4; 10:19) and that pagan sacrifice is offered to demons (10:20). Most interpreters read this as: there is no god in the statue, but idolatry is not spiritually neutral.</li></ul>",
 "sources": [
 [
 "Carl Roebuck, <i>Corinth XIV: The Asklepieion and Lerna</i> (American School of Classical Studies at Athens)",
@@ -21871,7 +21866,7 @@ var GODS_DATA={
 ],
 [
 "1 Corinthians 10:20",
-"But I say , that the things which the Gentiles sacrifice, they sacrifice to devils, and not to God"
+"But I say, that the things which the Gentiles sacrifice, they sacrifice to devils, and not to God"
 ],
 [
 "Deuteronomy 32:17",
@@ -24069,7 +24064,7 @@ const EVAN_VERSES = {
   "chap": "Acts 22"
  },
  "Acts 26:4-11": {
-  "KJV": "My manner of life from my youth, which was at the first among mine own nation at Jerusalem, know all the Jews; Which knew me from the beginning, if they would testify, that after the most straitest sect of our religion I lived a Pharisee. And now I stand and am judged for the hope of the promise made of God unto our fathers: Unto which promise our twelve tribes, instantly serving God day and night, hope to come. For which hope’s sake, king Agrippa, I am accused of the Jews. Why should it be thought a thing incredible with you, that God should raise the dead? I verily thought with myself, that I ought to do many things contrary to the name of Jesus of Nazareth. Which thing I also did in Jerusalem: and many of the saints did I shut up in prison, having received authority from the chief priests; and when they were put to death, I gave my voice against them . And I punished them oft in every synagogue, and compelled them to blaspheme; and being exceedingly mad against them, I persecuted them even unto strange cities.",
+  "KJV": "My manner of life from my youth, which was at the first among mine own nation at Jerusalem, know all the Jews; Which knew me from the beginning, if they would testify, that after the most straitest sect of our religion I lived a Pharisee. And now I stand and am judged for the hope of the promise made of God unto our fathers: Unto which promise our twelve tribes, instantly serving God day and night, hope to come. For which hope’s sake, king Agrippa, I am accused of the Jews. Why should it be thought a thing incredible with you, that God should raise the dead? I verily thought with myself, that I ought to do many things contrary to the name of Jesus of Nazareth. Which thing I also did in Jerusalem: and many of the saints did I shut up in prison, having received authority from the chief priests; and when they were put to death, I gave my voice against them. And I punished them oft in every synagogue, and compelled them to blaspheme; and being exceedingly mad against them, I persecuted them even unto strange cities.",
   "coords": [
    [
     "Acts",
@@ -24141,7 +24136,7 @@ const EVAN_VERSES = {
   "chap": "Acts 26"
  },
  "Acts 22:6-16": {
-  "KJV": "And it came to pass, that, as I made my journey, and was come nigh unto Damascus about noon, suddenly there shone from heaven a great light round about me. And I fell unto the ground, and heard a voice saying unto me, Saul, Saul, why persecutest thou me? And I answered, Who art thou, Lord? And he said unto me, I am Jesus of Nazareth, whom thou persecutest. And they that were with me saw indeed the light, and were afraid; but they heard not the voice of him that spake to me. And I said, What shall I do, Lord? And the Lord said unto me, Arise, and go into Damascus; and there it shall be told thee of all things which are appointed for thee to do. And when I could not see for the glory of that light, being led by the hand of them that were with me, I came into Damascus. And one Ananias, a devout man according to the law, having a good report of all the Jews which dwelt there , Came unto me, and stood, and said unto me, Brother Saul, receive thy sight. And the same hour I looked up upon him. And he said, The God of our fathers hath chosen thee, that thou shouldest know his will, and see that Just One, and shouldest hear the voice of his mouth. For thou shalt be his witness unto all men of what thou hast seen and heard. And now why tarriest thou? arise, and be baptized, and wash away thy sins, calling on the name of the Lord.",
+  "KJV": "And it came to pass, that, as I made my journey, and was come nigh unto Damascus about noon, suddenly there shone from heaven a great light round about me. And I fell unto the ground, and heard a voice saying unto me, Saul, Saul, why persecutest thou me? And I answered, Who art thou, Lord? And he said unto me, I am Jesus of Nazareth, whom thou persecutest. And they that were with me saw indeed the light, and were afraid; but they heard not the voice of him that spake to me. And I said, What shall I do, Lord? And the Lord said unto me, Arise, and go into Damascus; and there it shall be told thee of all things which are appointed for thee to do. And when I could not see for the glory of that light, being led by the hand of them that were with me, I came into Damascus. And one Ananias, a devout man according to the law, having a good report of all the Jews which dwelt there, Came unto me, and stood, and said unto me, Brother Saul, receive thy sight. And the same hour I looked up upon him. And he said, The God of our fathers hath chosen thee, that thou shouldest know his will, and see that Just One, and shouldest hear the voice of his mouth. For thou shalt be his witness unto all men of what thou hast seen and heard. And now why tarriest thou? arise, and be baptized, and wash away thy sins, calling on the name of the Lord.",
   "coords": [
    [
     "Acts",
@@ -24290,7 +24285,7 @@ const EVAN_VERSES = {
   "chap": "Acts 22"
  },
  "Acts 26:19-23": {
-  "KJV": "Whereupon, O king Agrippa, I was not disobedient unto the heavenly vision: But shewed first unto them of Damascus, and at Jerusalem, and throughout all the coasts of Judæa, and then to the Gentiles, that they should repent and turn to God, and do works meet for repentance. For these causes the Jews caught me in the temple, and went about to kill me . Having therefore obtained help of God, I continue unto this day, witnessing both to small and great, saying none other things than those which the prophets and Moses did say should come: That Christ should suffer, and that he should be the first that should rise from the dead, and should shew light unto the people, and to the Gentiles.",
+  "KJV": "Whereupon, O king Agrippa, I was not disobedient unto the heavenly vision: But shewed first unto them of Damascus, and at Jerusalem, and throughout all the coasts of Judæa, and then to the Gentiles, that they should repent and turn to God, and do works meet for repentance. For these causes the Jews caught me in the temple, and went about to kill me. Having therefore obtained help of God, I continue unto this day, witnessing both to small and great, saying none other things than those which the prophets and Moses did say should come: That Christ should suffer, and that he should be the first that should rise from the dead, and should shew light unto the people, and to the Gentiles.",
   "coords": [
    [
     "Acts",
@@ -24387,7 +24382,7 @@ const EVAN_VERSES = {
   "chap": "Matthew 6"
  },
  "Psalm 145:3": {
-  "KJV": "Great is the LORD , and greatly to be praised; and his greatness is unsearchable.",
+  "KJV": "Great is the LORD, and greatly to be praised; and his greatness is unsearchable.",
   "coords": [
    [
     "Psalms",
@@ -24431,7 +24426,7 @@ const EVAN_VERSES = {
   "chap": "Philippians 4"
  },
  "Ephesians 1:15-23": {
-  "KJV": "Wherefore I also, after I heard of your faith in the Lord Jesus, and love unto all the saints, Cease not to give thanks for you, making mention of you in my prayers; That the God of our Lord Jesus Christ, the Father of glory, may give unto you the spirit of wisdom and revelation in the knowledge of him: The eyes of your understanding being enlightened; that ye may know what is the hope of his calling, and what the riches of the glory of his inheritance in the saints, And what is the exceeding greatness of his power to us-ward who believe, according to the working of his mighty power, Which he wrought in Christ, when he raised him from the dead, and set him at his own right hand in the heavenly places , Far above all principality, and power, and might, and dominion, and every name that is named, not only in this world, but also in that which is to come: And hath put all things under his feet, and gave him to be the head over all things to the church, Which is his body, the fulness of him that filleth all in all.",
+  "KJV": "Wherefore I also, after I heard of your faith in the Lord Jesus, and love unto all the saints, Cease not to give thanks for you, making mention of you in my prayers; That the God of our Lord Jesus Christ, the Father of glory, may give unto you the spirit of wisdom and revelation in the knowledge of him: The eyes of your understanding being enlightened; that ye may know what is the hope of his calling, and what the riches of the glory of his inheritance in the saints, And what is the exceeding greatness of his power to us-ward who believe, according to the working of his mighty power, Which he wrought in Christ, when he raised him from the dead, and set him at his own right hand in the heavenly places, Far above all principality, and power, and might, and dominion, and every name that is named, not only in this world, but also in that which is to come: And hath put all things under his feet, and gave him to be the head over all things to the church, Which is his body, the fulness of him that filleth all in all.",
   "coords": [
    [
     "Ephesians",
@@ -24549,7 +24544,7 @@ const EVAN_VERSES = {
   "chap": "Philippians 1"
  },
  "Colossians 1:9-14": {
-  "KJV": "For this cause we also, since the day we heard it , do not cease to pray for you, and to desire that ye might be filled with the knowledge of his will in all wisdom and spiritual understanding; That ye might walk worthy of the Lord unto all pleasing, being fruitful in every good work, and increasing in the knowledge of God; Strengthened with all might, according to his glorious power, unto all patience and longsuffering with joyfulness; Giving thanks unto the Father, which hath made us meet to be partakers of the inheritance of the saints in light: Who hath delivered us from the power of darkness, and hath translated us into the kingdom of his dear Son: In whom we have redemption through his blood, even the forgiveness of sins:",
+  "KJV": "For this cause we also, since the day we heard it, do not cease to pray for you, and to desire that ye might be filled with the knowledge of his will in all wisdom and spiritual understanding; That ye might walk worthy of the Lord unto all pleasing, being fruitful in every good work, and increasing in the knowledge of God; Strengthened with all might, according to his glorious power, unto all patience and longsuffering with joyfulness; Giving thanks unto the Father, which hath made us meet to be partakers of the inheritance of the saints in light: Who hath delivered us from the power of darkness, and hath translated us into the kingdom of his dear Son: In whom we have redemption through his blood, even the forgiveness of sins:",
   "coords": [
    [
     "Colossians",
@@ -24585,7 +24580,7 @@ const EVAN_VERSES = {
   "chap": "Colossians 1"
  },
  "Psalm 19:14": {
-  "KJV": "Let the words of my mouth, and the meditation of my heart, be acceptable in thy sight, O LORD , my strength, and my redeemer.",
+  "KJV": "Let the words of my mouth, and the meditation of my heart, be acceptable in thy sight, O LORD, my strength, and my redeemer.",
   "coords": [
    [
     "Psalms",
@@ -24745,7 +24740,7 @@ const EVAN_VERSES = {
   ]
  },
  "Ephesians 6:10-13": {
-  "KJV": "Finally, my brethren, be strong in the Lord, and in the power of his might. Put on the whole armour of God, that ye may be able to stand against the wiles of the devil. For we wrestle not against flesh and blood, but against principalities, against powers, against the rulers of the darkness of this world, against spiritual wickedness in high places . Wherefore take unto you the whole armour of God, that ye may be able to withstand in the evil day, and having done all, to stand.",
+  "KJV": "Finally, my brethren, be strong in the Lord, and in the power of his might. Put on the whole armour of God, that ye may be able to stand against the wiles of the devil. For we wrestle not against flesh and blood, but against principalities, against powers, against the rulers of the darkness of this world, against spiritual wickedness in high places. Wherefore take unto you the whole armour of God, that ye may be able to withstand in the evil day, and having done all, to stand.",
   "coords": [
    [
     "Ephesians",
@@ -24995,7 +24990,7 @@ const EVAN_VERSES = {
   "chap": "Psalms 51"
  },
  "Psalm 32:1-5": {
-  "KJV": "Blessed is he whose transgression is forgiven, whose sin is covered. Blessed is the man unto whom the LORD imputeth not iniquity, and in whose spirit there is no guile. When I kept silence, my bones waxed old through my roaring all the day long. For day and night thy hand was heavy upon me: my moisture is turned into the drought of summer. Selah. I acknowledged my sin unto thee, and mine iniquity have I not hid. I said, I will confess my transgressions unto the LORD ; and thou forgavest the iniquity of my sin. Selah.",
+  "KJV": "Blessed is he whose transgression is forgiven, whose sin is covered. Blessed is the man unto whom the LORD imputeth not iniquity, and in whose spirit there is no guile. When I kept silence, my bones waxed old through my roaring all the day long. For day and night thy hand was heavy upon me: my moisture is turned into the drought of summer. Selah. I acknowledged my sin unto thee, and mine iniquity have I not hid. I said, I will confess my transgressions unto the LORD; and thou forgavest the iniquity of my sin. Selah.",
   "coords": [
    [
     "Psalms",
@@ -25191,7 +25186,7 @@ const EVAN_VERSES = {
   "chap": "Ephesians 6"
  },
  "Deuteronomy 6:4-9": {
-  "KJV": "Hear, O Israel: The LORD our God is one LORD : And thou shalt love the LORD thy God with all thine heart, and with all thy soul, and with all thy might. And these words, which I command thee this day, shall be in thine heart: And thou shalt teach them diligently unto thy children, and shalt talk of them when thou sittest in thine house, and when thou walkest by the way, and when thou liest down, and when thou risest up. And thou shalt bind them for a sign upon thine hand, and they shall be as frontlets between thine eyes. And thou shalt write them upon the posts of thy house, and on thy gates.",
+  "KJV": "Hear, O Israel: The LORD our God is one LORD: And thou shalt love the LORD thy God with all thine heart, and with all thy soul, and with all thy might. And these words, which I command thee this day, shall be in thine heart: And thou shalt teach them diligently unto thy children, and shalt talk of them when thou sittest in thine house, and when thou walkest by the way, and when thou liest down, and when thou risest up. And thou shalt bind them for a sign upon thine hand, and they shall be as frontlets between thine eyes. And thou shalt write them upon the posts of thy house, and on thy gates.",
   "coords": [
    [
     "Deuteronomy",
@@ -28976,7 +28971,7 @@ const TL_DATA={"phase":5,"items":[{"id":"e_creation","kind":"event","lane":"ev",
 //    The Patriarchs & leaders lane is hidden when no leader is in the viewport (same idea as flag 12).
 //    The Job note under Before Abraham is shown only at Growing and Deep Study, when the Job item is shown.
 //    Undated diamonds are spaced among the items visible at the current level, so labels stay inside the band.
-//    Clicking an item opens a side drawer. Zoom: Whole period / Decades / Years. Mouse wheel scrolls sideways.
+//    Clicking an item opens a side drawer. Zoom: Whole period / Decades / Years. Trackpad pans both ways; mouse wheel: see Wheel and trackpad.
 //  - Phones (max-width 760px, or short landscape screens): a vertical list grouped by Bible Reading era, lane filter chips,
 //    and a bottom sheet for the item.
 //  - Era bar: all nine eras are live (Creation through the Early Church);
@@ -28992,9 +28987,6 @@ const LV = ["gs","gr","ds"], LVN = {gs:"Getting Started", gr:"Growing", ds:"Deep
 const LANES = [["ev","Events","Bible story"],["people","Patriarchs & leaders","Abraham to the apostles"],["israel","Kings of Israel","north (Samaria)"],["judah","Kings of Judah","south (Jerusalem)"],["prophets","Prophets",""],["world","World powers","Egypt and the nations"],["arch","Outside the Bible","inscriptions · Deep Study"]];
 const KIND = {king:"King", prophet:"Prophet", empire:"World power", event:"Event", arch:"Outside the Bible", leader:"Patriarch / leader"};
 const CHIPC = {king:"var(--tl-bad)", prophet:"var(--tl-pro)", empire:"var(--tl-world)", event:"var(--tl-ev)", arch:"var(--tl-arch)", leader:"var(--tl-people)"};
-const ABOUT = {gs:"Walk through the Bible's story in order, beginning before Abraham (Genesis 1–11, undated) and continuing through the exile, the return, the years before the birth of Jesus, the Life of Christ from his birth to the Ascension, and the Early Church from Pentecost to Patmos. Scroll sideways along the timeline (on a phone, scroll down) and click any person, event or world power to read about it and open the Scripture.",
- gr:"Walk through the Bible's story in order. Growing adds more events, patriarchs and leaders, further prophets, and the world powers around Israel, from Babylon and Persia to Greece and Rome, with Caesar, Pilate and the Herods around the Gospel years, and the first churches, Paul's journeys, and the years to Patmos. Click any item to read about it, see its key verse and open the chapter on the Map or the day in Bible Reading.",
- ds:"Deep Study shows every item: background notes, lesser-known judges and prophets, and an Outside the Bible lane of ancient and archaeological witnesses that touch the biblical record, including the Cyrus Cylinder and 1 Maccabees used as history, not as Scripture, and Josephus, Tacitus and the Pilate Stone for the Gospel years. The Early Church years, from Pentecost to Patmos, are included on the same expanded scale as the Gospel years, so those cards can be read."};
 const DATES = "Years begin at Abram's call, traditionally c. 2091 BC. Genesis 1–11 is an undated Before Abraham section; those chapters themselves give no calendar dates. From Abraham on, early dates use this site's traditional chronology, including the exodus in 1446 BC (1 Kings 6:1) and Thiele's dates for the kings. Judge bars are approximate and may overlap. The Gospel years (c. 6/5 BC to AD 30/33) and the Early Church years (Pentecost to Patmos, c. AD 30/33 – 95) are drawn on an expanded scale so their many cards can be read, and Passion Week is drawn a day at a time. Ministry and early Acts dates follow the AD 30 crucifixion; with AD 33 they sit about three years later.";
 const LS = {get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }};
 let lv = (v => LVN[v] ? v : "gs")(LS.get("forge_tl_level"));
@@ -29099,7 +29091,7 @@ function layout(){
     }
   }
   cv.style.width = W + "px"; cv.style.height = (top + 20) + "px"; cv.innerHTML = html;
-  ln.innerHTML = '<div style="top:0;height:74px;border-top:0;color:var(--text-muted);font-weight:400">Era · Reading era · Year</div>' + lanesHtml;
+  ln.innerHTML = '<div style="top:0;height:74px;border-top:0;color:var(--text-muted);font-weight:400">Era · Reading era · Year</div>' + lanesHtml + `<span aria-hidden="true" style="position:absolute;left:0;width:1px;height:1px;top:${top + 20 + 40}px"></span>`;
   cv.querySelectorAll(".tlv-it").forEach(b => b.onclick = () => openItem(b.dataset.id));
   if (sel) { const b = cv.querySelector(`[data-id="${sel}"]`); if (b) b.classList.add("sel"); }
   const lg = $("tlv-lg-arch"); if (lg) lg.style.display = lv === "ds" ? "" : "none";
@@ -29172,11 +29164,30 @@ const step = d => { const k = vis.findIndex(x => x.id === sel); const n = vis[k 
 // ---------- controls ----------
 function setLevel(l){
   if (!LVN[l]) return; lv = l; LS.set("forge_tl_level", l);
-  $("tlv-about").textContent = ABOUT[l] + " " + DATES;
   if (!built || $("tlview").hidden) return;
   layout(); list();
   if (sel) { const i = ITEM[sel]; if (i && shown(i)) openItem(sel, false); else closePanel(); }
 }
+// === SECTION: Wheel and trackpad (BM-11, Nov 23, 2026) ===
+// A Mac trackpad sends deltaX and deltaY together, so its gestures are left to the browser: sideways moves along
+// the timeline, up/down scrolls the lanes, diagonal does both. A gesture counts as trackpad when any event in it
+// has deltaX, a fractional delta, or wheelDeltaY = -3 x deltaY (Chrome/Safari on Mac); it stays latched for 400 ms.
+// A plain mouse wheel (deltaY only) moves sideways over the era/year header, when the lanes cannot scroll further
+// that way, or with Shift (native). Wheel over the lane labels is passed to the scroller.
+let tlPadUntil = 0;
+function wheelPx(e, d){ return e.deltaMode === 1 ? d * 16 : e.deltaMode === 2 ? d * 400 : d; }
+function isPadWheel(e){ const now = performance.now();
+  if (e.deltaX !== 0 || (e.deltaMode === 0 && (e.deltaY % 1 !== 0)) || (e.wheelDeltaY && e.wheelDeltaY === -3 * e.deltaY)) tlPadUntil = now + 400;
+  return now < tlPadUntil; }
+function onTlWheel(e){ const sc = e.currentTarget;
+  if (e.ctrlKey || e.shiftKey || isPadWheel(e) || e.deltaY === 0 || sc.scrollWidth <= sc.clientWidth) return;
+  const dy = wheelPx(e, e.deltaY), yIn = e.clientY - sc.getBoundingClientRect().top + sc.scrollTop;
+  const room = dy > 0 ? sc.scrollHeight - sc.clientHeight - sc.scrollTop > 1 : sc.scrollTop > 0;
+  if (yIn > 74 && room) return;
+  sc.scrollLeft += dy; e.preventDefault(); }
+function onLanesWheel(e){ if (e.ctrlKey) return; const sc = $("tlv-scroller");
+  let dx = wheelPx(e, e.deltaX), dy = wheelPx(e, e.deltaY); if (e.shiftKey && !dx) { dx = dy; dy = 0; }
+  sc.scrollLeft += dx; sc.scrollTop += dy; e.preventDefault(); }
 function setZoom(z){ const sc = $("tlv-scroller"); const midpx = sc.scrollLeft + sc.clientWidth / 2; const mid = yearAt(midpx); zoom = z;
   document.querySelectorAll("#tlv-tools [data-z]").forEach(b => b.setAttribute("aria-checked", b.dataset.z === z)); layout();
   sc.scrollLeft = z === "fit" ? 0 : (mid == null ? 0 : Math.max(0, X(mid) - sc.clientWidth / 2)); }
@@ -29194,7 +29205,8 @@ function build(){
     const left = b.dataset.e === "creation" ? 0 : Math.max(0, X(+b.dataset.a) - PAD);
     $("tlv-scroller").scrollTo({left, behavior: "smooth"}); });
   document.querySelectorAll("#tlv-tools [data-z]").forEach(b => b.onclick = () => setZoom(b.dataset.z));
-  $("tlv-scroller").addEventListener("wheel", e => { const sc = e.currentTarget; if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && !e.shiftKey && sc.scrollWidth > sc.clientWidth) { sc.scrollLeft += e.deltaY; e.preventDefault(); } }, {passive: false});
+  $("tlv-scroller").addEventListener("wheel", onTlWheel, {passive: false});
+  $("tlv-lanes").addEventListener("wheel", onLanesWheel, {passive: false});
   document.querySelector("#tlv-panel .tlv-pclose").onclick = () => closePanel(); $("tlv-scrim").onclick = () => closePanel();
   $("tlv-p-prev").onclick = () => step(-1); $("tlv-p-next").onclick = () => step(1);
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("tlview").hidden && !$("tlv-panel").hidden) closePanel(); });
@@ -29216,7 +29228,7 @@ function showView(){
 let first = true;
 function topen(id){
   const wasHidden = $("tlview").hidden;
-  showView(); build(); $("tlv-about").textContent = ABOUT[lv] + " " + DATES;
+  showView(); build();
   if (wasHidden || first) { first = false; layout(); list(); }
   if (id && ITEM[id]) openItem(id, false);
   else { if (id) history.replaceState(null, "", "#timeline"); if (!$("tlv-panel").hidden) closePanel(true); }
@@ -29228,7 +29240,6 @@ window.TABS_ROUTE = function(h){
   return prevRoute ? prevRoute(h) : false;
 };
 $("navtl").onclick = e => { e.preventDefault(); location.hash = sel ? "timeline/" + sel : "timeline"; };
-$("tlv-about").textContent = ABOUT[lv] + " " + DATES;
 
 // ---------- API: sticky Engagement level bar, search, tests ----------
 window.TL_API = {
@@ -29323,7 +29334,7 @@ cards:[
  sum:"1. Whatever begins to exist has a cause. 2. The universe began to exist. 3. Therefore, the universe has a transcendent, personal Cause beyond space and time.",
  sc:[
   ["Psalms 90","Ps 90:2","Before the mountains were brought forth, or ever thou hadst formed the earth and the world, even from everlasting to everlasting, thou art God."],
-  ["Jeremiah 32","Jer 32:17","Ah Lord GOD ! behold, thou hast made the heaven and the earth by thy great power and stretched out arm, and there is nothing too hard for thee:"]
+  ["Jeremiah 32","Jer 32:17","Ah Lord GOD! behold, thou hast made the heaven and the earth by thy great power and stretched out arm, and there is nothing too hard for thee:"]
  ],
  pts:[
   {who:"Formal Deductive Syllogism (Al-Ghazali, William Lane Craig)",b:"The argument is logically airtight: <b>(1) Whatever begins to exist has a cause; (2) The universe began to exist; (3) Therefore, the universe has a cause.</b> Because a deductive syllogism with true premises yields an inescapable conclusion, anyone who denies the conclusion must deny either that things which begin to exist need causes or that the universe had a beginning."},
